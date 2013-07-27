@@ -37,6 +37,7 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target   = linux64
 build_cfg_linux    = 1
 build_cfg_posix    = 1
+build_cfg_arch     = x86
 
 
 ########################

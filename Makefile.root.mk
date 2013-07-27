@@ -94,9 +94,7 @@ prepare:
 
 
 do_build:
-	@$(MAKE) -C external TARGET=$(TARGET)
-	@$(MAKE) -C src TARGET=$(TARGET)
-	@$(MAKE) -C java TARGET=$(TARGET)
+	@$(MAKE) -C xbionic TARGET=$(TARGET)
 
 
 clean: prepare

@@ -37,6 +37,7 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target   = linux32
 build_cfg_linux    = 1
 build_cfg_posix    = 1
+build_cfg_arch     = x86
 
 
 ########################
@@ -78,6 +79,25 @@ build_opt_ld_rpath = -Wl,-rpath-link,
 build_opt_ld_noud  = -Wl,--no-undefined
 build_opt_ld_mgwcc =
 build_opt_ld_mgwcx =
+
+
+########################
+# Compile Target : xbionic
+########################
+build_xbionic_opt_c      = -m32 -Wall -Wextra -nostdinc -nostdinc++ -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include
+build_xbionic_opt_ld     = -m32 -nodefaultlibs -nostdlib
+
+build_xb_libc_src_syc_in = arch-${build_cfg_arch}/syscalls/*.S
+build_xb_libc_src_syc_ex = arch-${build_cfg_arch}/syscalls/*.S
+
+build_xb_libc_src_bin    =
+build_xb_libc_src_mk     = $(wildcard $(basedir)/src/base/src/_all/*.c)
+build_xb_libc_src_mk    += $(wildcard $(basedir)/src/base/src/posix/*.c)
+build_xb_libc_src_in     = _all/*.c, posix/*.c
+build_xb_libc_src_ex     = 
+
+build_xb_libc_cflags     = -DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DFLOATING_POINT -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR  -std=gnu99 -I${basedir}/xbionic/libc/private
+build_xb_libc_ldflags    =
 
 
 ########################

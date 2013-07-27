@@ -37,6 +37,7 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target   = osx32
 build_cfg_mac      = 1
 build_cfg_posix    = 1
+build_cfg_arch     = x86
 
 
 ########################

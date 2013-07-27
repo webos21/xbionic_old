@@ -37,6 +37,7 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target   = smp8654
 build_cfg_smp8654  = 1
 build_cfg_posix    = 1
+build_cfg_arch     = mips
 
 
 ########################

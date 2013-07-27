@@ -34,9 +34,10 @@ include ${basedir}/buildx/antmk/shprog.mk
 ########################
 # Build Configuration
 ########################
-build_cfg_target  = win64
-build_cfg_win     = 1
+build_cfg_target   = win64
+build_cfg_win      = 1
 #build_cfg_posix   = 1
+build_cfg_arch     = x86
 
 
 ########################

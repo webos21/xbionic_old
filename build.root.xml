@@ -175,38 +175,18 @@
 		<echo>================================================</echo>
 	</target>
 
-	<!-- Externals -->
-	<target name="external.build" depends="_prepare">
-		<echo>External.build</echo>
-		<subant antfile="external/build.xml" inheritall="true" buildpath="${basedir}" />
+	<!-- xbionic -->
+	<target name="xbionic.build" depends="_prepare">
+		<echo>xbionic.build</echo>
+		<subant antfile="xbionic/build.xml" inheritall="true" buildpath="${basedir}" />
 	</target>
-	<target name="external.clean" depends="_prepare">
-		<echo>External.clean</echo>
-		<subant antfile="external/build.xml" target="clean" inheritall="true" buildpath="${basedir}" />
-	</target>
-
-	<!-- XI -->
-	<target name="xi.build" depends="_prepare">
-		<echo>XI.build</echo>
-		<subant antfile="src/build.xml" inheritall="true" buildpath="${basedir}" />
-	</target>
-	<target name="xi.clean" depends="_prepare">
-		<echo>XI.clean</echo>
-		<subant antfile="src/build.xml" target="clean" inheritall="true" buildpath="${basedir}" />
-	</target>
-
-	<!-- JAVA -->
-	<target name="java.build" depends="_prepare">
-		<echo>JAVA.build</echo>
-		<subant antfile="java/build.xml" inheritall="true" buildpath="${basedir}" />
-	</target>
-	<target name="java.clean" depends="_prepare">
-		<echo>JAVA.clean</echo>
-		<subant antfile="java/build.xml" target="clean" inheritall="true" buildpath="${basedir}" />
+	<target name="xbionic.clean" depends="_prepare">
+		<echo>xbionic.clean</echo>
+		<subant antfile="xbionic/build.xml" target="clean" inheritall="true" buildpath="${basedir}" />
 	</target>
 
 	<!-- All -->
-	<target name="all" depends="external.build, xi.build, java.build" />
+	<target name="all" depends="xbionic.build" />
 
 	<!-- CLEAN : delete top build and test files -->
 	<target name="clean" depends="_prepare">

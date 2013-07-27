@@ -37,6 +37,7 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target   = bcm7403
 build_cfg_bcm7403  = 1
 build_cfg_posix    = 1
+build_cfg_arch     = mips
 
 
 ########################
