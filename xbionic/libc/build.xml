@@ -131,29 +131,29 @@
 		<echo>Build : xbionic-libc-arch</echo>
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_arch}" failonerror="true">
 			<arg line="${build_xbionic_opt_c}" />
-			<arg line="${module_build_cflags}" />
+			<arg line="${build_xb_libc_cflags}" />
 			<arg line="-c" />
 			<arg line="-o" />
 			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_syscall}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_syc_in}" excludes="${build_xb_libc_src_syc_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
 				<mapper type="glob" from="*.S" to="*.o" />
 			</chainedmapper>
 		</apply>
-		<echo>Build : xbionic-libc-bionic</echo>
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_arch}" failonerror="true">
+		<echo>Build : xbionic-libc-unistd</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_unistd}" failonerror="true">
 			<arg line="${build_xbionic_opt_c}" />
-			<arg line="${module_build_cflags}" />
+			<arg line="${build_xb_libc_cflags}" />
 			<arg line="-c" />
 			<arg line="-o" />
 			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_syscall}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_uni_in}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-				<mapper type="glob" from="*.S" to="*.o" />
+				<mapper type="glob" from="*.c" to="*.o" />
 			</chainedmapper>
 		</apply>
 	</target>
