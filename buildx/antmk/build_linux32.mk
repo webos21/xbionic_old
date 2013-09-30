@@ -84,7 +84,8 @@ build_opt_ld_mgwcx =
 ########################
 # Compile Target : xbionic
 ########################
-build_xbionic_opt_c      = -m32 -Wall -Wextra -nostdinc -nostdinc++ -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -I${basedir}/xbionic/libc/kernel/common -I${basedir}/xbionic/libc/kernel/common/linux -I${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
+build_xbionic_opt_c      = -m32 -Wall -Wextra -nostdinc -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/kernel/common -I${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch} -I${basedir}/xbionic/libc/kernel/common/linux
+build_xbionic_opt_cxx    = -m32 -Wall -Wextra -nostdinc++ -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/kernel/common -I${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch} -I${basedir}/xbionic/libc/kernel/common/linux
 build_xbionic_opt_ld     = -m32 -nodefaultlibs -nostdlib
 
 build_xb_libc_cflags     = -DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DFLOATING_POINT -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR  -std=gnu99 -I${basedir}/xbionic/libc/private
