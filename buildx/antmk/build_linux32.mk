@@ -84,12 +84,19 @@ build_opt_ld_mgwcx =
 ########################
 # Compile Target : xbionic
 ########################
-build_xbionic_opt_c      = -m32 -Wall -Wextra -nostdinc -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/kernel/common -I${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch} -I${basedir}/xbionic/libc/kernel/common/linux
-build_xbionic_opt_cxx    = -m32 -Wall -Wextra -nostdinc++ -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -I${basedir}/xbionic/libc/include -I${basedir}/xbionic/libc/kernel/common -I${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch} -I${basedir}/xbionic/libc/kernel/common/linux
+build_xbionic_opt_c      = -m32 -Wall -Wextra -isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -isystem ${basedir}/xbionic/libc/include -isystem ${basedir}/xbionic/libc/kernel/common -isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
+build_xbionic_opt_cxx    = -m32 -Wall -Wextra -isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include -isystem ${basedir}/xbionic/libc/include -isystem ${basedir}/xbionic/libc/kernel/common -isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
 build_xbionic_opt_ld     = -m32 -nodefaultlibs -nostdlib
 
-build_xb_libc_cflags     = -DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DFLOATING_POINT -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR  -std=gnu99 -I${basedir}/xbionic/libc/private
+build_xb_libc_cflags     = -DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR -DPLATFORM_SDK_VERSION=18 -DANDROID_SMP=1 -DHAVE_UNWIND_CONTEXT_STRUCT -DHAVE_DLADDR=0  -std=gnu99 -I${basedir}/xbionic/libc/private -I${basedir}/xbionic/libc -I${basedir}/xbionic/libc/stdlib -I${basedir}/xbionic/libm/include -I${basedir}/external/safe-iop/include -I${basedir}/xbionic/libc/netbsd/net
+#-DFLOATING_POINT 
+#-DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DFLOATING_POINT -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR  -std=gnu99 -I${basedir}/xbionic/libc/private
 build_xb_libc_ldflags    =
+
+build_xb_libc_src_com_in = arch-${build_cfg_arch}/syscalls/*.S, unistd/*.c, stdio/*.c, stdlib/*.c, string/*.c, wchar/*.c, inet/*.c, tzcode/*.c, bionic/*.c, netbsd/**/*.c
+build_xb_libc_src_com_ex = netbsd/net/*_r.c, netbsd/resolv/res_random.c
+build_xb_libc_src_com_mk = $(wildcard $(basedir)/xbionic/libc/arch-${build_cfg_arch}/syscalls/*.S)
+build_xb_libc_src_com_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
 build_xb_libc_src_syc_in = arch-${build_cfg_arch}/syscalls/*.S
 build_xb_libc_src_syc_ex =
@@ -100,6 +107,46 @@ build_xb_libc_src_uni_in = unistd/*.c
 build_xb_libc_src_uni_ex =
 build_xb_libc_src_uni_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_uni_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_sio_in = stdio/*.c
+build_xb_libc_src_sio_ex =
+build_xb_libc_src_sio_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_sio_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_slb_in = stdlib/*.c
+build_xb_libc_src_slb_ex =
+build_xb_libc_src_slb_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_slb_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_str_in = string/*.c
+build_xb_libc_src_str_ex =
+build_xb_libc_src_str_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_str_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_wch_in = wchar/*.c
+build_xb_libc_src_wch_ex =
+build_xb_libc_src_wch_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_wch_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_int_in = inet/*.c
+build_xb_libc_src_int_ex =
+build_xb_libc_src_int_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_int_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_tzc_in = tzcode/*.c
+build_xb_libc_src_tzc_ex =
+build_xb_libc_src_tzc_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_tzc_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_bon_in = bionic/*.c
+build_xb_libc_src_bon_ex =
+build_xb_libc_src_bon_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_bon_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+
+build_xb_libc_src_nbd_in = netbsd/**/*.c
+build_xb_libc_src_nbd_ex = netbsd/net/*_r.c, netbsd/resolv/res_random.c
+build_xb_libc_src_nbd_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
+build_xb_libc_src_nbd_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
 
 ########################

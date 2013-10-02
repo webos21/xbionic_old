@@ -41,30 +41,32 @@
 		<property name="module_dir_target" value="${basedir}/ant/${build_cfg_target}/xbionic/${current_dir_rel}" />
 		<property name="module_dir_obja" value="${module_dir_target}/static" />
 		<property name="module_dir_obja_arch" value="${module_dir_obja}/arch" />
-		<property name="module_dir_obja_bionic" value="${module_dir_obja}/bionic" />
-		<property name="module_dir_obja_inet" value="${module_dir_obja}/inet" />
-		<property name="module_dir_obja_netbsd" value="${module_dir_obja}/netbsd" />
-		<property name="module_dir_obja_regex" value="${module_dir_obja}/regex" />
+		<property name="module_dir_obja_unistd" value="${module_dir_obja}/unistd" />
 		<property name="module_dir_obja_stdio" value="${module_dir_obja}/stdio" />
 		<property name="module_dir_obja_stdlib" value="${module_dir_obja}/stdlib" />
 		<property name="module_dir_obja_string" value="${module_dir_obja}/string" />
+		<property name="module_dir_obja_wchar" value="${module_dir_obja}/wchar" />
+		<property name="module_dir_obja_inet" value="${module_dir_obja}/inet" />
 		<property name="module_dir_obja_tzcode" value="${module_dir_obja}/tzcode" />
-		<property name="module_dir_obja_unistd" value="${module_dir_obja}/unistd" />
+		<property name="module_dir_obja_bionic" value="${module_dir_obja}/bionic" />
+		<property name="module_dir_obja_netbsd" value="${module_dir_obja}/netbsd" />
+		<property name="module_dir_obja_regex" value="${module_dir_obja}/regex" />
 		<property name="module_dir_objso" value="${module_dir_target}/shared" />
 		<property name="module_dir_objso_arch" value="${module_dir_objso}/arch" />
 		<property name="module_dir_objso_bionic" value="${module_dir_objso}/bionic" />
 		<mkdir dir="${module_dir_target}" />
 		<mkdir dir="${module_dir_obja}" />
 		<mkdir dir="${module_dir_obja_arch}" />
-		<mkdir dir="${module_dir_obja_bionic}" />
-		<mkdir dir="${module_dir_obja_inet}" />
-		<mkdir dir="${module_dir_obja_netbsd}" />
-		<mkdir dir="${module_dir_obja_regex}" />
+		<mkdir dir="${module_dir_obja_unistd}" />
 		<mkdir dir="${module_dir_obja_stdio}" />
 		<mkdir dir="${module_dir_obja_stdlib}" />
 		<mkdir dir="${module_dir_obja_string}" />
+		<mkdir dir="${module_dir_obja_wchar}" />
+		<mkdir dir="${module_dir_obja_inet}" />
 		<mkdir dir="${module_dir_obja_tzcode}" />
-		<mkdir dir="${module_dir_obja_unistd}" />
+		<mkdir dir="${module_dir_obja_bionic}" />
+		<mkdir dir="${module_dir_obja_netbsd}" />
+		<mkdir dir="${module_dir_obja_regex}" />
 		<mkdir dir="${module_dir_objso}" />
 		<mkdir dir="${module_dir_objso_arch}" />
 		<mkdir dir="${module_dir_objso_bionic}" />
@@ -84,11 +86,11 @@
 		<mkdir dir="${module_dir_output_test}" />
 
 		<!-- Options -->
-		<property name="module_build_src_bin" value="${build_xbionic_libc_src_bin}" />
-		<property name="module_build_src_in" value="${build_xbionic_libc_src_in}" />
-		<property name="module_build_src_ex" value="${build_xbionic_libc_src_ex}" />
-		<property name="module_build_cflags" value="${build_xbionic_libc_cflags}" />
-		<property name="module_build_ldflags" value="${build_xbionic_libc_ldflags}" />
+		<property name="build_xbionic_opt_c" value="${build_xbionic_opt_c}" />
+		<property name="build_xbionic_opt_cxx" value="${build_xbionic_opt_cxx}" />
+		<property name="build_xbionic_opt_ld" value="${build_xbionic_opt_ld}" />
+		<property name="build_xb_libc_cflags" value="${build_xb_libc_cflags}" />
+		<property name="build_xb_libc_ldflags" value="${build_xb_libc_ldflags}" />
 		<property name="module_build_target_a" value="${build_opt_a_pre}c.${build_opt_a_ext}" />
 		<property name="module_build_target_so" value="${build_opt_so_pre}c.${build_opt_so_ext}" />
 	</target>
@@ -102,8 +104,21 @@
 		<echo>current_dir_rel         : ${current_dir_rel}</echo>
 		<echo>----------------------------------------------------------------</echo>
 		<echo>module_dir_target       : ${module_dir_target}</echo>
-		<echo>module_dir_object       : ${module_dir_object}</echo>
-		<echo>module_dir_test         : ${module_dir_test}</echo>
+		<echo>module_dir_obja         : ${module_dir_obja}</echo>
+		<echo>module_dir_obja_arch    : ${module_dir_obja_arch}</echo>
+		<echo>module_dir_obja_unistd  : ${module_dir_obja_unistd}</echo>
+		<echo>module_dir_obja_stdio   : ${module_dir_obja_stdio}</echo>
+		<echo>module_dir_obja_stdlib  : ${module_dir_obja_stdlib}</echo>
+		<echo>module_dir_obja_string  : ${module_dir_obja_string}</echo>
+		<echo>module_dir_obja_wchar   : ${module_dir_obja_wchar}</echo>
+		<echo>module_dir_obja_inet    : ${module_dir_obja_inet}</echo>
+		<echo>module_dir_obja_tzcode  : ${module_dir_obja_tzcode}</echo>
+		<echo>module_dir_obja_bionic  : ${module_dir_obja_bionic}</echo>
+		<echo>module_dir_obja_netbsd  : ${module_dir_obja_netbsd}</echo>
+		<echo>module_dir_obja_regex   : ${module_dir_obja_regex}</echo>
+		<echo>module_dir_objso        : ${module_dir_objso}</echo>
+		<echo>module_dir_objso_arch   : ${module_dir_objso_arch}</echo>
+		<echo>module_dir_objso_bionic : ${module_dir_objso_bionic}</echo>
 		<echo>----------------------------------------------------------------</echo>
 		<echo>module_dir_output_base  : ${module_dir_output_base}</echo>
 		<echo>module_dir_output_bin   : ${module_dir_output_bin}</echo>
@@ -112,11 +127,13 @@
 		<echo>module_dir_output_res   : ${module_dir_output_res}</echo>
 		<echo>module_dir_output_test  : ${module_dir_output_test}</echo>
 		<echo>----------------------------------------------------------------</echo>
-		<echo>module_build_src_bin    : ${module_build_src_bin}</echo>
-		<echo>module_build_src_in     : ${module_build_src_in}</echo>
-		<echo>module_build_src_ex     : ${module_build_src_ex}</echo>
-		<echo>module_build_cflags     : ${module_build_cflags}</echo>
-		<echo>module_build_ldflags    : ${module_build_ldflags}</echo>
+		<echo>build_xbionic_opt_c     : ${build_xbionic_opt_c}</echo>
+		<echo>build_xbionic_opt_cxx   : ${build_xbionic_opt_cxx}</echo>
+		<echo>build_xbionic_opt_ld    : ${build_xbionic_opt_ld}</echo>
+		<echo>----------------------------------------------------------------</echo>
+		<echo>build_xb_libc_cflags    : ${build_xb_libc_cflags}</echo>
+		<echo>build_xb_libc_ldflags   : ${build_xb_libc_ldflags}</echo>
+		<echo>----------------------------------------------------------------</echo>
 		<echo>module_build_target_a   : ${module_build_target_a}</echo>
 		<echo>module_build_target_so  : ${module_build_target_so}</echo>
 		<echo>================================================================</echo>
@@ -150,12 +167,125 @@
 			<arg line="-o" />
 			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_uni_in}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_uni_in}" excludes="${build_xb_libc_src_uni_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
 				<mapper type="glob" from="*.c" to="*.o" />
 			</chainedmapper>
 		</apply>
+		<echo>Build : xbionic-libc-stdio</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_stdio}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_sio_in}" excludes="${build_xb_libc_src_sio_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-stdlib</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_stdlib}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_slb_in}" excludes="${build_xb_libc_src_slb_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-string</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_string}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_str_in}" excludes="${build_xb_libc_src_str_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-wchar</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_wchar}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_wch_in}" excludes="${build_xb_libc_src_wch_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-inet</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_inet}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_int_in}" excludes="${build_xb_libc_src_int_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-tzcode</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_tzcode}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_tzc_in}" excludes="${build_xb_libc_src_tzc_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-bionic</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_bionic}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_bon_in}" excludes="${build_xb_libc_src_bon_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-netbsd</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_obja_netbsd}" failonerror="true">
+			<arg line="${build_xbionic_opt_c}" />
+			<arg line="${build_xb_libc_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_nbd_in}" excludes="${build_xb_libc_src_nbd_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+				<mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+
 	</target>
 	<target name="_build.xbionic.libc.lo" depends="_prepare">
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_object}" failonerror="true">
