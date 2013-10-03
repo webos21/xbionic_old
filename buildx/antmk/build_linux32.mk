@@ -93,58 +93,58 @@ build_xb_libc_cflags     = -DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DINET6 -D
 #-DWITH_ERRLIST -DANDROID_CHANGES -D_LIBC=1 -DFLOATING_POINT -DINET6 -DPOSIX_MISTAKE -DLOG_ON_HEAP_ERROR  -std=gnu99 -I${basedir}/xbionic/libc/private
 build_xb_libc_ldflags    =
 
-build_xb_libc_src_com_in = arch-${build_cfg_arch}/syscalls/*.S, unistd/*.c, stdio/*.c, stdlib/*.c, string/*.c, wchar/*.c, inet/*.c, tzcode/*.c, bionic/*.c, netbsd/**/*.c
-build_xb_libc_src_com_ex = netbsd/net/*_r.c, netbsd/resolv/res_random.c
+build_xb_libc_src_com_in = libc/arch-${build_cfg_arch}/syscalls/*.S, libc/unistd/*.c, libc/stdio/*.c, libc/stdlib/*.c, libc/string/*.c, libc/wchar/*.c, libc/inet/*.c, libc/tzcode/*.c, libc/bionic/*.c, libc/netbsd/**/*.c
+build_xb_libc_src_com_ex = libc/netbsd/net/*_r.c, libc/netbsd/resolv/res_random.c
 build_xb_libc_src_com_mk = $(wildcard $(basedir)/xbionic/libc/arch-${build_cfg_arch}/syscalls/*.S)
 build_xb_libc_src_com_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_syc_in = arch-${build_cfg_arch}/syscalls/*.S
+build_xb_libc_src_syc_in = libc/arch-${build_cfg_arch}/syscalls/*.S
 build_xb_libc_src_syc_ex =
 build_xb_libc_src_sys_mk = $(wildcard $(basedir)/xbionic/libc/arch-${build_cfg_arch}/syscalls/*.S)
 build_xb_libc_src_sys_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_uni_in = unistd/*.c
+build_xb_libc_src_uni_in = libc/unistd/*.c
 build_xb_libc_src_uni_ex =
 build_xb_libc_src_uni_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_uni_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_sio_in = stdio/*.c
+build_xb_libc_src_sio_in = libc/stdio/*.c
 build_xb_libc_src_sio_ex =
 build_xb_libc_src_sio_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_sio_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_slb_in = stdlib/*.c
+build_xb_libc_src_slb_in = libc/stdlib/*.c
 build_xb_libc_src_slb_ex =
 build_xb_libc_src_slb_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_slb_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_str_in = string/*.c
+build_xb_libc_src_str_in = libc/string/*.c
 build_xb_libc_src_str_ex =
 build_xb_libc_src_str_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_str_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_wch_in = wchar/*.c
+build_xb_libc_src_wch_in = libc/wchar/*.c
 build_xb_libc_src_wch_ex =
 build_xb_libc_src_wch_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_wch_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_int_in = inet/*.c
+build_xb_libc_src_int_in = libc/inet/*.c
 build_xb_libc_src_int_ex =
 build_xb_libc_src_int_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_int_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_tzc_in = tzcode/*.c
+build_xb_libc_src_tzc_in = libc/tzcode/*.c
 build_xb_libc_src_tzc_ex =
 build_xb_libc_src_tzc_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_tzc_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_bon_in = bionic/*.c
+build_xb_libc_src_bon_in = libc/bionic/*.c
 build_xb_libc_src_bon_ex =
 build_xb_libc_src_bon_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_bon_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 
-build_xb_libc_src_nbd_in = netbsd/**/*.c
-build_xb_libc_src_nbd_ex = netbsd/net/*_r.c, netbsd/resolv/res_random.c
+build_xb_libc_src_nbd_in = libc/netbsd/**/*.c
+build_xb_libc_src_nbd_ex = libc/netbsd/net/*_r.c, libc/netbsd/resolv/res_random.c
 build_xb_libc_src_nbd_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
 build_xb_libc_src_nbd_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
 

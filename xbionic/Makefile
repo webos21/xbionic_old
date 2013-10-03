@@ -71,10 +71,10 @@ prepare:
 
 do_build:
 	$(TEST_VAR) "$(OS)" $(TEST_NEQ) "Windows_NT" $(TEST_THEN) \
-		$(MAKE) -C libc TARGET=$(TARGET) \
+		$(MAKE) -f Makefile.xnix.mk TARGET=$(TARGET) \
 	$(TEST_END)
 	$(TEST_VAR) "$(OS)" $(TEST_EQ) "Windows_NT" $(TEST_THEN) \
-		cmd /c "..\buildx\antmk\build_window.bat $(TARGET) $(MAKE) -C libc -f Makefile.win.mk \"TARGET=$(TARGET)\"" \
+		cmd /c "..\buildx\antmk\build_window.bat $(TARGET) $(MAKE) -f Makefile.win.mk \"TARGET=$(TARGET)\"" \
 	$(TEST_END)
 
 

@@ -63,15 +63,15 @@
 
 	<target name="_xi.xbionic.xnix" depends="_prepare" if="build_cfg_posix">
 		<echo>xbionic - libc</echo>
-		<subant antfile="${xi_xbionic_rel}/libc/build.xml" inheritall="true" buildpath="${basedir}" />
+		<subant antfile="${xi_xbionic_rel}/build.xnix.xml" inheritall="true" buildpath="${basedir}" />
 	</target>
 	<target name="_xi.xbionic.win" depends="_prepare" if="build_cfg_mingw">
 		<echo>xbionic - libc</echo>
-		<subant antfile="${xi_xbionic_rel}/libc/build.win.xml" target="${build_cfg_target}" buildpath="${basedir}" />
+		<subant antfile="${xi_xbionic_rel}/build.win.xml" target="${build_cfg_target}" buildpath="${basedir}" />
 	</target>
 	<target name="_xi.xbionic.mac" depends="_prepare" if="build_cfg_mac">
 		<echo>xbionic - libc</echo>
-		<subant antfile="${xi_xbionic_rel}/libc/build.mac..xml" buildpath="${basedir}" />
+		<subant antfile="${xi_xbionic_rel}/build.mac..xml" buildpath="${basedir}" />
 	</target>
 	<target name="_xi.xbionic" depends="_prepare, _xi.xbionic.xnix, _xi.xbionic.win, _xi.xbionic.mac" />
 
