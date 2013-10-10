@@ -71,12 +71,16 @@
 		<property name="module_dir_output_base" value="${basedir}/ant/${build_cfg_target}/emul" />
 		<property name="module_dir_output_bin" value="${module_dir_output_base}/bin" />
 		<property name="module_dir_output_inc" value="${module_dir_output_base}/include" />
+		<property name="module_dir_output_inck" value="${module_dir_output_inc}/kernel" />
+		<property name="module_dir_output_incp" value="${module_dir_output_inc}/c++" />
 		<property name="module_dir_output_lib" value="${module_dir_output_base}/lib" />
 		<property name="module_dir_output_res" value="${module_dir_output_base}/res" />
 		<property name="module_dir_output_test" value="${module_dir_output_base}/test" />
 		<mkdir dir="${module_dir_output_base}" />
 		<mkdir dir="${module_dir_output_bin}" />
 		<mkdir dir="${module_dir_output_inc}" />
+		<mkdir dir="${module_dir_output_inck}" />
+		<mkdir dir="${module_dir_output_incp}" />
 		<mkdir dir="${module_dir_output_lib}" />
 		<mkdir dir="${module_dir_output_res}" />
 		<mkdir dir="${module_dir_output_test}" />
@@ -116,6 +120,8 @@
 		<echo>module_dir_output_base  : ${module_dir_output_base}</echo>
 		<echo>module_dir_output_bin   : ${module_dir_output_bin}</echo>
 		<echo>module_dir_output_inc   : ${module_dir_output_inc}</echo>
+		<echo>module_dir_output_inck  : ${module_dir_output_inck}</echo>
+		<echo>module_dir_output_incp  : ${module_dir_output_incp}</echo>
 		<echo>module_dir_output_lib   : ${module_dir_output_lib}</echo>
 		<echo>module_dir_output_res   : ${module_dir_output_res}</echo>
 		<echo>module_dir_output_test  : ${module_dir_output_test}</echo>
@@ -183,6 +189,7 @@
 			</chainedmapper>
 		</apply>
 		<echo>Build : xbionic-libc-crt-mix</echo>
+		<move tofile="${module_dir_so_crt}/crtend_android.o" file="${module_dir_so_crt}/crtend.o"/>
 		<copy tofile="${module_dir_so_crt}/crtbegin_static1.o" file="${module_dir_so_crt}/crtbegin.o"/>
 		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
 			<arg line="${build_xb_opt_ld}" />
@@ -291,7 +298,20 @@
 			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_bnx_src_in}" excludes="${build_xb_libc_bnx_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-                <mapper type="regexp" from="^(.*)\.[c|cpp]" to="\1.o" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_bionic}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_bnx_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_bnx_src_in}" excludes="${build_xb_libc_bnx_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
@@ -343,7 +363,20 @@
 			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_nml_src_in}" excludes="${build_xb_libc_nml_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-                <mapper type="regexp" from="^(.*)\.[c|cpp]" to="\1.o" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_nomalloc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_nml_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_nml_src_in}" excludes="${build_xb_libc_nml_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
@@ -372,7 +405,20 @@
 			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lca_src_in}" excludes="${build_xb_libc_lca_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-                <mapper type="regexp" from="^(.*)\.[c|cpp]" to="\1.o" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_libc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_lca_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lca_src_in}" excludes="${build_xb_libc_lca_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
@@ -398,7 +444,6 @@
 		<echo>Build : xbionic-libc.so</echo>
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_libc}" failonerror="true">
 			<arg line="${build_xb_opt_c}" />
-			<arg line="${build_opt_fPIC}" />
 			<arg line="${build_xb_libc_lcs_cflags}" />
 			<arg line="-c" />
 			<arg line="-o" />
@@ -407,23 +452,36 @@
 			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lcs_src_in}" excludes="${build_xb_libc_lcs_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-                <mapper type="regexp" from="^(.*)\.[c|cpp]" to="\1.lo" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_libc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_lcs_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lcs_src_in}" excludes="${build_xb_libc_lcs_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
 			<arg line="${build_xb_opt_ld}" />
 			<arg line="${build_opt_ld_so}${build_xb_libc_lcs_bin}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objso}/${build_xb_libc_lcs_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
 			<srcfile />
-			<arg line="/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a" />
-			<arg line="/home/appos/gitrepo/android-x86/out/target/product/x86/obj/SHARED_LIBRARIES/libcompiler_rt_intermediates/lib/__udivdi3.o" />
-			<arg line="/home/appos/gitrepo/android-x86/out/target/product/x86/obj/SHARED_LIBRARIES/libcompiler_rt_intermediates/lib/__umoddi3.o" />
-			<arg line="-L${module_dir_objso}" />
-			<arg line="-L${module_dir_obja}" />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
 			<arg line="${build_xb_libc_lcs_ldflags}" />
-			<arg line="${build_opt_ld_mgwcx}" />
-			<fileset dir="${module_dir_so_libc}" includes="*.lo" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_so_libc}" includes="*.o" />
 		</apply>
 		
 		<echo>Build : xbionic-libc-malloc_debug_qemu</echo>
@@ -455,19 +513,34 @@
 	</target>
 	<target name="_build.xbionic.libc" depends="_build.xbionic.libc.crt, _build.xbionic.libc.static, _build.xbionic.libc.shared" />
 
-	<target name="_build.output" depends="_build.xbionic.libc">
+	<target name="_build.output" depends="_prepare">
+		<!-- depends="_build.xbionic.libc" -->
+		<echo>libc-include : base</echo>
 		<copy todir="${module_dir_output_inc}">
-			<fileset dir="${current_dir_abs}/include" includes="**/**.h" />
+			<fileset dir="${current_dir_abs}/libc/include" includes="**/**.h" />
 		</copy>
-		<copy todir="${module_dir_output_lib}">
-			<fileset dir="${module_dir_target}" includes="${module_build_target_a}, ${module_build_target_so}" />
+		<echo>libc-include : machine</echo>
+		<copy todir="${module_dir_output_inc}">
+			<fileset dir="${current_dir_abs}/libc/arch-${build_cfg_arch}/include" includes="**/**.h" />
+		</copy>
+		<echo>libc-include : linux</echo>
+		<copy todir="${module_dir_output_inck}">
+			<fileset dir="${current_dir_abs}/libc/kernel/common" includes="**/**.h" />
+		</copy>
+		<echo>libc-include : asm</echo>
+		<copy todir="${module_dir_output_inck}">
+			<fileset dir="${current_dir_abs}/libc/kernel/arch-${build_cfg_arch}" includes="**/**.h" />
+		</copy>
+		<echo>libstdc++-include</echo>
+		<copy todir="${module_dir_output_incp}">
+			<fileset dir="${current_dir_abs}/libstdc++/include" includes="*" />
 		</copy>
 	</target>
 
 	<!-- ====================           ENTRY            ================== -->
 
 	<!-- All -->
-	<target name="all" depends="_prepare, _build.xbionic.libdl, _build.xbionic.libc" />
+	<target name="all" depends="_prepare, _build.output, _build.xbionic.libdl, _build.xbionic.libc" />
 	<!--
 	<target name="all" depends="_prepare, _build.output" />
 	-->

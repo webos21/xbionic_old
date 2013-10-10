@@ -84,12 +84,36 @@ build_opt_ld_mgwcx =
 ########################
 # Compile Target : xbionic
 ########################
-build_xb_opt_c      = -m32 -Wall -Wextra \
+build_xb_opt_c      = -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -std=gnu99 \
+		-fPIC -fPIE \
+		-ffunction-sections \
+		-finline-functions -finline-limit=300 -fno-inline-functions-called-once \
+		-fno-short-enums \
+		-fstrict-aliasing \
+		-funswitch-loops \
+		-funwind-tables \
+		-fstack-protector \
+		-fmessage-length=0 \
+		-Wa,--noexecstack \
 		-isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include \
 		-isystem ${basedir}/xbionic/libc/include \
 		-isystem ${basedir}/xbionic/libc/kernel/common \
 		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
-build_xb_opt_cxx    = ${build_xb_opt_c}
+build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-exceptions \
+		-fPIC -fPIE \
+		-ffunction-sections \
+		-finline-functions -finline-limit=300 -fno-inline-functions-called-once \
+		-fno-short-enums \
+		-fstrict-aliasing \
+		-funswitch-loops \
+		-funwind-tables \
+		-fstack-protector \
+		-fmessage-length=0 \
+		-Wa,--noexecstack \
+		-isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include \
+		-isystem ${basedir}/xbionic/libc/include \
+		-isystem ${basedir}/xbionic/libc/kernel/common \
+		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
 build_xb_opt_ld     = -m32 -Wl,--no-undefined -nostdlib
 
 build_xb_libc_cmn_cflags = \
@@ -803,7 +827,7 @@ build_xb_libc_bnx_src_mk  = ${build_xb_libc_bnx_src_in}
 # libc_common.a
 ####
 build_xb_libc_com_bin     = libc_common.a
-build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} -std=gnu99 ${build_xb_libc_cmn_incs} \
+build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} ${build_xb_libc_cmn_incs} \
 	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
 	-I${basedir}/xbionic/libm/include
 build_xb_libc_com_ldflags = ${build_xb_libc_cmn_ldflags}
@@ -815,7 +839,7 @@ build_xb_libc_com_src_mk  = ${build_xb_libc_com_src_in}
 # libc_nomalloc.a
 ####
 build_xb_libc_nml_bin     = libc_nomalloc.a
-build_xb_libc_nml_cflags  = ${build_xb_libc_cmn_cflags} -std=gnu99 -DLIBC_STATIC ${build_xb_libc_cmn_incs}
+build_xb_libc_nml_cflags  = ${build_xb_libc_cmn_cflags} -DLIBC_STATIC ${build_xb_libc_cmn_incs}
 build_xb_libc_nml_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_nml_src_in  = ${build_xb_libc_arch_static_src}, ${build_xb_libc_s_common_src}, libc/bionic/libc_init_static.cpp
 build_xb_libc_nml_src_ex  = 
@@ -825,7 +849,7 @@ build_xb_libc_nml_src_mk  = ${build_xb_libc_nml_src_in}
 # libc.a
 ####
 build_xb_libc_lca_bin     = libc.a
-build_xb_libc_lca_cflags  = ${build_xb_libc_cmn_cflags} -std=gnu99 -DLIBC_STATIC ${build_xb_libc_cmn_incs}
+build_xb_libc_lca_cflags  = ${build_xb_libc_cmn_cflags} -DLIBC_STATIC ${build_xb_libc_cmn_incs}
 build_xb_libc_lca_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_lca_src_in  = ${build_xb_libc_arch_static_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
@@ -838,8 +862,9 @@ build_xb_libc_lca_src_mk  = ${build_xb_libc_lca_src_in}
 # libc.so
 ####
 build_xb_libc_lcs_bin     = libc.so
-build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -std=gnu99 -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
-build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} -ldl -lc_common
+build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs} -fno-stack-protector
+build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
+		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
 		libc/bionic/malloc_debug_common.cpp, \
