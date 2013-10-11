@@ -51,6 +51,7 @@
 		<property name="module_dir_so_libdl" value="${module_dir_objso}/libdl" />
 		<property name="module_dir_so_crt" value="${module_dir_objso}/libc_crt" />
 		<property name="module_dir_so_libc" value="${module_dir_objso}/libc" />
+		<property name="module_dir_so_md_leak" value="${module_dir_objso}/libc_md_leak" />
 		<property name="module_dir_so_md_qemu" value="${module_dir_objso}/libc_md_qemu" />
 		<mkdir dir="${module_dir_target}" />
 		<mkdir dir="${module_dir_obja}" />
@@ -65,6 +66,7 @@
 		<mkdir dir="${module_dir_so_libdl}" />
 		<mkdir dir="${module_dir_so_crt}" />
 		<mkdir dir="${module_dir_so_libc}" />
+		<mkdir dir="${module_dir_so_md_leak}" />
 		<mkdir dir="${module_dir_so_md_qemu}" />
 
 		<!-- Output -->
@@ -115,6 +117,7 @@
 		<echo>module_dir_objso        : ${module_dir_objso}</echo>
 		<echo>module_dir_so_libdl     : ${module_dir_so_libdl}</echo>
 		<echo>module_dir_so_crt       : ${module_dir_so_crt}</echo>
+		<echo>module_dir_so_md_leak   : ${module_dir_so_md_leak}</echo>
 		<echo>module_dir_so_md_qemu   : ${module_dir_so_md_qemu}</echo>
 		<echo>----------------------------------------------------------------</echo>
 		<echo>module_dir_output_base  : ${module_dir_output_base}</echo>
@@ -483,31 +486,64 @@
 			<arg line="${module_dir_so_crt}/crtend_so.o" />
 			<fileset dir="${module_dir_so_libc}" includes="*.o" />
 		</apply>
-		
-		<echo>Build : xbionic-libc-malloc_debug_qemu</echo>
-		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_md_qemu}" failonerror="true">
+
+		<echo>Build : xbionic-libc_malloc_debug_leak.so</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_md_leak}" failonerror="true">
 			<arg line="${build_xb_opt_cxx}" />
-			<arg line="${build_xb_libc_src_mdq_cf}" />
+			<arg line="${build_xb_libc_mdl_cflags}" />
 			<arg line="-c" />
 			<arg line="-o" />
 			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_src_mdq_in}" excludes="${build_xb_libc_src_mdq_ex}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_mdl_src_in}" excludes="${build_xb_libc_mdl_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
                 <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
 			<arg line="${build_xb_opt_ld}" />
-			<arg line="${build_opt_ld_so}${build_xb_libc_src_mdqbin}" />
+			<arg line="${build_opt_ld_so}${build_xb_libc_mdl_bin}" />
 			<arg line="-o" />
-			<arg file="${module_dir_objso}/${build_xb_libc_src_mdqbin}" />
+			<arg file="${module_dir_objso}/${build_xb_libc_mdl_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
 			<srcfile />
-			<arg line="-L${module_dir_obja}" />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<arg line="${build_xb_libc_lcs_ldflags}" />
 			<arg line="-L${module_dir_objso}" />
-			<arg line="${build_xb_libc_src_mdq_lf}" />
-			<arg line="${build_opt_ld_mgwcx}" />
+			<arg line="-lc -ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_so_md_leak}" includes="*.o" />
+		</apply>
+		
+		<echo>Build : xbionic-libc-malloc_debug_qemu.so</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_md_qemu}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_mdq_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_mdq_src_in}" excludes="${build_xb_libc_mdq_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libc_mdq_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libc_mdq_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<arg line="${build_xb_libc_lcs_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc -ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
 			<fileset dir="${module_dir_so_md_qemu}" includes="*.o" />
 		</apply>
 	</target>

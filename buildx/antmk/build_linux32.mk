@@ -862,27 +862,42 @@ build_xb_libc_lca_src_mk  = ${build_xb_libc_lca_src_in}
 # libc.so
 ####
 build_xb_libc_lcs_bin     = libc.so
-build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs} -fno-stack-protector
+build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
 		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
 		libc/bionic/malloc_debug_common.cpp, \
+		libc/bionic/debug_mapinfo.cpp, \
+		libc/bionic/debug_stacktrace.cpp, \
 		libc/bionic/pthread_debug.cpp, \
 		libc/bionic/libc_init_dynamic.cpp
 build_xb_libc_lcs_src_ex  = 
 build_xb_libc_lcs_src_mk  = ${build_xb_libc_lcs_src_in}
 
 ####
+# libc_malloc_debug_leak.so
+####
+build_xb_libc_mdl_bin     = libc_malloc_debug_leak.so
+build_xb_libc_mdl_cflags  = ${build_xb_libc_cmn_cflags} -DMALLOC_LEAK_CHECK
+build_xb_libc_mdl_ldflags = ${build_xb_libc_cmn_ldflags}
+build_xb_libc_mdl_src_in  = \
+		libc/bionic/debug_mapinfo.cpp, \
+		libc/bionic/debug_stacktrace.cpp, \
+		libc/bionic/malloc_debug_leak.cpp, \
+		libc/bionic/malloc_debug_check.cpp
+build_xb_libc_mdl_src_ex  = 
+build_xb_libc_mdl_src_mk  = ${build_xb_libc_mdl_src_in}
+
+####
 # libc_malloc_debug_qemu.so
 ####
-build_xb_libc_src_mdqbin = libc_malloc_debug_qemu.so
-build_xb_libc_src_mdq_cf = ${build_xb_libc_cmn_cflags} -DMALLOC_QEMU_INSTRUMENT
-build_xb_libc_src_mdq_lf = ${build_xb_libc_cmn_ldflags} -lc -ldl
-build_xb_libc_src_mdq_in = libc/bionic/malloc_debug_qemu.cpp
-build_xb_libc_src_mdq_ex = 
-build_xb_libc_src_mdq_mk = $(wildcard $(basedir)/xbionic/libc/unistd/*.S)
-build_xb_libc_src_mdq_mk += $(wildcard $(basedir)/src/base/src/posix/*.c)
+build_xb_libc_mdq_bin     = libc_malloc_debug_qemu.so
+build_xb_libc_mdq_cflags  = ${build_xb_libc_cmn_cflags} -DMALLOC_QEMU_INSTRUMENT
+build_xb_libc_mdq_ldflags = ${build_xb_libc_cmn_ldflags}
+build_xb_libc_mdq_src_in  = libc/bionic/malloc_debug_qemu.cpp
+build_xb_libc_mdq_src_ex  = 
+build_xb_libc_mdq_src_mk  = ${build_xb_libc_mdq_src_in}
 
 
 ########################
