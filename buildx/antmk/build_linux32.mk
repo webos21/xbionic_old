@@ -771,7 +771,7 @@ build_xb_libc_crt_cflags  = -DUSE_SSE2=1 -DUSE_SSE3=1 -DPLATFORM_SDK_VERSION=18 
     -I${basedir}/xbionic/libc/private \
     -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include
 build_xb_libc_crt_ldflags = 
-build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-common/bionic/crt*.S, libc/arch-common/bionic/crt*.c
+build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-${build_cfg_arch}/bionic/crt*.S, libc/arch-${build_cfg_arch}/bionic/crt*.c
 build_xb_libc_crt_src_ex  = 
 build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
 
@@ -779,7 +779,7 @@ build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
 # libbionic_ssp.a
 ####
 build_xb_libc_ssp_bin     = libbionic_ssp.a
-build_xb_libc_ssp_cflags  = ${build_xb_libc_cmn_cflags} -fno-stack-protector -Werror -I${basedir}/xbionic/libc
+build_xb_libc_ssp_cflags  = ${build_xb_libc_cmn_cflags} -fno-stack-protector -Werror
 build_xb_libc_ssp_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_ssp_src_in  = libc/bionic/__stack_chk_fail.cpp
 build_xb_libc_ssp_src_ex  = 
@@ -790,7 +790,6 @@ build_xb_libc_ssp_src_mk  = ${build_xb_libc_ssp_src_in}
 ####
 build_xb_libc_ufb_bin     = libc_freebsd.a
 build_xb_libc_ufb_cflags  = ${build_xb_libc_cmn_cflags} \
-	-I${basedir}/xbionic/libc \
 	-I${basedir}/xbionic/libc/upstream-freebsd \
 	-include ${basedir}/xbionic/libc/upstream-freebsd/freebsd-compat.h
 build_xb_libc_ufb_ldflags = ${build_xb_libc_cmn_ldflags}
@@ -803,7 +802,6 @@ build_xb_libc_ufb_src_mk  = ${build_xb_libc_ufb_src_in}
 ####
 build_xb_libc_unb_bin     = libc_netbsd.a
 build_xb_libc_unb_cflags  = ${build_xb_libc_cmn_cflags} \
-	-I${basedir}/xbionic/libc \
 	-I${basedir}/xbionic/libc/stdio \
 	-I${basedir}/xbionic/libm/include \
 	-I${basedir}/xbionic/libc/upstream-netbsd \
