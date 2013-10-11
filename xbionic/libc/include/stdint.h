@@ -25,17 +25,18 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
  * SUCH DAMAGE.
  */
+
 #ifndef _STDINT_H
 #define _STDINT_H
 
 #include <stddef.h>
 #include <sys/_types.h>
 
-#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS)
+#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS) || (__cplusplus >= 201103L)
 #  define __STDINT_LIMITS
 #endif
 
-#if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS)
+#if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS) || (__cplusplus >= 201103L)
 #  define  __STDINT_MACROS
 #endif
 
@@ -66,7 +67,7 @@ typedef uint8_t       uint_fast8_t;
 #  define INT_FAST8_MIN    INT8_MIN
 #  define INT_FAST8_MAX    INT8_MAX
 
-#  define UINT8_MAX           (255U)
+#  define UINT8_MAX           (255)
 #  define UINT_LEAST8_MAX     UINT8_MAX
 #  define UINT_FAST8_MAX      UINT8_MAX
 #endif
@@ -76,7 +77,7 @@ typedef uint8_t       uint_fast8_t;
 #  define INT_LEAST8_C(c)	 INT8_C(c)
 #  define INT_FAST8_C(c)	INT8_C(c)
 
-#  define UINT8_C(c)	c ## U
+#  define UINT8_C(c)	c
 #  define UINT_LEAST8_C(c)  UINT8_C(c)
 #  define UINT_FAST8_C(c)  UINT8_C(c)
 #endif
@@ -99,7 +100,7 @@ typedef uint32_t      uint_fast16_t;
 #  define INT_FAST16_MIN	INT32_MIN
 #  define INT_FAST16_MAX	INT32_MAX
 
-#  define UINT16_MAX	(65535U)
+#  define UINT16_MAX	(65535)
 #  define UINT_LEAST16_MAX UINT16_MAX
 #  define UINT_FAST16_MAX UINT32_MAX
 #endif
@@ -109,7 +110,7 @@ typedef uint32_t      uint_fast16_t;
 #  define INT_LEAST16_C(c) INT16_C(c)
 #  define INT_FAST16_C(c)	 INT32_C(c)
 
-#  define UINT16_C(c)	c ## U
+#  define UINT16_C(c)	c
 #  define UINT_LEAST16_C(c) UINT16_C(c)
 #  define UINT_FAST16_C(c) UINT32_C(c)
 #endif
@@ -157,6 +158,14 @@ typedef int64_t       int_fast64_t;
 typedef uint64_t      uint_least64_t;
 typedef uint64_t      uint_fast64_t;
 
+#if __LP64__
+#  define __INT64_C(c)  c ## L
+#  define __UINT64_C(c) c ## UL
+#else
+#  define __INT64_C(c)  c ## LL
+#  define __UINT64_C(c) c ## ULL
+#endif
+
 #ifdef __STDINT_LIMITS
 #  define INT64_MIN        (__INT64_C(-9223372036854775807)-1)
 #  define INT64_MAX        (__INT64_C(9223372036854775807))
@@ -169,9 +178,6 @@ typedef uint64_t      uint_fast64_t;
 #  define UINT_LEAST64_MAX UINT64_MAX
 #  define UINT_FAST64_MAX UINT64_MAX
 #endif
-
-#define __INT64_C(c)     c ## LL
-#define __UINT64_C(c)     c ## ULL
 
 #ifdef __STDINT_MACROS
 #  define INT64_C(c)       __INT64_C(c)
@@ -191,8 +197,13 @@ typedef uint64_t      uint_fast64_t;
  * intptr_t & uintptr_t
  */
 
+#ifdef __LP64__
+typedef long           intptr_t;
+typedef unsigned long  uintptr_t;
+#else
 typedef int           intptr_t;
 typedef unsigned int  uintptr_t;
+#endif
 
 #ifdef __STDINT_LIMITS
 #  define INTPTR_MIN    INT32_MIN
@@ -226,7 +237,24 @@ typedef int64_t  intmax_t;
 #  define UINTMAX_C(c)	UINT64_C(c)
 #endif
 
-#define _BITSIZE 32
+/*
+ * sig_atomic_t, size_t, wchar_t, and wint_t.
+ */
+
+#ifdef __STDINT_LIMITS
+#  define SIG_ATOMIC_MAX INT32_MAX
+#  define SIG_ATOMIC_MIN INT32_MIN
+
+#  define SIZE_MAX UINT32_MAX
+
+#  ifndef WCHAR_MAX /* These might also have been defined by <wchar.h>. */
+#    define WCHAR_MAX INT32_MAX
+#    define WCHAR_MIN INT32_MIN
+#  endif
+
+#  define WINT_MAX INT32_MAX
+#  define WINT_MIN INT32_MIN
+#endif
 
 /* Keep the kernel from trying to define these types... */
 #define __BIT_TYPES_DEFINED__

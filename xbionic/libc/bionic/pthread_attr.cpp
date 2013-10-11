@@ -30,12 +30,10 @@
 
 #include "pthread_internal.h"
 
-#define DEFAULT_STACK_SIZE (1024 * 1024)
-
 int pthread_attr_init(pthread_attr_t* attr) {
   attr->flags = 0;
   attr->stack_base = NULL;
-  attr->stack_size = DEFAULT_STACK_SIZE;
+  attr->stack_size = PTHREAD_STACK_SIZE_DEFAULT;
   attr->guard_size = PAGE_SIZE;
   attr->sched_policy = SCHED_NORMAL;
   attr->sched_priority = 0;
@@ -84,7 +82,7 @@ int pthread_attr_getschedparam(pthread_attr_t const* attr, struct sched_param* p
 }
 
 int pthread_attr_setstacksize(pthread_attr_t* attr, size_t stack_size) {
-  if ((stack_size & (PAGE_SIZE - 1) || stack_size < PTHREAD_STACK_MIN)) {
+  if (stack_size < PTHREAD_STACK_MIN) {
     return EINVAL;
   }
   attr->stack_size = stack_size;
@@ -113,7 +111,7 @@ int pthread_attr_setstack(pthread_attr_t* attr, void* stack_base, size_t stack_s
   if ((stack_size & (PAGE_SIZE - 1) || stack_size < PTHREAD_STACK_MIN)) {
     return EINVAL;
   }
-  if ((uint32_t)stack_base & (PAGE_SIZE - 1)) {
+  if (reinterpret_cast<uintptr_t>(stack_base) & (PAGE_SIZE - 1)) {
     return EINVAL;
   }
   attr->stack_base = stack_base;
@@ -128,9 +126,6 @@ int pthread_attr_getstack(pthread_attr_t const* attr, void** stack_base, size_t*
 }
 
 int pthread_attr_setguardsize(pthread_attr_t* attr, size_t guard_size) {
-  if (guard_size & (PAGE_SIZE - 1) || guard_size < PAGE_SIZE) {
-    return EINVAL;
-  }
   attr->guard_size = guard_size;
   return 0;
 }

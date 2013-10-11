@@ -122,6 +122,7 @@ extern int chown(const char *, uid_t, gid_t);
 extern int fchown(int, uid_t, gid_t);
 extern int lchown(const char *, uid_t, gid_t);
 extern int truncate(const char *, off_t);
+extern int truncate64(const char *, off64_t);
 extern char *getcwd(char *, size_t);
 
 extern int sync(void);
@@ -170,14 +171,7 @@ extern int ttyname_r(int, char*, size_t);
 
 extern int  acct(const char*  filepath);
 
-static __inline__ int getpagesize(void) {
-  extern unsigned int __page_size;
-  return __page_size;
-}
-static __inline__ int __getpageshift(void) {
-  extern unsigned int __page_shift;
-  return __page_shift;
-}
+int getpagesize(void);
 
 extern int sysconf(int  name);
 
@@ -207,6 +201,39 @@ extern int setdomainname(const char *, size_t);
         _rc = (exp);                       \
     } while (_rc == -1 && errno == EINTR); \
     _rc; })
+
+#if defined(__BIONIC_FORTIFY)
+extern ssize_t __read_chk(int, void*, size_t, size_t);
+__errordecl(__read_dest_size_error, "read called with size bigger than destination");
+__errordecl(__read_count_toobig_error, "read called with count > SSIZE_MAX");
+extern ssize_t __read_real(int, void*, size_t)
+    __asm__(__USER_LABEL_PREFIX__ "read");
+
+__BIONIC_FORTIFY_INLINE
+ssize_t read(int fd, void* buf, size_t count) {
+    size_t bos = __bos0(buf);
+
+#if !defined(__clang__)
+    if (__builtin_constant_p(count) && (count > SSIZE_MAX)) {
+        __read_count_toobig_error();
+    }
+
+    if (bos == __BIONIC_FORTIFY_UNKNOWN_SIZE) {
+        return __read_real(fd, buf, count);
+    }
+
+    if (__builtin_constant_p(count) && (count > bos)) {
+        __read_dest_size_error();
+    }
+
+    if (__builtin_constant_p(count) && (count <= bos)) {
+        return __read_real(fd, buf, count);
+    }
+#endif
+
+    return __read_chk(fd, buf, count, bos);
+}
+#endif /* defined(__BIONIC_FORTIFY) */
 
 __END_DECLS
 

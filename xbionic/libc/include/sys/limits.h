@@ -31,18 +31,6 @@
 
 /* Common definitions for limits.h. */
 
-/*
- * <machine/internal_types.h> is meant to describe a specific architecture,
- * but to be a safe include, that doesn't ever define anything that is
- * user-visible (only typedefs and #define names that stays in the __xxx
- * namespace).
- *
- *   __machine_has_unsigned_chars	(default is signed chars)
- *   __FLT_xxx/__DBL_xxx		non standard values for floating
- *   					points limits.
- */
-#include <machine/internal_types.h>
-
 /* Legacy */
 #include <machine/limits.h>
 
@@ -52,7 +40,7 @@
 #define SCHAR_MIN	(-0x7f-1)	/* min value for a signed char */
 
 #define	UCHAR_MAX	0xffU		/* max value for an unsigned char */
-#ifdef __machine_has_unsigned_chars
+#ifdef __CHAR_UNSIGNED__
 # define CHAR_MIN	0		/* min value for a char */
 # define CHAR_MAX	0xff		/* max value for a char */
 #else
@@ -176,9 +164,9 @@
 #define  _POSIX_JOB_CONTROL         1    /* job control is a Linux feature */
 
 #define _POSIX_THREAD_DESTRUCTOR_ITERATIONS 4 /* the minimum mandated by POSIX */
-#define PTHREAD_DESTRUCTOR_ITERATIONS 4
+#define PTHREAD_DESTRUCTOR_ITERATIONS _POSIX_THREAD_DESTRUCTOR_ITERATIONS
 #define _POSIX_THREAD_KEYS_MAX 128            /* the minimum mandated by POSIX */
-/* TODO: our PTHREAD_KEYS_MAX is currently too low to be posix compliant! */
+#define PTHREAD_KEYS_MAX _POSIX_THREAD_KEYS_MAX
 #define _POSIX_THREAD_THREADS_MAX 64          /* the minimum mandated by POSIX */
 #define PTHREAD_THREADS_MAX                   /* bionic has no specific limit */
 

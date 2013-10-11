@@ -16,8 +16,8 @@
  ***
  ****************************************************************************
  ****************************************************************************/
-#ifndef _I386_USER_H
-#define _I386_USER_H
+#ifndef _ASM_X86_USER_32_H
+#define _ASM_X86_USER_32_H
 #include <asm/page.h>
 struct user_i387_struct {
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
@@ -52,40 +52,53 @@ struct user_fxsr_struct {
 };
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 struct user_regs_struct {
- long ebx, ecx, edx, esi, edi, ebp, eax;
- unsigned short ds, __ds, es, __es;
- unsigned short fs, __fs, gs, __gs;
+ unsigned long bx;
+ unsigned long cx;
+ unsigned long dx;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- long orig_eax, eip;
- unsigned short cs, __cs;
- long eflags, esp;
- unsigned short ss, __ss;
+ unsigned long si;
+ unsigned long di;
+ unsigned long bp;
+ unsigned long ax;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long ds;
+ unsigned long es;
+ unsigned long fs;
+ unsigned long gs;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long orig_ax;
+ unsigned long ip;
+ unsigned long cs;
+ unsigned long flags;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
+ unsigned long sp;
+ unsigned long ss;
 };
 struct user{
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  struct user_regs_struct regs;
  int u_fpvalid;
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  struct user_i387_struct i387;
  unsigned long int u_tsize;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  unsigned long int u_dsize;
  unsigned long int u_ssize;
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  unsigned long start_code;
  unsigned long start_stack;
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  long int signal;
  int reserved;
+ unsigned long u_ar0;
+ struct user_i387_struct *u_fpstate;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
- struct user_pt_regs * u_ar0;
- struct user_i387_struct* u_fpstate;
  unsigned long magic;
  char u_comm[32];
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  int u_debugreg[8];
 };
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define NBPG PAGE_SIZE
 #define UPAGES 1
-/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define HOST_TEXT_START_ADDR (u.start_code)
 #define HOST_STACK_END_ADDR (u.start_stack + u.u_ssize * NBPG)
+/* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #endif

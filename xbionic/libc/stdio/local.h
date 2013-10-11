@@ -58,7 +58,10 @@ int	__swsetup(FILE *);
 int	__sflags(const char *, int *);
 int	__vfprintf(FILE *, const char *, __va_list);
 
-extern void __atexit_register_cleanup(void (*)(void));
+/*
+ * Function to clean up streams, called from abort() and exit().
+ */
+extern void (*__cleanup)(void);
 extern int __sdidinit;
 
 /*
@@ -90,3 +93,5 @@ extern int __sdidinit;
 
 #define FLOCKFILE(fp)   do { if (__isthreaded) flockfile(fp); } while (0)
 #define FUNLOCKFILE(fp) do { if (__isthreaded) funlockfile(fp); } while (0)
+
+#define FLOATING_POINT

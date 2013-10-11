@@ -38,7 +38,7 @@ static const char   sccsid[] = "@(#)strftime.c  5.4 (Berkeley) 3/14/89";
 #include "locale.h"
 #include <ctype.h>
 #include <time64.h>
-#include <bionic_time.h>  /* for strftime_tz */
+#include "private/bionic_time.h"  /* for strftime_tz */
 
 /* struct lc_time_T is now defined as strftime_locale
  * in <time.h>
@@ -111,12 +111,12 @@ static const struct lc_time_T   C_time_locale = {
     "%a %b %e %H:%M:%S %Z %Y"
 };
 
-static char *   _add P((const char *, char *, const char *, int));
-static char *   _conv P((int, const char *, char *, const char *));
-static char *   _fmt P((const char *, const struct tm *, char *, const char *,
-            int *, const struct strftime_locale*));
-static char *   _yconv P((int, int, int, int, char *, const char *, int));
-static char *   getformat P((int, char *, char *, char *, char *));
+static char *   _add(const char *, char *, const char *, int);
+static char *   _conv(int, const char *, char *, const char *);
+static char *   _fmt(const char *, const struct tm *, char *, const char *,
+            int *, const struct strftime_locale*);
+static char *   _yconv(int, int, int, int, char *, const char *, int);
+static char *   getformat(int, char *, char *, char *, char *);
 
 extern char *   tzname[];
 
@@ -592,7 +592,7 @@ label:
                 continue;
             case 'z':
                 {
-                int     diff;
+                long     diff;
                 char const *    sign;
 
                 if (t->tm_isdst < 0)
@@ -601,7 +601,7 @@ label:
                 diff = t->TM_GMTOFF;
 #else /* !defined TM_GMTOFF */
                 /*
-                ** C99 says that the UTC offset must
+                ** C99 says that the UT offset must
                 ** be computed by looking only at
                 ** tm_isdst. This requirement is
                 ** incorrect, since it means the code

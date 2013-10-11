@@ -17,6 +17,7 @@
 #include <gtest/gtest.h>
 
 #include <errno.h>
+#include <limits.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -182,6 +183,144 @@ TEST(stdio, printf_ssize_t) {
   snprintf(buf, sizeof(buf), "%zd", v);
 }
 
+#if !defined(__GLIBC__)
+TEST(stdio, snprintf_n_format_specifier_not_implemented) {
+  char buf[32];
+  int i = 0;
+  // We deliberately don't implement %n, so it's treated like
+  // any other unrecognized format specifier.
+  EXPECT_EQ(5, snprintf(buf, sizeof(buf), "a %n b", &i));
+  EXPECT_EQ(0, i);
+  EXPECT_STREQ("a n b", buf);
+}
+#endif
+
+TEST(stdio, snprintf_smoke) {
+  char buf[BUFSIZ];
+
+  snprintf(buf, sizeof(buf), "a");
+  EXPECT_STREQ("a", buf);
+
+  snprintf(buf, sizeof(buf), "%%");
+  EXPECT_STREQ("%", buf);
+
+  snprintf(buf, sizeof(buf), "01234");
+  EXPECT_STREQ("01234", buf);
+
+  snprintf(buf, sizeof(buf), "a%sb", "01234");
+  EXPECT_STREQ("a01234b", buf);
+
+  char* s = NULL;
+  snprintf(buf, sizeof(buf), "a%sb", s);
+  EXPECT_STREQ("a(null)b", buf);
+
+  snprintf(buf, sizeof(buf), "aa%scc", "bb");
+  EXPECT_STREQ("aabbcc", buf);
+
+  snprintf(buf, sizeof(buf), "a%cc", 'b');
+  EXPECT_STREQ("abc", buf);
+
+  snprintf(buf, sizeof(buf), "a%db", 1234);
+  EXPECT_STREQ("a1234b", buf);
+
+  snprintf(buf, sizeof(buf), "a%db", -8123);
+  EXPECT_STREQ("a-8123b", buf);
+
+  snprintf(buf, sizeof(buf), "a%hdb", 0x7fff0010);
+  EXPECT_STREQ("a16b", buf);
+
+  snprintf(buf, sizeof(buf), "a%hhdb", 0x7fffff10);
+  EXPECT_STREQ("a16b", buf);
+
+  snprintf(buf, sizeof(buf), "a%lldb", 0x1000000000LL);
+  EXPECT_STREQ("a68719476736b", buf);
+
+  snprintf(buf, sizeof(buf), "a%ldb", 70000L);
+  EXPECT_STREQ("a70000b", buf);
+
+  snprintf(buf, sizeof(buf), "a%pb", reinterpret_cast<void*>(0xb0001234));
+  EXPECT_STREQ("a0xb0001234b", buf);
+
+  snprintf(buf, sizeof(buf), "a%xz", 0x12ab);
+  EXPECT_STREQ("a12abz", buf);
+
+  snprintf(buf, sizeof(buf), "a%Xz", 0x12ab);
+  EXPECT_STREQ("a12ABz", buf);
+
+  snprintf(buf, sizeof(buf), "a%08xz", 0x123456);
+  EXPECT_STREQ("a00123456z", buf);
+
+  snprintf(buf, sizeof(buf), "a%5dz", 1234);
+  EXPECT_STREQ("a 1234z", buf);
+
+  snprintf(buf, sizeof(buf), "a%05dz", 1234);
+  EXPECT_STREQ("a01234z", buf);
+
+  snprintf(buf, sizeof(buf), "a%8dz", 1234);
+  EXPECT_STREQ("a    1234z", buf);
+
+  snprintf(buf, sizeof(buf), "a%-8dz", 1234);
+  EXPECT_STREQ("a1234    z", buf);
+
+  snprintf(buf, sizeof(buf), "A%-11sZ", "abcdef");
+  EXPECT_STREQ("Aabcdef     Z", buf);
+
+  snprintf(buf, sizeof(buf), "A%s:%dZ", "hello", 1234);
+  EXPECT_STREQ("Ahello:1234Z", buf);
+
+  snprintf(buf, sizeof(buf), "a%03d:%d:%02dz", 5, 5, 5);
+  EXPECT_STREQ("a005:5:05z", buf);
+
+  void* p = NULL;
+  snprintf(buf, sizeof(buf), "a%d,%pz", 5, p);
+  EXPECT_STREQ("a5,0x0z", buf);
+
+  snprintf(buf, sizeof(buf), "a%lld,%d,%d,%dz", 0x1000000000LL, 6, 7, 8);
+  EXPECT_STREQ("a68719476736,6,7,8z", buf);
+
+  snprintf(buf, sizeof(buf), "a_%f_b", 1.23f);
+  EXPECT_STREQ("a_1.230000_b", buf);
+
+  snprintf(buf, sizeof(buf), "a_%g_b", 3.14d);
+  EXPECT_STREQ("a_3.14_b", buf);
+}
+
+TEST(stdio, snprintf_d_INT_MAX) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%d", INT_MAX);
+  EXPECT_STREQ("2147483647", buf);
+}
+
+TEST(stdio, snprintf_d_INT_MIN) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%d", INT_MIN);
+  EXPECT_STREQ("-2147483648", buf);
+}
+
+TEST(stdio, snprintf_ld_LONG_MAX) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%ld", LONG_MAX);
+  EXPECT_STREQ("2147483647", buf);
+}
+
+TEST(stdio, snprintf_ld_LONG_MIN) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%ld", LONG_MIN);
+  EXPECT_STREQ("-2147483648", buf);
+}
+
+TEST(stdio, snprintf_lld_LLONG_MAX) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%lld", LLONG_MAX);
+  EXPECT_STREQ("9223372036854775807", buf);
+}
+
+TEST(stdio, snprintf_lld_LLONG_MIN) {
+  char buf[BUFSIZ];
+  snprintf(buf, sizeof(buf), "%lld", LLONG_MIN);
+  EXPECT_STREQ("-9223372036854775808", buf);
+}
+
 TEST(stdio, popen) {
   FILE* fp = popen("cat /proc/version", "r");
   ASSERT_TRUE(fp != NULL);
@@ -192,4 +331,22 @@ TEST(stdio, popen) {
   ASSERT_STREQ("Linux version", s);
 
   ASSERT_EQ(0, pclose(fp));
+}
+
+TEST(stdio, getc) {
+  FILE* fp = fopen("/proc/version", "r");
+  ASSERT_TRUE(fp != NULL);
+  ASSERT_EQ('L', getc(fp));
+  ASSERT_EQ('i', getc(fp));
+  ASSERT_EQ('n', getc(fp));
+  ASSERT_EQ('u', getc(fp));
+  ASSERT_EQ('x', getc(fp));
+  fclose(fp);
+}
+
+TEST(stdio, putc) {
+  FILE* fp = fopen("/proc/version", "r");
+  ASSERT_TRUE(fp != NULL);
+  ASSERT_EQ(EOF, putc('x', fp));
+  fclose(fp);
 }

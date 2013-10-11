@@ -28,7 +28,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "libc_logging.h"
+#include "private/libc_logging.h"
 
 /*
  * __strlcpy_chk. Called in place of strlcpy() when we know the
@@ -45,8 +45,8 @@
 extern "C" size_t __strlcpy_chk(char *dest, const char *src,
               size_t supplied_size, size_t dest_len_from_compiler)
 {
-    if (supplied_size > dest_len_from_compiler) {
-        __fortify_chk_fail("strlcpy buffer overflow", 0);
+    if (__predict_false(supplied_size > dest_len_from_compiler)) {
+        __fortify_chk_fail("strlcpy prevented write past end of buffer", 0);
     }
 
     return strlcpy(dest, src, supplied_size);

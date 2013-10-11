@@ -28,7 +28,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include "libc_logging.h"
+#include "private/libc_logging.h"
 
 /*
  * __fgets_chk. Called in place of fgets() when we know the
@@ -49,7 +49,7 @@ extern "C" char *__fgets_chk(char *dest, int supplied_size,
     }
 
     if (((size_t) supplied_size) > dest_len_from_compiler) {
-        __fortify_chk_fail("fgets buffer overflow", 0);
+        __fortify_chk_fail("fgets prevented write past end of buffer", 0);
     }
 
     return fgets(dest, supplied_size, stream);

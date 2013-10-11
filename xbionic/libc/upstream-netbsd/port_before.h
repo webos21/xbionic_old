@@ -19,9 +19,9 @@
 
 #include "namespace.h"
 #include <sys/cdefs.h>
-#include <arpa_nameser.h>
+#include "private/arpa_nameser.h"
 
-#define ISC_FORMAT_PRINTF(a,b) __attribute__((__format__(__printf__,a,b)))
+#define ISC_FORMAT_PRINTF(a,b) __printflike(a,b)
 #define ISC_SOCKLEN_T socklen_t
 
 #endif

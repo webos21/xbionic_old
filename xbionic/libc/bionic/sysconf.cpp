@@ -26,19 +26,19 @@
  * SUCH DAMAGE.
  */
 
-#include <asm/page.h>
-#include <bionic_tls.h>
 #include <ctype.h>
 #include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <pthread.h>
 #include <stdio.h>  // For FOPEN_MAX.
 #include <string.h>
 #include <sys/sysconf.h>
 #include <time.h>
 #include <unistd.h>
 
+#include "private/bionic_tls.h"
 #include "private/ScopedReaddir.h"
 
 /* seems to be the default on Linux, per the GLibc sources and my own digging */
@@ -57,7 +57,6 @@
 
 /* the following depends on our implementation */
 #define  SYSTEM_ATEXIT_MAX          65536    /* our implementation is unlimited */
-#define  SYSTEM_THREAD_STACK_MIN    32768    /* lower values may be possible, but be conservative */
 #define  SYSTEM_THREAD_THREADS_MAX  2048     /* really unlimited */
 
 #define  SYSTEM_2_C_BIND     _POSIX_VERSION  /* Posix C binding version */
@@ -298,8 +297,8 @@ int sysconf(int name) {
     case _SC_TIMERS:            return _POSIX_TIMERS;
 #endif
 
-    // GETGR_R_SIZE_MAX ?
-    // GETPW_R_SIZE_MAX ?
+    case _SC_GETGR_R_SIZE_MAX: return 1024;
+    case _SC_GETPW_R_SIZE_MAX: return 1024;
 
     case _SC_LOGIN_NAME_MAX:    return SYSTEM_LOGIN_NAME_MAX;
 
@@ -309,7 +308,7 @@ int sysconf(int name) {
     case _SC_THREAD_KEYS_MAX:
       return (BIONIC_TLS_SLOTS - TLS_SLOT_FIRST_USER_SLOT - GLOBAL_INIT_THREAD_LOCAL_BUFFER_COUNT);
 
-    case _SC_THREAD_STACK_MIN:    return SYSTEM_THREAD_STACK_MIN;
+    case _SC_THREAD_STACK_MIN:    return PTHREAD_STACK_MIN;
     case _SC_THREAD_THREADS_MAX:  return SYSTEM_THREAD_THREADS_MAX;
     case _SC_TTY_NAME_MAX:        return SYSTEM_TTY_NAME_MAX;
 #ifdef _POSIX_THREADS

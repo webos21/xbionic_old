@@ -27,15 +27,4 @@
 #define NULL ((void *)0)
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #endif
-
-#ifndef _SIZE_T_DEFINED_
-#define _SIZE_T_DEFINED_
-typedef __SIZE_TYPE__ size_t;
-#endif
-
-#ifndef _WCHAR_T_DEFINED_
-#define _WCHAR_T_DEFINED_
-typedef __WCHAR_TYPE__ wchar_t;
-#endif
-
 #endif

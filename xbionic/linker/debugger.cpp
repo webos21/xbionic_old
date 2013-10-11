@@ -28,14 +28,15 @@
 
 #include "linker.h"
 
+#include <errno.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
-#include <signal.h>
+#include <sys/mman.h>
 #include <sys/prctl.h>
-#include <errno.h>
 #include <sys/socket.h>
 #include <sys/un.h>
+#include <unistd.h>
 
 extern "C" int tgkill(int tgid, int tid, int sig);
 
@@ -109,7 +110,7 @@ static int socket_abstract_client(const char* name, int type) {
  * mutex is being held, so we don't want to use any libc functions that
  * could allocate memory or hold a lock.
  */
-static void logSignalSummary(int signum, const siginfo_t* info) {
+static void log_signal_summary(int signum, const siginfo_t* info) {
     const char* signal_name;
     switch (signum) {
         case SIGILL:    signal_name = "SIGILL";     break;
@@ -136,9 +137,9 @@ static void logSignalSummary(int signum, const siginfo_t* info) {
     // "info" will be NULL if the siginfo_t information was not available.
     if (info != NULL) {
         __libc_format_log(ANDROID_LOG_FATAL, "libc",
-                          "Fatal signal %d (%s) at 0x%08x (code=%d), thread %d (%s)",
-                          signum, signal_name, reinterpret_cast<uintptr_t>(info->si_addr),
-                          info->si_code, gettid(), thread_name);
+                          "Fatal signal %d (%s) at %p (code=%d), thread %d (%s)",
+                          signum, signal_name, info->si_addr, info->si_code,
+                          gettid(), thread_name);
     } else {
         __libc_format_log(ANDROID_LOG_FATAL, "libc",
                           "Fatal signal %d (%s), thread %d (%s)",
@@ -149,42 +150,47 @@ static void logSignalSummary(int signum, const siginfo_t* info) {
 /*
  * Returns true if the handler for signal "signum" has SA_SIGINFO set.
  */
-static bool haveSiginfo(int signum) {
-    struct sigaction oldact, newact;
+static bool have_siginfo(int signum) {
+    struct sigaction old_action, new_action;
 
-    memset(&newact, 0, sizeof(newact));
-    newact.sa_handler = SIG_DFL;
-    newact.sa_flags = SA_RESTART;
-    sigemptyset(&newact.sa_mask);
+    memset(&new_action, 0, sizeof(new_action));
+    new_action.sa_handler = SIG_DFL;
+    new_action.sa_flags = SA_RESTART;
+    sigemptyset(&new_action.sa_mask);
 
-    if (sigaction(signum, &newact, &oldact) < 0) {
+    if (sigaction(signum, &new_action, &old_action) < 0) {
       __libc_format_log(ANDROID_LOG_WARN, "libc", "Failed testing for SA_SIGINFO: %s",
                         strerror(errno));
       return false;
     }
-    bool ret = (oldact.sa_flags & SA_SIGINFO) != 0;
+    bool result = (old_action.sa_flags & SA_SIGINFO) != 0;
 
-    if (sigaction(signum, &oldact, NULL) == -1) {
+    if (sigaction(signum, &old_action, NULL) == -1) {
       __libc_format_log(ANDROID_LOG_WARN, "libc", "Restore failed in test for SA_SIGINFO: %s",
                         strerror(errno));
     }
-    return ret;
+    return result;
 }
 
 /*
  * Catches fatal signals so we can ask debuggerd to ptrace us before
  * we crash.
  */
+#if __LP64__ // TODO: implement 64-bit sigaction using rt_sigaction.
+void debuggerd_signal_handler(int n) {
+    siginfo_t* info = NULL;
+#else
 void debuggerd_signal_handler(int n, siginfo_t* info, void*) {
+#endif
     /*
      * It's possible somebody cleared the SA_SIGINFO flag, which would mean
      * our "info" arg holds an undefined value.
      */
-    if (!haveSiginfo(n)) {
+    if (!have_siginfo(n)) {
         info = NULL;
     }
 
-    logSignalSummary(n, info);
+    log_signal_summary(n, info);
 
     pid_t tid = gettid();
     int s = socket_abstract_client(DEBUGGER_SOCKET_NAME, SOCK_STREAM);
@@ -245,19 +251,27 @@ void debuggerd_signal_handler(int n, siginfo_t* info, void*) {
 }
 
 void debuggerd_init() {
-    struct sigaction act;
-    memset(&act, 0, sizeof(act));
-    act.sa_sigaction = debuggerd_signal_handler;
-    act.sa_flags = SA_RESTART | SA_SIGINFO;
-    sigemptyset(&act.sa_mask);
-
-    sigaction(SIGILL, &act, NULL);
-    sigaction(SIGABRT, &act, NULL);
-    sigaction(SIGBUS, &act, NULL);
-    sigaction(SIGFPE, &act, NULL);
-    sigaction(SIGSEGV, &act, NULL);
-#if defined(SIGSTKFLT)
-    sigaction(SIGSTKFLT, &act, NULL);
+    struct sigaction action;
+    memset(&action, 0, sizeof(action));
+    sigemptyset(&action.sa_mask);
+#if __LP64__ // TODO: implement 64-bit sigaction using rt_sigaction.
+    action.sa_handler = debuggerd_signal_handler;
+#else
+    action.sa_sigaction = debuggerd_signal_handler;
 #endif
-    sigaction(SIGPIPE, &act, NULL);
+    action.sa_flags = SA_RESTART | SA_SIGINFO;
+
+    // Use the alternate signal stack if available so we can catch stack overflows.
+    action.sa_flags |= SA_ONSTACK;
+
+    sigaction(SIGABRT, &action, NULL);
+    sigaction(SIGBUS, &action, NULL);
+    sigaction(SIGFPE, &action, NULL);
+    sigaction(SIGILL, &action, NULL);
+    sigaction(SIGPIPE, &action, NULL);
+    sigaction(SIGSEGV, &action, NULL);
+#if defined(SIGSTKFLT)
+    sigaction(SIGSTKFLT, &action, NULL);
+#endif
+    sigaction(SIGTRAP, &action, NULL);
 }

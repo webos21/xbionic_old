@@ -28,7 +28,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include "libc_logging.h"
+#include "private/libc_logging.h"
 
 /*
  * Runtime implementation of __strlen_chk.
@@ -56,8 +56,8 @@
 extern "C" size_t __strlen_chk(const char *s, size_t s_len) {
     size_t ret = strlen(s);
 
-    if (__builtin_expect(ret >= s_len, 0)) {
-        __fortify_chk_fail("strlen read overflow", 0);
+    if (__predict_false(ret >= s_len)) {
+        __fortify_chk_fail("strlen prevented read past end of buffer", 0);
     }
 
     return ret;

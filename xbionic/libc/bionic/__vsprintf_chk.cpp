@@ -29,7 +29,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
-#include "libc_logging.h"
+#include "private/libc_logging.h"
 
 /*
  * Runtime implementation of __builtin____vsprintf_chk.
@@ -52,7 +52,7 @@ extern "C" int __vsprintf_chk(
     int ret = vsnprintf(dest, dest_len_from_compiler, format, va);
 
     if ((size_t) ret >= dest_len_from_compiler) {
-        __fortify_chk_fail("vsprintf buffer overflow", 0);
+        __fortify_chk_fail("vsprintf prevented write past end of buffer", 0);
     }
 
     return ret;

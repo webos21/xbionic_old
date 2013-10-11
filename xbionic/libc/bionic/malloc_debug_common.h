@@ -35,7 +35,7 @@
 
 #include <stdlib.h>
 
-#include "libc_logging.h"
+#include "private/libc_logging.h"
 
 #define HASHTABLE_SIZE      1543
 #define BACKTRACE_SIZE      32
@@ -44,6 +44,11 @@
 #define SIZE_FLAG_MASK          (SIZE_FLAG_ZYGOTE_CHILD)
 
 #define MAX_SIZE_T           (~(size_t)0)
+
+// This must match the alignment used by dlmalloc.
+#ifndef MALLOC_ALIGNMENT
+#define MALLOC_ALIGNMENT ((size_t)(2 * sizeof(void *)))
+#endif
 
 // =============================================================================
 // Structures
@@ -71,12 +76,14 @@ typedef void (*MallocDebugFree)(void*);
 typedef void* (*MallocDebugCalloc)(size_t, size_t);
 typedef void* (*MallocDebugRealloc)(void*, size_t);
 typedef void* (*MallocDebugMemalign)(size_t, size_t);
+typedef size_t (*MallocDebugMallocUsableSize)(const void*);
 struct MallocDebug {
   MallocDebugMalloc malloc;
   MallocDebugFree free;
   MallocDebugCalloc calloc;
   MallocDebugRealloc realloc;
   MallocDebugMemalign memalign;
+  MallocDebugMallocUsableSize malloc_usable_size;
 };
 
 /* Malloc debugging initialization and finalization routines.
