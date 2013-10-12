@@ -70,7 +70,7 @@ build_opt_so_pre   = lib
 build_opt_so_ext   = so
 build_opt_exe_ext  =
 
-build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -Wdeclaration-after-statement -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 build_opt_cxx      = -m32 -march=i686 -g -Wall -Wextra -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 build_opt_fPIC     = -fPIC
 build_opt_ld       = -m32 -march=i686 -g -Wl,--no-undefined
@@ -99,7 +99,7 @@ build_xb_opt_c      = -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -std=gnu99 \
 		-isystem ${basedir}/xbionic/libc/include \
 		-isystem ${basedir}/xbionic/libc/kernel/common \
 		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
-build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-exceptions \
+build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-exceptions -fno-rtti \
 		-fPIC -fPIE \
 		-ffunction-sections \
 		-finline-functions -finline-limit=300 -fno-inline-functions-called-once \
@@ -114,7 +114,11 @@ build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-except
 		-isystem ${basedir}/xbionic/libc/include \
 		-isystem ${basedir}/xbionic/libc/kernel/common \
 		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
-build_xb_opt_ld     = -m32 -Wl,--no-undefined -nostdlib
+build_xb_opt_ld     = -m32 -nostdlib
+
+#####
+# xb_libc
+#####
 
 build_xb_libc_cmn_cflags = \
 	-DWITH_ERRLIST \
@@ -131,7 +135,7 @@ build_xb_libc_cmn_cflags = \
 	-DANDROID_SMP=1 \
 	-I${basedir}/xbionic/libc/private
 
-build_xb_libc_cmn_ldflags =
+build_xb_libc_cmn_ldflags = -Wl,--no-undefined
 
 build_xb_libc_cmn_incs = \
 	-I${basedir}/xbionic/libc \
@@ -145,7 +149,7 @@ build_xb_libc_cmn_incs = \
 # define source file
 ####
 
-build_xb_syscall_src =  \
+build_xb_libc_sc_src =  \
 	libc/arch-x86/syscalls/_exit.S, \
 	libc/arch-x86/syscalls/_exit_thread.S, \
 	libc/arch-x86/syscalls/__fork.S, \
@@ -351,7 +355,7 @@ build_xb_syscall_src =  \
 	libc/arch-x86/syscalls/eventfd.S
 
 build_xb_libc_common_src =  \
-	${build_xb_syscall_src}, \
+	${build_xb_libc_sc_src}, \
 	libc/unistd/abort.c, \
 	libc/unistd/alarm.c, \
 	libc/unistd/exec.c, \
@@ -753,16 +757,6 @@ build_xb_libc_arch_dynamic_src =
 
 
 ####
-# libdl.so
-####
-build_xb_libdl_bin        = libdl.so
-build_xb_libdl_cflags     = ${build_xb_libc_cmn_cflags}
-build_xb_libdl_ldflags    = ${build_xb_libc_cmn_ldflags} -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a
-build_xb_libdl_src_in     = libdl/libdl.c
-build_xb_libdl_src_ex     = 
-build_xb_libdl_src_mk     = libdl/libdl.c
-
-####
 # CRT (libc run-time)
 ####
 build_xb_libc_crt_bin     =
@@ -774,6 +768,16 @@ build_xb_libc_crt_ldflags =
 build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-${build_cfg_arch}/bionic/crt*.S, libc/arch-${build_cfg_arch}/bionic/crt*.c
 build_xb_libc_crt_src_ex  = 
 build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
+
+####
+# libdl.so
+####
+build_xb_libdl_bin        = libdl.so
+build_xb_libdl_cflags     = ${build_xb_libc_cmn_cflags}
+build_xb_libdl_ldflags    = -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a
+build_xb_libdl_src_in     = libdl/libdl.c
+build_xb_libdl_src_ex     = 
+build_xb_libdl_src_mk     = ${build_xb_libdl_src_in}
 
 ####
 # libbionic_ssp.a
@@ -864,7 +868,8 @@ build_xb_libc_lca_src_mk  = ${build_xb_libc_lca_src_in}
 build_xb_libc_lcs_bin     = libc.so
 build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
-		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
+		${basedir}/lib/${build_cfg_target}/libgcc.a
+#		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
 		libc/bionic/malloc_debug_common.cpp, \
@@ -899,6 +904,248 @@ build_xb_libc_mdq_src_in  = libc/bionic/malloc_debug_qemu.cpp
 build_xb_libc_mdq_src_ex  = 
 build_xb_libc_mdq_src_mk  = ${build_xb_libc_mdq_src_in}
 
+####
+# libm.a
+####
+build_xb_libm_a_bin       = libm.a
+build_xb_libm_a_cflags    = ${build_xb_libc_cmn_cflags} \
+		-DFLT_EVAL_METHOD=0 \
+		-I${basedir}/xbionic/libm \
+		-I${basedir}/xbionic/libm/include \
+		-I${basedir}/xbionic/libm/include/i387 \
+		-I${basedir}/xbionic/libm/i386 \
+		-I${basedir}/xbionic/libm/upstream-freebsd/lib/msun/src
+build_xb_libm_a_ldflags   =
+build_xb_libm_a_src_in    = \
+    libm/digittoint.c, \
+    libm/fpclassify.c, \
+    libm/isinf.c, \
+    libm/sincos.c, \
+    libm/fake_long_double.c, \
+	libm/i387/fenv.c, \
+	libm/upstream-freebsd/lib/msun/bsdsrc/b_exp.c, \
+	libm/upstream-freebsd/lib/msun/bsdsrc/b_log.c, \
+	libm/upstream-freebsd/lib/msun/bsdsrc/b_tgamma.c, \
+	libm/upstream-freebsd/lib/msun/src/e_acos.c, \
+	libm/upstream-freebsd/lib/msun/src/e_acosf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_acosh.c, \
+	libm/upstream-freebsd/lib/msun/src/e_acoshf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_asin.c, \
+	libm/upstream-freebsd/lib/msun/src/e_asinf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_atan2.c, \
+	libm/upstream-freebsd/lib/msun/src/e_atan2f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_atanh.c, \
+	libm/upstream-freebsd/lib/msun/src/e_atanhf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_cosh.c, \
+	libm/upstream-freebsd/lib/msun/src/e_coshf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_exp.c, \
+	libm/upstream-freebsd/lib/msun/src/e_expf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_fmod.c, \
+	libm/upstream-freebsd/lib/msun/src/e_fmodf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_gamma.c, \
+	libm/upstream-freebsd/lib/msun/src/e_gammaf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_gammaf_r.c, \
+	libm/upstream-freebsd/lib/msun/src/e_gamma_r.c, \
+	libm/upstream-freebsd/lib/msun/src/e_hypot.c, \
+	libm/upstream-freebsd/lib/msun/src/e_hypotf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_j0.c, \
+	libm/upstream-freebsd/lib/msun/src/e_j0f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_j1.c, \
+	libm/upstream-freebsd/lib/msun/src/e_j1f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_jn.c, \
+	libm/upstream-freebsd/lib/msun/src/e_jnf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_lgamma.c, \
+	libm/upstream-freebsd/lib/msun/src/e_lgammaf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_lgammaf_r.c, \
+	libm/upstream-freebsd/lib/msun/src/e_lgamma_r.c, \
+	libm/upstream-freebsd/lib/msun/src/e_log10.c, \
+	libm/upstream-freebsd/lib/msun/src/e_log10f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_log2.c, \
+	libm/upstream-freebsd/lib/msun/src/e_log2f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_log.c, \
+	libm/upstream-freebsd/lib/msun/src/e_logf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_pow.c, \
+	libm/upstream-freebsd/lib/msun/src/e_powf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_remainder.c, \
+	libm/upstream-freebsd/lib/msun/src/e_remainderf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_rem_pio2.c, \
+	libm/upstream-freebsd/lib/msun/src/e_rem_pio2f.c, \
+	libm/upstream-freebsd/lib/msun/src/e_scalb.c, \
+	libm/upstream-freebsd/lib/msun/src/e_scalbf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_sinh.c, \
+	libm/upstream-freebsd/lib/msun/src/e_sinhf.c, \
+	libm/upstream-freebsd/lib/msun/src/e_sqrt.c, \
+	libm/upstream-freebsd/lib/msun/src/e_sqrtf.c, \
+	libm/upstream-freebsd/lib/msun/src/k_cos.c, \
+	libm/upstream-freebsd/lib/msun/src/k_cosf.c, \
+	libm/upstream-freebsd/lib/msun/src/k_exp.c, \
+	libm/upstream-freebsd/lib/msun/src/k_expf.c, \
+	libm/upstream-freebsd/lib/msun/src/k_rem_pio2.c, \
+	libm/upstream-freebsd/lib/msun/src/k_sin.c, \
+	libm/upstream-freebsd/lib/msun/src/k_sinf.c, \
+	libm/upstream-freebsd/lib/msun/src/k_tan.c, \
+	libm/upstream-freebsd/lib/msun/src/k_tanf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_asinh.c, \
+	libm/upstream-freebsd/lib/msun/src/s_asinhf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_atan.c, \
+	libm/upstream-freebsd/lib/msun/src/s_atanf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_carg.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cargf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cbrt.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cbrtf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ccosh.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ccoshf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ceil.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ceilf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cexp.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cexpf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cimag.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cimagf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_conj.c, \
+	libm/upstream-freebsd/lib/msun/src/s_conjf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_copysign.c, \
+	libm/upstream-freebsd/lib/msun/src/s_copysignf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cos.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cosf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cproj.c, \
+	libm/upstream-freebsd/lib/msun/src/s_cprojf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_creal.c, \
+	libm/upstream-freebsd/lib/msun/src/s_crealf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_csinh.c, \
+	libm/upstream-freebsd/lib/msun/src/s_csinhf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_csqrt.c, \
+	libm/upstream-freebsd/lib/msun/src/s_csqrtf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ctanh.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ctanhf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_erf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_erff.c, \
+	libm/upstream-freebsd/lib/msun/src/s_exp2.c, \
+	libm/upstream-freebsd/lib/msun/src/s_exp2f.c, \
+	libm/upstream-freebsd/lib/msun/src/s_expm1.c, \
+	libm/upstream-freebsd/lib/msun/src/s_expm1f.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fabs.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fabsf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fdim.c, \
+	libm/upstream-freebsd/lib/msun/src/s_finite.c, \
+	libm/upstream-freebsd/lib/msun/src/s_finitef.c, \
+	libm/upstream-freebsd/lib/msun/src/s_floor.c, \
+	libm/upstream-freebsd/lib/msun/src/s_floorf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fma.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fmaf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fmax.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fmaxf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fmin.c, \
+	libm/upstream-freebsd/lib/msun/src/s_fminf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_frexp.c, \
+	libm/upstream-freebsd/lib/msun/src/s_frexpf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ilogb.c, \
+	libm/upstream-freebsd/lib/msun/src/s_ilogbf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_isfinite.c, \
+	libm/upstream-freebsd/lib/msun/src/s_isnan.c, \
+	libm/upstream-freebsd/lib/msun/src/s_isnormal.c, \
+	libm/upstream-freebsd/lib/msun/src/s_llrint.c, \
+	libm/upstream-freebsd/lib/msun/src/s_llrintf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_llround.c, \
+	libm/upstream-freebsd/lib/msun/src/s_llroundf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_log1p.c, \
+	libm/upstream-freebsd/lib/msun/src/s_log1pf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_logb.c, \
+	libm/upstream-freebsd/lib/msun/src/s_logbf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_lrint.c, \
+	libm/upstream-freebsd/lib/msun/src/s_lrintf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_lround.c, \
+	libm/upstream-freebsd/lib/msun/src/s_lroundf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_modf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_modff.c, \
+	libm/upstream-freebsd/lib/msun/src/s_nan.c, \
+	libm/upstream-freebsd/lib/msun/src/s_nearbyint.c, \
+	libm/upstream-freebsd/lib/msun/src/s_nextafter.c, \
+	libm/upstream-freebsd/lib/msun/src/s_nextafterf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_nexttowardf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_remquo.c, \
+	libm/upstream-freebsd/lib/msun/src/s_remquof.c, \
+	libm/upstream-freebsd/lib/msun/src/s_rint.c, \
+	libm/upstream-freebsd/lib/msun/src/s_rintf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_round.c, \
+	libm/upstream-freebsd/lib/msun/src/s_roundf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_scalbln.c, \
+	libm/upstream-freebsd/lib/msun/src/s_scalbn.c, \
+	libm/upstream-freebsd/lib/msun/src/s_scalbnf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_signbit.c, \
+	libm/upstream-freebsd/lib/msun/src/s_signgam.c, \
+	libm/upstream-freebsd/lib/msun/src/s_significand.c, \
+	libm/upstream-freebsd/lib/msun/src/s_significandf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_sin.c, \
+	libm/upstream-freebsd/lib/msun/src/s_sinf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_tan.c, \
+	libm/upstream-freebsd/lib/msun/src/s_tanf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_tanh.c, \
+	libm/upstream-freebsd/lib/msun/src/s_tanhf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_tgammaf.c, \
+	libm/upstream-freebsd/lib/msun/src/s_trunc.c, \
+	libm/upstream-freebsd/lib/msun/src/s_truncf.c, \
+	libm/upstream-freebsd/lib/msun/src/w_cabs.c, \
+	libm/upstream-freebsd/lib/msun/src/w_cabsf.c, \
+	libm/upstream-freebsd/lib/msun/src/w_drem.c, \
+	libm/upstream-freebsd/lib/msun/src/w_dremf.c
+build_xb_libm_a_src_ex    =
+build_xb_libm_a_src_mk    = ${build_xb_libm_a_src_in}
+
+####
+# libm.so
+####
+build_xb_libm_so_bin       = libm.so
+build_xb_libm_so_cflags    =
+build_xb_libm_so_ldflags   = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
+build_xb_libm_so_src_in    = 
+build_xb_libm_so_src_ex    = 
+build_xb_libm_so_src_mk    =
+
+####
+# libstdc++.a
+####
+build_xb_libscx_a_bin      = libstdc++.a
+build_xb_libscx_a_cflags   = ${build_xb_libc_cmn_cflags} -I${basedir}/xbionic/libstdc++/include \
+	-I${basedir}/xbionic/libc
+build_xb_libscx_a_ldflags  =
+build_xb_libscx_a_src_in   = \
+	libstdc++/src/one_time_construction.cpp, \
+	libstdc++/src/new.cpp, \
+	libstdc++/src/pure_virtual.cpp, \
+	libstdc++/src/typeinfo.cpp
+build_xb_libscx_a_src_ex   = 
+build_xb_libscx_a_src_mk   = ${build_xb_libscx_a_src_in}
+
+####
+# libstdc++.so
+####
+build_xb_libscx_so_bin     = libstdc++.so
+build_xb_libscx_so_cflags  =
+build_xb_libscx_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
+build_xb_libscx_so_src_in  = 
+build_xb_libscx_so_src_ex  = 
+build_xb_libscx_so_src_mk  =
+
+####
+# libthread_db.a
+####
+build_xb_libtdb_a_bin      = libthread_db.a
+build_xb_libtdb_a_cflags   = ${build_xb_libc_cmn_cflags} -I${basedir}/xbionic/libthread_db/include
+build_xb_libtdb_a_ldflags  =
+build_xb_libtdb_a_src_in   = libthread_db/libthread_db.c
+build_xb_libtdb_a_src_ex   = 
+build_xb_libtdb_a_src_mk   = ${build_xb_libtdb_a_src_in}
+
+####
+# libthread_db.so
+####
+build_xb_libtdb_so_bin     = libthread_db.so
+build_xb_libtdb_so_cflags  =
+build_xb_libtdb_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a
+build_xb_libtdb_so_src_in  = 
+build_xb_libtdb_so_src_ex  = 
+build_xb_libtdb_so_src_mk  =
+
 
 ########################
 # Compile Target : XI
@@ -909,20 +1156,27 @@ build_xibase_src_mk      = $(wildcard $(basedir)/src/base/src/_all/*.c)
 build_xibase_src_mk     += $(wildcard $(basedir)/src/base/src/posix/*.c)
 build_xibase_src_in      = _all/*.c, posix/*.c
 build_xibase_src_ex      = 
-build_xibase_cflags      = -I${basedir}/include
+build_xibase_cflags      = -Wdeclaration-after-statement -I${basedir}/include
 build_xibase_ldflags     = -lpthread -ldl
 
 buildtc_xibase_src_bin   = tc_main.c
 buildtc_xibase_src_mk    = $(wildcard $(basedir)/src/base/test/*.c)
 buildtc_xibase_src_in    = *.c
 buildtc_xibase_src_ex    = tc_main.c
-buildtc_xibase_cflags    = -I${basedir}/include
+buildtc_xibase_cflags    = -Wdeclaration-after-statement -I${basedir}/include
 buildtc_xibase_ldflags   = -lxibase
 
 
 ########################
 # Compile Target : Ext
 ########################
+
+#build_ext_ccrt_bin       = libcompiler_rt.so
+#build_ext_ccrt_cflags    = 
+#build_ext_ccrt_ldflags   = 
+#build_ext_ccrt_src_in    = lib/*.c, lib/i386/*.S
+#build_ext_ccrt_src_ex    = lib/apple_versioning.c, lib/atomic.c, lib/clear_cache.c, lib/gcc_personality_v0.c
+#build_ext_ccrt_src_mk    = ${build_ext_ccrt_src_in}
 
 build_ext_zlib_run       = 1
 build_ext_zlib_cflags    =
