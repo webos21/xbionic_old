@@ -159,7 +159,6 @@
 		<echo>Build : xbionic-libc-crt</echo>
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_crt}" failonerror="true">
 			<arg line="${build_xb_opt_c}" />
-			<arg line="${build_opt_fPIC}" />
 			<arg line="${build_xb_libc_crt_cflags}" />
 			<arg line="-c" />
 			<arg line="-o" />
