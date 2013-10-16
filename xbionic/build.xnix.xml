@@ -56,6 +56,8 @@
 		<property name="module_dir_so_libc" value="${module_dir_objso}/libc" />
 		<property name="module_dir_so_md_leak" value="${module_dir_objso}/libc_md_leak" />
 		<property name="module_dir_so_md_qemu" value="${module_dir_objso}/libc_md_qemu" />
+		<property name="module_dir_objex" value="${module_dir_target}/exec" />
+		<property name="module_dir_ex_linker" value="${module_dir_objex}/linker_obj" />
 		<mkdir dir="${module_dir_target}" />
 		<mkdir dir="${module_dir_obja}" />
 		<mkdir dir="${module_dir_a_ssp}" />
@@ -74,6 +76,8 @@
 		<mkdir dir="${module_dir_so_libc}" />
 		<mkdir dir="${module_dir_so_md_leak}" />
 		<mkdir dir="${module_dir_so_md_qemu}" />
+		<mkdir dir="${module_dir_objex}" />
+		<mkdir dir="${module_dir_ex_linker}" />
 
 		<!-- Output -->
 		<property name="module_dir_output_base" value="${basedir}/ant/${build_cfg_target}/emul" />
@@ -682,6 +686,47 @@
 		</apply>
 	</target>
 
+	<!-- BUILD : bionic-linker  -->
+	<target name="_build.xbionic.linker" depends="_prepare">
+		<echo>Build : xbionic-linker.o</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_ex_linker}" failonerror="true">
+			<arg line="${build_xb_linker_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_linker_src_in}" excludes="${build_xb_linker_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_ex_linker}" failonerror="true">
+			<arg line="${build_xb_linker_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_linker_src_in}" excludes="${build_xb_linker_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-linker.bin</echo>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objex}/${build_xb_linker_bin}" />
+			<srcfile />
+			<arg line="-L${module_dir_obja}" />
+			<arg line="-lc_nomalloc" />
+			<arg line="${build_xb_libtdb_so_ldflags}" />
+			<fileset dir="${module_dir_ex_linker}" includes="*.o" />
+		</apply>
+	</target>
+
 	<!-- OUPUT : copying needed files  -->
 	<target name="_build.output" depends="_prepare">
 		<!-- depends="_build.xbionic.libc" -->
@@ -709,12 +754,28 @@
 		<copy todir="${module_dir_output_inc}">
 			<fileset dir="${current_dir_abs}/libthread_db/include" includes="**/**.h" />
 		</copy>
+		<echo>libc-crt</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${module_dir_so_crt}" includes="*.o" />
+		</copy>
+		<echo>libc-shared-objects</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${module_dir_objso}" includes="*.so" />
+		</copy>
+		<echo>libc-executables</echo>
+		<copy todir="${module_dir_output_bin}">
+			<fileset dir="${module_dir_objex}" includes="linker" />
+		</copy>
+		<echo>libc-libgcc.a</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${basedir}/lib/${build_cfg_target}" includes="libgcc.a" />
+		</copy>
 	</target>
 
 	<!-- ====================           ENTRY            ================== -->
 
 	<!-- All -->
-	<target name="all" depends="_prepare, _build.xbionic.libc.crt, _build.xbionic.libdl, _build.xbionic.libc.static, _build.xbionic.libc.shared, _build.xbionic.libm, _build.xbionic.libstdc++, _build.xbionic.libthread_db, _build.output" />
+	<target name="all" depends="_prepare, _build.xbionic.libc.crt, _build.xbionic.libdl, _build.xbionic.libc.static, _build.xbionic.libc.shared, _build.xbionic.libm, _build.xbionic.libstdc++, _build.xbionic.libthread_db, _build.xbionic.linker, _build.output" />
 	<!--
 	<target name="all" depends="_prepare, _build.output" />
 	-->
