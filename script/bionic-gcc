@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# You have to change the TOPDIR
+exec "${REALGCC:-gcc}" "$@" -specs "TOPDIR/lib/bionic-gcc.specs"

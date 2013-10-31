@@ -177,7 +177,7 @@
 		<echo>Build : xbionic-libc-crt-mix</echo>
 		<move tofile="${module_dir_so_crt}/crtend_android.o" file="${module_dir_so_crt}/crtend.o"/>
 		<copy tofile="${module_dir_so_crt}/crtbegin_static1.o" file="${module_dir_so_crt}/crtbegin.o"/>
-		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
 			<arg line="${build_xb_opt_ld}" />
 			<arg line="${build_xb_libc_crt_ldflags}" />
 			<arg line="-r" />
@@ -187,7 +187,7 @@
 			<fileset dir="${module_dir_so_crt}" includes="crtbegin_static1.o, crtbrand.o" />
 		</apply>
 		<copy tofile="${module_dir_so_crt}/crtbegin_dynamic1.o" file="${module_dir_so_crt}/crtbegin.o"/>
-		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
 			<arg line="${build_xb_opt_ld}" />
 			<arg line="${build_xb_libc_crt_ldflags}" />
 			<arg line="-r" />
@@ -196,6 +196,11 @@
 			<srcfile />
 			<fileset dir="${module_dir_so_crt}" includes="crtbegin_dynamic1.o, crtbrand.o" />
 		</apply>
+		<echo>Build : xbionic-libc-crt-remove</echo>
+		<delete file="${module_dir_so_crt}/crtbegin.o"/>
+		<delete file="${module_dir_so_crt}/crtbrand.o"/>
+		<delete file="${module_dir_so_crt}/crtbegin_dynamic1.o"/>
+		<delete file="${module_dir_so_crt}/crtbegin_static1.o"/>
 	</target>
 
 	<!-- BUILD : bionic-dl  -->
@@ -703,6 +708,7 @@
 		</apply>
 		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_ex_linker}" failonerror="true">
 			<arg line="${build_xb_linker_cflags}" />
+			<arg line="-fno-rtti" />
 			<arg line="-c" />
 			<arg line="-o" />
 			<targetfile />
@@ -714,17 +720,42 @@
 			</chainedmapper>
 		</apply>
 		<echo>Build : xbionic-linker.bin</echo>
-		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
-			<arg line="${build_xb_opt_cxx}" />
+		<scriptdef name="setloglevel" language="javascript">
+			<attribute name="level"/>
+			<![CDATA[
+			    var logger = project.getBuildListeners().firstElement();
+				var strlevel = attributes.get("level");
+				if (strlevel == "error") {
+					logger.setMessageOutputLevel(0);
+				} else if (strlevel == "warning") {
+					logger.setMessageOutputLevel(1);
+				} else if (strlevel == "info") {
+					logger.setMessageOutputLevel(2);
+				} else if (strlevel == "verbose") {
+					logger.setMessageOutputLevel(3);
+				} else {
+					logger.setMessageOutputLevel(4);
+				}
+			]]>
+		</scriptdef>
+		<setloglevel level="debug"/>
+		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
+			<!--
 			<arg line="${build_xb_opt_ld}" />
+			-->
+			<arg line="${build_xb_linker_ldflags}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objex}/${build_xb_linker_bin}" />
+			<arg line="${build_xb_linker_ldflags2}" />
 			<srcfile />
-			<arg line="-L${module_dir_obja}" />
-			<arg line="-lc_nomalloc" />
-			<arg line="${build_xb_libtdb_so_ldflags}" />
+			<arg line="-Wl,--whole-archive -Wl,--no-whole-archive" />
+			<arg line="-Wl,--start-group" />
+			<arg line="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+			<arg line="${build_xb_linker_ldflags3}" />
+			<arg line="-Wl,--end-group" />
 			<fileset dir="${module_dir_ex_linker}" includes="*.o" />
 		</apply>
+		<setloglevel level="info"/>
 	</target>
 
 	<!-- OUPUT : copying needed files  -->
@@ -758,6 +789,12 @@
 		<copy todir="${module_dir_output_lib}">
 			<fileset dir="${module_dir_so_crt}" includes="*.o" />
 		</copy>
+		<!--
+		<echo>libc-static-objects</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${module_dir_obja}" includes="*.a" />
+		</copy>
+		-->
 		<echo>libc-shared-objects</echo>
 		<copy todir="${module_dir_output_lib}">
 			<fileset dir="${module_dir_objso}" includes="*.so" />
@@ -770,6 +807,11 @@
 		<copy todir="${module_dir_output_lib}">
 			<fileset dir="${basedir}/lib/${build_cfg_target}" includes="libgcc.a" />
 		</copy>
+		<echo>change the permission of copied files</echo>
+		<chmod perm="0755">
+			<fileset dir="${module_dir_output_lib}" includes="*.so" />
+		</chmod>
+		<chmod file="${module_dir_output_bin}/linker" perm="0755" />
 	</target>
 
 	<!-- ====================           ENTRY            ================== -->

@@ -114,7 +114,7 @@ build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-except
 		-isystem ${basedir}/xbionic/libc/include \
 		-isystem ${basedir}/xbionic/libc/kernel/common \
 		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
-build_xb_opt_ld     = -m32 -nostdlib
+build_xb_opt_ld     = -m32 -nostdlib -Wl,--hash-style=both
 
 #####
 # xb_libc
@@ -1151,7 +1151,7 @@ build_xb_libtdb_so_src_mk  =
 ####
 build_xb_linker_bin        = linker
 build_xb_linker_cflags     = \
-		-m32 -g -O2 -Wall -Wextra -fno-exceptions \
+		-m32 -g -O2 -Wall -Wextra -Werror -fno-exceptions \
 		-fPIC -fPIE \
 		-ffunction-sections \
 		-finline-functions -finline-limit=300 -fno-inline-functions-called-once \
@@ -1159,7 +1159,6 @@ build_xb_linker_cflags     = \
 		-fstrict-aliasing \
 		-funswitch-loops \
 		-funwind-tables \
-		-fstack-protector \
 		-fmessage-length=0 \
 		-isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include \
 		-isystem ${basedir}/xbionic/libc/include \
@@ -1168,10 +1167,20 @@ build_xb_linker_cflags     = \
 		-fno-stack-protector \
         -Wstrict-overflow=5 \
         -fvisibility=hidden \
-        -Wall -Wextra -Werror \
         -DANDROID_X86_LINKER \
         -I${basedir}/xbionic/libc
-build_xb_linker_ldflags    =  -shared -Wl,--exclude-libs,ALL \
+build_xb_linker_ldflags    = \
+		-m32 \
+		-Wl,-z,noexecstack \
+		-Wl,-z,relro \
+		-Wl,-z,now \
+		-Wl,--warn-shared-textrel \
+		-Wl,--gc-sections \
+		-nostdlib \
+		-Bstatic
+build_xb_linker_ldflags2   = \
+		-shared -Wl,--exclude-libs,ALL -Wl,--no-undefined
+build_xb_linker_ldflags3   = \
 		${basedir}/lib/${build_cfg_target}/libgcc.a
 build_xb_linker_src_in     = \
     linker/arch/${build_cfg_arch}/begin.c, \

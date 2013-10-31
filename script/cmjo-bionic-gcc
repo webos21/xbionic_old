@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# You have to change the TOPDIR
+exec "${REALGCC:-gcc}" "$@" -specs "/home/appos/gitrepo/xbionic/ant/linux32/emul/lib/cmjo-bionic-gcc.specs"

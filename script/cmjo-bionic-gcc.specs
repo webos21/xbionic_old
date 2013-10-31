@@ -1,0 +1,65 @@
+# This spec is for xbionic with standard gcc.
+# You must replace the string TOPDIR
+
+%rename cpp_options old_cpp_options
+
+*cpp_options:
+-nostdinc \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include/kernel \
+-isystem include%s %(old_cpp_options)
+
+*cc1:
+%(cc1_cpu) \
+-nostdinc \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include/kernel \
+-isystem include%s
+
+*cc1plus:
+%(cc1_cpu) \
+-nostdinc \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include \
+-isystem /home/appos/gitrepo/xbionic/ant/linux32/emul/include/kernel \
+-isystem include%s
+
+*link_libgcc:
+-L/home/appos/gitrepo/xbionic/ant/linux32/emul/lib -L .%s %{!static:--eh-frame-hdr}
+
+*libgcc:
+libgcc.a%s %:if-exists(libgcc_eh.a%s)
+
+*startfile:
+%{mno-android|tno-android-ld:%{!shared: %{pg|p|profile:gcrt1.o%s;pie:Scrt1.o%s;:crt1.o%s}} \
+crti.o%s \
+%{static:crtbeginT.o%s;shared|pie:crtbeginS.o%s;:crtbegin.o%s};:%{shared: /home/appos/gitrepo/xbionic/ant/linux32/emul/lib/crtbegin_so%O%s;:  %{static: /home/appos/gitrepo/xbionic/ant/linux32/emul/lib/crtbegin_static%O%s;: /home/appos/gitrepo/xbionic/ant/linux32/emul/lib/crtbegin_dynamic%O%s}}}
+
+*endfile:
+%{mno-android|tno-android-ld:%{Ofast|ffast-math|funsafe-math-optimizations:crtfastmath.o%s} \
+%{mpc32:crtprec32.o%s} \
+%{mpc64:crtprec64.o%s} \
+%{mpc80:crtprec80.o%s} \
+%{shared|pie:crtendS.o%s;:crtend.o%s} \
+crtn.o%s;:%{Ofast|ffast-math|funsafe-math-optimizations:crtfastmath.o%s} \
+%{mpc32:crtprec32.o%s} \
+%{mpc64:crtprec64.o%s} \
+%{mpc80:crtprec80.o%s} \
+%{shared: /home/appos/gitrepo/xbionic/ant/linux32/emul/lib/crtend_so%O%s;: /home/appos/gitrepo/xbionic/ant/linux32/emul/lib/crtend_android%O%s}}
+
+*link:
+-m elf_i386 \
+-dynamic-linker /home/appos/gitrepo/xbionic/ant/linux32/emul/bin/linker \
+-nostdlib \
+%{shared:-shared} \
+%{static:-static} \
+%{rdynamic:-export-dynamic}
+
+*esp_link:
+
+
+*esp_options:
+
+
+*esp_cpp_options:
+
+
