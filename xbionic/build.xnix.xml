@@ -740,19 +740,12 @@
 		</scriptdef>
 		<setloglevel level="debug"/>
 		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
-			<!--
 			<arg line="${build_xb_opt_ld}" />
-			-->
-			<arg line="${build_xb_linker_ldflags}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objex}/${build_xb_linker_bin}" />
-			<arg line="${build_xb_linker_ldflags2}" />
 			<srcfile />
-			<arg line="-Wl,--whole-archive -Wl,--no-whole-archive" />
-			<arg line="-Wl,--start-group" />
 			<arg line="${module_dir_obja}/${build_xb_libc_nml_bin}" />
-			<arg line="${build_xb_linker_ldflags3}" />
-			<arg line="-Wl,--end-group" />
+			<arg line="${build_xb_linker_ldflags}" />
 			<fileset dir="${module_dir_ex_linker}" includes="*.o" />
 		</apply>
 		<setloglevel level="info"/>

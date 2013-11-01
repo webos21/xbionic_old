@@ -1170,8 +1170,6 @@ build_xb_linker_cflags     = \
         -DANDROID_X86_LINKER \
         -I${basedir}/xbionic/libc
 build_xb_linker_ldflags    = \
-		-m32 \
-		-Wl,--hash-style=both \
 		-Wl,-Bsymbolic \
  		-Wl,-z,noexecstack \
 		-Wl,-z,relro \
@@ -1180,10 +1178,8 @@ build_xb_linker_ldflags    = \
 		-Wl,--no-export-dynamic \
 		-Wl,--gc-sections \
 		-nostdlib \
-		-Bstatic
-build_xb_linker_ldflags2   = \
-		-shared -Wl,--exclude-libs,ALL -Wl,--no-undefined
-build_xb_linker_ldflags3   = \
+		-Bstatic \
+		-shared -Wl,--exclude-libs,ALL -Wl,--no-undefined \
 		${basedir}/lib/${build_cfg_target}/libgcc.a
 build_xb_linker_src_in     = \
     linker/arch/${build_cfg_arch}/begin.c, \
