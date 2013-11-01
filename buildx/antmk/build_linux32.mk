@@ -1171,10 +1171,13 @@ build_xb_linker_cflags     = \
         -I${basedir}/xbionic/libc
 build_xb_linker_ldflags    = \
 		-m32 \
-		-Wl,-z,noexecstack \
+		-Wl,--hash-style=both \
+		-Wl,-Bsymbolic \
+ 		-Wl,-z,noexecstack \
 		-Wl,-z,relro \
 		-Wl,-z,now \
 		-Wl,--warn-shared-textrel \
+		-Wl,--no-export-dynamic \
 		-Wl,--gc-sections \
 		-nostdlib \
 		-Bstatic
