@@ -37,7 +37,6 @@ include ${basedir}/buildx/antmk/shprog.mk
 build_cfg_target  = mingw32
 build_cfg_mingw   = 1
 #build_cfg_posix   = 1
-build_cfg_arch    = x86
 
 
 ########################
@@ -84,6 +83,8 @@ build_opt_ld_mgwcx = -static-libgcc -static-libstdc++
 ########################
 # Compile Target : xbionic
 ########################
+build_xb_cfg_arch   = win
+
 build_xb_opt_c      = -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -std=gnu99 \
 		-ffunction-sections \
 		-fdata-sections \
@@ -94,10 +95,10 @@ build_xb_opt_c      = -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -std=gnu99 \
 		-funwind-tables \
 		-fstack-protector \
 		-fmessage-length=0 \
-		-isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include \
-		-isystem ${basedir}/xbionic/libc/include \
-		-isystem ${basedir}/xbionic/libc/kernel/common \
-		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
+		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/wbionic/libc/include \
+		-isystem ${basedir}/wbionic/libc/kernel/common \
+		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch}
 build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-exceptions -fno-rtti \
 		-ffunction-sections \
 		-fdata-sections \
@@ -108,16 +109,15 @@ build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-except
 		-funwind-tables \
 		-fstack-protector \
 		-fmessage-length=0 \
-		-isystem ${basedir}/xbionic/libc/arch-${build_cfg_arch}/include \
-		-isystem ${basedir}/xbionic/libc/include \
-		-isystem ${basedir}/xbionic/libc/kernel/common \
-		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_cfg_arch}
+		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/wbionic/libc/include \
+		-isystem ${basedir}/wbionic/libc/kernel/common \
+		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch}
 build_xb_opt_ld     = -m32 -nostdlib
 
 #####
 # xb_libc
 #####
-
 build_xb_libc_cmn_cflags = \
 	-DWITH_ERRLIST \
 	-DANDROID_CHANGES \
@@ -131,15 +131,15 @@ build_xb_libc_cmn_cflags = \
 	-DDEBUG \
 	-DSOFTFLOAT \
 	-DANDROID_SMP=1 \
-	-I${basedir}/xbionic/libc/private
+	-I${basedir}/wbionic/libc/private
 
 build_xb_libc_cmn_ldflags = -Wl,--no-undefined
 
 build_xb_libc_cmn_incs = \
-	-I${basedir}/xbionic/libc \
-	-I${basedir}/xbionic/libc/stdlib \
-	-I${basedir}/xbionic/libc/string \
-	-I${basedir}/xbionic/libc/stdio \
+	-I${basedir}/wbionic/libc \
+	-I${basedir}/wbionic/libc/stdlib \
+	-I${basedir}/wbionic/libc/string \
+	-I${basedir}/wbionic/libc/stdio \
 	-I${basedir}/external/safe-iop/include
 
 
@@ -148,209 +148,209 @@ build_xb_libc_cmn_incs = \
 ####
 
 build_xb_libc_sc_src =  \
-	libc/arch-x86/syscalls/_exit.S, \
-	libc/arch-x86/syscalls/_exit_thread.S, \
-	libc/arch-x86/syscalls/__fork.S, \
-	libc/arch-x86/syscalls/_waitpid.S, \
-	libc/arch-x86/syscalls/__waitid.S, \
-	libc/arch-x86/syscalls/wait4.S, \
-	libc/arch-x86/syscalls/__sys_clone.S, \
-	libc/arch-x86/syscalls/execve.S, \
-	libc/arch-x86/syscalls/__setuid.S, \
-	libc/arch-x86/syscalls/getuid.S, \
-	libc/arch-x86/syscalls/getgid.S, \
-	libc/arch-x86/syscalls/geteuid.S, \
-	libc/arch-x86/syscalls/getegid.S, \
-	libc/arch-x86/syscalls/getresuid.S, \
-	libc/arch-x86/syscalls/getresgid.S, \
-	libc/arch-x86/syscalls/gettid.S, \
-	libc/arch-x86/syscalls/readahead.S, \
-	libc/arch-x86/syscalls/getgroups.S, \
-	libc/arch-x86/syscalls/getpgid.S, \
-	libc/arch-x86/syscalls/getppid.S, \
-	libc/arch-x86/syscalls/getsid.S, \
-	libc/arch-x86/syscalls/setsid.S, \
-	libc/arch-x86/syscalls/setgid.S, \
-	libc/arch-x86/syscalls/__setreuid.S, \
-	libc/arch-x86/syscalls/__setresuid.S, \
-	libc/arch-x86/syscalls/setresgid.S, \
-	libc/arch-x86/syscalls/__brk.S, \
-	libc/arch-x86/syscalls/kill.S, \
-	libc/arch-x86/syscalls/tkill.S, \
-	libc/arch-x86/syscalls/tgkill.S, \
-	libc/arch-x86/syscalls/__ptrace.S, \
-	libc/arch-x86/syscalls/__set_thread_area.S, \
-	libc/arch-x86/syscalls/__getpriority.S, \
-	libc/arch-x86/syscalls/setpriority.S, \
-	libc/arch-x86/syscalls/setrlimit.S, \
-	libc/arch-x86/syscalls/getrlimit.S, \
-	libc/arch-x86/syscalls/getrusage.S, \
-	libc/arch-x86/syscalls/setgroups.S, \
-	libc/arch-x86/syscalls/setpgid.S, \
-	libc/arch-x86/syscalls/setregid.S, \
-	libc/arch-x86/syscalls/chroot.S, \
-	libc/arch-x86/syscalls/prctl.S, \
-	libc/arch-x86/syscalls/capget.S, \
-	libc/arch-x86/syscalls/capset.S, \
-	libc/arch-x86/syscalls/sigaltstack.S, \
-	libc/arch-x86/syscalls/acct.S, \
-	libc/arch-x86/syscalls/read.S, \
-	libc/arch-x86/syscalls/write.S, \
-	libc/arch-x86/syscalls/pread64.S, \
-	libc/arch-x86/syscalls/pwrite64.S, \
-	libc/arch-x86/syscalls/__open.S, \
-	libc/arch-x86/syscalls/__openat.S, \
-	libc/arch-x86/syscalls/close.S, \
-	libc/arch-x86/syscalls/lseek.S, \
-	libc/arch-x86/syscalls/__llseek.S, \
-	libc/arch-x86/syscalls/getpid.S, \
-	libc/arch-x86/syscalls/__mmap2.S, \
-	libc/arch-x86/syscalls/munmap.S, \
-	libc/arch-x86/syscalls/mremap.S, \
-	libc/arch-x86/syscalls/msync.S, \
-	libc/arch-x86/syscalls/mprotect.S, \
-	libc/arch-x86/syscalls/madvise.S, \
-	libc/arch-x86/syscalls/mlock.S, \
-	libc/arch-x86/syscalls/munlock.S, \
-	libc/arch-x86/syscalls/mlockall.S, \
-	libc/arch-x86/syscalls/munlockall.S, \
-	libc/arch-x86/syscalls/mincore.S, \
-	libc/arch-x86/syscalls/__ioctl.S, \
-	libc/arch-x86/syscalls/readv.S, \
-	libc/arch-x86/syscalls/writev.S, \
-	libc/arch-x86/syscalls/__fcntl.S, \
-	libc/arch-x86/syscalls/flock.S, \
-	libc/arch-x86/syscalls/fchmod.S, \
-	libc/arch-x86/syscalls/dup.S, \
-	libc/arch-x86/syscalls/pipe.S, \
-	libc/arch-x86/syscalls/pipe2.S, \
-	libc/arch-x86/syscalls/dup2.S, \
-	libc/arch-x86/syscalls/select.S, \
-	libc/arch-x86/syscalls/ftruncate.S, \
-	libc/arch-x86/syscalls/ftruncate64.S, \
-	libc/arch-x86/syscalls/getdents.S, \
-	libc/arch-x86/syscalls/fsync.S, \
-	libc/arch-x86/syscalls/fdatasync.S, \
-	libc/arch-x86/syscalls/fchown.S, \
-	libc/arch-x86/syscalls/sync.S, \
-	libc/arch-x86/syscalls/__fcntl64.S, \
-	libc/arch-x86/syscalls/__fstatfs64.S, \
-	libc/arch-x86/syscalls/sendfile.S, \
-	libc/arch-x86/syscalls/fstatat.S, \
-	libc/arch-x86/syscalls/mkdirat.S, \
-	libc/arch-x86/syscalls/fchownat.S, \
-	libc/arch-x86/syscalls/fchmodat.S, \
-	libc/arch-x86/syscalls/renameat.S, \
-	libc/arch-x86/syscalls/fsetxattr.S, \
-	libc/arch-x86/syscalls/fgetxattr.S, \
-	libc/arch-x86/syscalls/flistxattr.S, \
-	libc/arch-x86/syscalls/fremovexattr.S, \
-	libc/arch-x86/syscalls/link.S, \
-	libc/arch-x86/syscalls/unlink.S, \
-	libc/arch-x86/syscalls/unlinkat.S, \
-	libc/arch-x86/syscalls/chdir.S, \
-	libc/arch-x86/syscalls/mknod.S, \
-	libc/arch-x86/syscalls/chmod.S, \
-	libc/arch-x86/syscalls/chown.S, \
-	libc/arch-x86/syscalls/lchown.S, \
-	libc/arch-x86/syscalls/mount.S, \
-	libc/arch-x86/syscalls/umount2.S, \
-	libc/arch-x86/syscalls/fstat.S, \
-	libc/arch-x86/syscalls/stat.S, \
-	libc/arch-x86/syscalls/lstat.S, \
-	libc/arch-x86/syscalls/mkdir.S, \
-	libc/arch-x86/syscalls/readlink.S, \
-	libc/arch-x86/syscalls/rmdir.S, \
-	libc/arch-x86/syscalls/rename.S, \
-	libc/arch-x86/syscalls/__getcwd.S, \
-	libc/arch-x86/syscalls/access.S, \
-	libc/arch-x86/syscalls/faccessat.S, \
-	libc/arch-x86/syscalls/symlink.S, \
-	libc/arch-x86/syscalls/fchdir.S, \
-	libc/arch-x86/syscalls/truncate.S, \
-	libc/arch-x86/syscalls/setxattr.S, \
-	libc/arch-x86/syscalls/lsetxattr.S, \
-	libc/arch-x86/syscalls/getxattr.S, \
-	libc/arch-x86/syscalls/lgetxattr.S, \
-	libc/arch-x86/syscalls/listxattr.S, \
-	libc/arch-x86/syscalls/llistxattr.S, \
-	libc/arch-x86/syscalls/removexattr.S, \
-	libc/arch-x86/syscalls/lremovexattr.S, \
-	libc/arch-x86/syscalls/__statfs64.S, \
-	libc/arch-x86/syscalls/unshare.S, \
-	libc/arch-x86/syscalls/pause.S, \
-	libc/arch-x86/syscalls/gettimeofday.S, \
-	libc/arch-x86/syscalls/settimeofday.S, \
-	libc/arch-x86/syscalls/times.S, \
-	libc/arch-x86/syscalls/nanosleep.S, \
-	libc/arch-x86/syscalls/clock_gettime.S, \
-	libc/arch-x86/syscalls/clock_settime.S, \
-	libc/arch-x86/syscalls/clock_getres.S, \
-	libc/arch-x86/syscalls/clock_nanosleep.S, \
-	libc/arch-x86/syscalls/getitimer.S, \
-	libc/arch-x86/syscalls/setitimer.S, \
-	libc/arch-x86/syscalls/__timer_create.S, \
-	libc/arch-x86/syscalls/__timer_settime.S, \
-	libc/arch-x86/syscalls/__timer_gettime.S, \
-	libc/arch-x86/syscalls/__timer_getoverrun.S, \
-	libc/arch-x86/syscalls/__timer_delete.S, \
-	libc/arch-x86/syscalls/utimes.S, \
-	libc/arch-x86/syscalls/utimensat.S, \
-	libc/arch-x86/syscalls/sigaction.S, \
-	libc/arch-x86/syscalls/sigprocmask.S, \
-	libc/arch-x86/syscalls/__sigsuspend.S, \
-	libc/arch-x86/syscalls/__rt_sigaction.S, \
-	libc/arch-x86/syscalls/__rt_sigprocmask.S, \
-	libc/arch-x86/syscalls/__rt_sigtimedwait.S, \
-	libc/arch-x86/syscalls/sigpending.S, \
-	libc/arch-x86/syscalls/signalfd4.S, \
-	libc/arch-x86/syscalls/socket.S, \
-	libc/arch-x86/syscalls/bind.S, \
-	libc/arch-x86/syscalls/connect.S, \
-	libc/arch-x86/syscalls/listen.S, \
-	libc/arch-x86/syscalls/accept.S, \
-	libc/arch-x86/syscalls/getsockname.S, \
-	libc/arch-x86/syscalls/getpeername.S, \
-	libc/arch-x86/syscalls/socketpair.S, \
-	libc/arch-x86/syscalls/sendto.S, \
-	libc/arch-x86/syscalls/recvfrom.S, \
-	libc/arch-x86/syscalls/shutdown.S, \
-	libc/arch-x86/syscalls/setsockopt.S, \
-	libc/arch-x86/syscalls/getsockopt.S, \
-	libc/arch-x86/syscalls/sendmsg.S, \
-	libc/arch-x86/syscalls/recvmsg.S, \
-	libc/arch-x86/syscalls/sched_setscheduler.S, \
-	libc/arch-x86/syscalls/sched_getscheduler.S, \
-	libc/arch-x86/syscalls/sched_yield.S, \
-	libc/arch-x86/syscalls/sched_setparam.S, \
-	libc/arch-x86/syscalls/sched_getparam.S, \
-	libc/arch-x86/syscalls/sched_get_priority_max.S, \
-	libc/arch-x86/syscalls/sched_get_priority_min.S, \
-	libc/arch-x86/syscalls/sched_rr_get_interval.S, \
-	libc/arch-x86/syscalls/sched_setaffinity.S, \
-	libc/arch-x86/syscalls/__sched_getaffinity.S, \
-	libc/arch-x86/syscalls/__getcpu.S, \
-	libc/arch-x86/syscalls/ioprio_set.S, \
-	libc/arch-x86/syscalls/ioprio_get.S, \
-	libc/arch-x86/syscalls/uname.S, \
-	libc/arch-x86/syscalls/umask.S, \
-	libc/arch-x86/syscalls/__reboot.S, \
-	libc/arch-x86/syscalls/__syslog.S, \
-	libc/arch-x86/syscalls/init_module.S, \
-	libc/arch-x86/syscalls/delete_module.S, \
-	libc/arch-x86/syscalls/klogctl.S, \
-	libc/arch-x86/syscalls/sysinfo.S, \
-	libc/arch-x86/syscalls/personality.S, \
-	libc/arch-x86/syscalls/perf_event_open.S, \
-	libc/arch-x86/syscalls/futex.S, \
-	libc/arch-x86/syscalls/epoll_create.S, \
-	libc/arch-x86/syscalls/epoll_ctl.S, \
-	libc/arch-x86/syscalls/epoll_wait.S, \
-	libc/arch-x86/syscalls/inotify_init.S, \
-	libc/arch-x86/syscalls/inotify_add_watch.S, \
-	libc/arch-x86/syscalls/inotify_rm_watch.S, \
-	libc/arch-x86/syscalls/poll.S, \
-	libc/arch-x86/syscalls/eventfd.S
+	libc/arch-${build_xb_cfg_arch}/syscalls/_exit.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/_exit_thread.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fork.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/_waitpid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__waitid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/wait4.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__sys_clone.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/execve.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/geteuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getegid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getresuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getresgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/gettid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/readahead.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getgroups.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getpgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getppid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getsid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setsid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setreuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setresuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setresgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__brk.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/kill.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/tkill.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/tgkill.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__ptrace.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__set_thread_area.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__getpriority.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setpriority.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setrlimit.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getrlimit.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getrusage.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setgroups.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setpgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setregid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/chroot.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/prctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/capget.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/capset.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sigaltstack.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/acct.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/read.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/write.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pread64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pwrite64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__open.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__openat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/close.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lseek.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__llseek.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getpid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__mmap2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munmap.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mremap.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/msync.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mprotect.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/madvise.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mlock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munlock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mlockall.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munlockall.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mincore.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__ioctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/readv.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/writev.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/flock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchmod.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/dup.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pipe.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pipe2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/dup2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/select.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getdents.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fsync.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fdatasync.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchown.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sync.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fstatfs64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sendfile.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fstatat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mkdirat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchownat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchmodat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/renameat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fsetxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fgetxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/flistxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fremovexattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/link.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/unlink.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/unlinkat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/chdir.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mknod.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/chmod.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/chown.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lchown.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mount.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/umount2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fstat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/stat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lstat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mkdir.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/readlink.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/rmdir.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/rename.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__getcwd.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/access.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/faccessat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/symlink.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchdir.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/truncate.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lsetxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lgetxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/listxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/llistxattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/removexattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lremovexattr.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__statfs64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/unshare.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pause.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/gettimeofday.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/settimeofday.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/times.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/nanosleep.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/clock_gettime.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/clock_settime.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/clock_getres.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/clock_nanosleep.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getitimer.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setitimer.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__timer_create.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__timer_settime.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__timer_gettime.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__timer_getoverrun.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__timer_delete.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/utimes.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/utimensat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sigaction.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sigprocmask.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__sigsuspend.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__rt_sigaction.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__rt_sigprocmask.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__rt_sigtimedwait.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sigpending.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/signalfd4.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/socket.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/bind.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/connect.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/listen.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/accept.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getsockname.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getpeername.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/socketpair.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sendto.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/recvfrom.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/shutdown.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setsockopt.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getsockopt.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sendmsg.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/recvmsg.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_setscheduler.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_getscheduler.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_yield.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_setparam.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_getparam.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_get_priority_max.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_get_priority_min.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_rr_get_interval.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sched_setaffinity.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__sched_getaffinity.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__getcpu.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ioprio_set.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ioprio_get.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/uname.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/umask.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__reboot.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__syslog.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/init_module.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/delete_module.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/klogctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sysinfo.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/personality.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/perf_event_open.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/futex.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/epoll_create.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/epoll_ctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/epoll_wait.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/inotify_init.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/inotify_add_watch.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/inotify_rm_watch.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/poll.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/eventfd.c
 
 build_xb_libc_common_src =  \
 	${build_xb_libc_sc_src}, \
@@ -718,27 +718,27 @@ build_xb_libc_r_common_src =  \
 	libc/bionic/pthread-timers.c, \
 	libc/bionic/ptrace.c, \
 	libc/string/strcpy.c, \
-	libc/arch-x86/bionic/clone.S, \
-	libc/arch-x86/bionic/_exit_with_stack_teardown.S, \
-	libc/arch-x86/bionic/futex_x86.S, \
-	libc/arch-x86/bionic/__get_sp.S, \
-	libc/arch-x86/bionic/__get_tls.c, \
-	libc/arch-x86/bionic/_setjmp.S, \
-	libc/arch-x86/bionic/setjmp.S, \
-	libc/arch-x86/bionic/__set_tls.c, \
-	libc/arch-x86/bionic/sigsetjmp.S, \
-	libc/arch-x86/bionic/syscall.S, \
-	libc/arch-x86/bionic/vfork.S, \
-	libc/arch-x86/string/bcopy_wrapper.S, \
-	libc/arch-x86/string/bzero_wrapper.S, \
-	libc/arch-x86/string/ffs.S, \
-	libc/arch-x86/string/memcmp_wrapper.S, \
-	libc/arch-x86/string/memcpy_wrapper.S, \
-	libc/arch-x86/string/memmove_wrapper.S, \
-	libc/arch-x86/string/memset_wrapper.S, \
-	libc/arch-x86/string/strcmp_wrapper.S, \
-	libc/arch-x86/string/strlen_wrapper.S, \
-	libc/arch-x86/string/strncmp_wrapper.S
+	libc/arch-${build_xb_cfg_arch}/bionic/clone.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/_exit_with_stack_teardown.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/futex_x86.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/__get_sp.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/__get_tls.c, \
+	libc/arch-${build_xb_cfg_arch}/bionic/_setjmp.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/setjmp.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/__set_tls.c, \
+	libc/arch-${build_xb_cfg_arch}/bionic/sigsetjmp.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/syscall.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/vfork.S, \
+	libc/arch-${build_xb_cfg_arch}/string/bcopy_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/bzero_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/ffs.S, \
+	libc/arch-${build_xb_cfg_arch}/string/memcmp_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/memcpy_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/memmove_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/memset_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/strcmp_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/strlen_wrapper.S, \
+	libc/arch-${build_xb_cfg_arch}/string/strncmp_wrapper.S
 
 # libc : static common
 build_xb_libc_s_common_src =  \
@@ -759,18 +759,18 @@ build_xb_libc_arch_dynamic_src =
 ####
 build_xb_libc_crt_bin     =
 build_xb_libc_crt_cflags  = -DUSE_SSE2=1 -DUSE_SSE3=1 -DPLATFORM_SDK_VERSION=18 \
-	-I${basedir}/xbionic/libc/include \
-    -I${basedir}/xbionic/libc/private \
-    -I${basedir}/xbionic/libc/arch-${build_cfg_arch}/include
+	-I${basedir}/wbionic/libc/include \
+    -I${basedir}/wbionic/libc/private \
+    -I${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include
 build_xb_libc_crt_ldflags = 
-build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-${build_cfg_arch}/bionic/crt*.S, libc/arch-${build_cfg_arch}/bionic/crt*.c
+build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-${build_xb_cfg_arch}/bionic/crt*.S, libc/arch-${build_xb_cfg_arch}/bionic/crt*.c
 build_xb_libc_crt_src_ex  = 
 build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
 
 ####
 # libdl.so
 ####
-build_xb_libdl_bin        = libdl.so
+build_xb_libdl_bin        = dl.dll
 build_xb_libdl_cflags     = ${build_xb_libc_cmn_cflags}
 build_xb_libdl_ldflags    = -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a
 build_xb_libdl_src_in     = libdl/libdl.c
@@ -792,8 +792,9 @@ build_xb_libc_ssp_src_mk  = ${build_xb_libc_ssp_src_in}
 ####
 build_xb_libc_ufb_bin     = libc_freebsd.a
 build_xb_libc_ufb_cflags  = ${build_xb_libc_cmn_cflags} \
-	-I${basedir}/xbionic/libc/upstream-freebsd \
-	-include ${basedir}/xbionic/libc/upstream-freebsd/freebsd-compat.h
+	-D_WCTYPE_T_DEFINED \
+	-I${basedir}/wbionic/libc/upstream-freebsd \
+	-include ${basedir}/wbionic/libc/upstream-freebsd/freebsd-compat.h
 build_xb_libc_ufb_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_ufb_src_in  = ${build_xb_libc_ufreebsd_src}
 build_xb_libc_ufb_src_ex  = 
@@ -804,11 +805,11 @@ build_xb_libc_ufb_src_mk  = ${build_xb_libc_ufb_src_in}
 ####
 build_xb_libc_unb_bin     = libc_netbsd.a
 build_xb_libc_unb_cflags  = ${build_xb_libc_cmn_cflags} \
-	-I${basedir}/xbionic/libc/stdio \
-	-I${basedir}/xbionic/libm/include \
-	-I${basedir}/xbionic/libc/upstream-netbsd \
-	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
-	-include ${basedir}/xbionic/libc/upstream-netbsd/netbsd-compat.h
+	-I${basedir}/wbionic/libc/stdio \
+	-I${basedir}/wbionic/libm/include \
+	-I${basedir}/wbionic/libc/upstream-netbsd \
+	-I${basedir}/wbionic/libc/upstream-netbsd/libc/include \
+	-include ${basedir}/wbionic/libc/upstream-netbsd/netbsd-compat.h
 build_xb_libc_unb_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_unb_src_in  = ${build_xb_libc_unetbsd_src}
 build_xb_libc_unb_src_ex  =
@@ -819,6 +820,7 @@ build_xb_libc_unb_src_mk  = $(build_xb_libc_unb_src_in)
 ####
 build_xb_libc_bnx_bin     = libc_bionic.a
 build_xb_libc_bnx_cflags  = ${build_xb_libc_cmn_cflags} -Werror ${build_xb_libc_cmn_incs} \
+	-D_WCTYPE_T_DEFINED \
 	-I${basedir}/external/android/system/core/include
 build_xb_libc_bnx_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_bnx_src_in  = ${build_xb_libc_bionic_src}
@@ -830,8 +832,9 @@ build_xb_libc_bnx_src_mk  = ${build_xb_libc_bnx_src_in}
 ####
 build_xb_libc_com_bin     = libc_common.a
 build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} ${build_xb_libc_cmn_incs} \
-	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
-	-I${basedir}/xbionic/libm/include
+	-D_WCTYPE_T_DEFINED \
+	-I${basedir}/wbionic/libc/upstream-netbsd/libc/include \
+	-I${basedir}/wbionic/libm/include
 build_xb_libc_com_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_com_src_in  = ${build_xb_libc_r_common_src}
 build_xb_libc_com_src_ex  = 
@@ -863,7 +866,7 @@ build_xb_libc_lca_src_mk  = ${build_xb_libc_lca_src_in}
 ####
 # libc.so
 ####
-build_xb_libc_lcs_bin     = libc.so
+build_xb_libc_lcs_bin     = c.dll
 build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
 		${basedir}/lib/${build_cfg_target}/libgcc.a
@@ -881,7 +884,7 @@ build_xb_libc_lcs_src_mk  = ${build_xb_libc_lcs_src_in}
 ####
 # libc_malloc_debug_leak.so
 ####
-build_xb_libc_mdl_bin     = libc_malloc_debug_leak.so
+build_xb_libc_mdl_bin     = c_malloc_debug_leak.dll
 build_xb_libc_mdl_cflags  = ${build_xb_libc_cmn_cflags} -DMALLOC_LEAK_CHECK
 build_xb_libc_mdl_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_mdl_src_in  = \
@@ -895,7 +898,7 @@ build_xb_libc_mdl_src_mk  = ${build_xb_libc_mdl_src_in}
 ####
 # libc_malloc_debug_qemu.so
 ####
-build_xb_libc_mdq_bin     = libc_malloc_debug_qemu.so
+build_xb_libc_mdq_bin     = c_malloc_debug_qemu.dll
 build_xb_libc_mdq_cflags  = ${build_xb_libc_cmn_cflags} -DMALLOC_QEMU_INSTRUMENT
 build_xb_libc_mdq_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_mdq_src_in  = libc/bionic/malloc_debug_qemu.cpp
@@ -1092,7 +1095,7 @@ build_xb_libm_a_src_mk    = ${build_xb_libm_a_src_in}
 ####
 # libm.so
 ####
-build_xb_libm_so_bin       = libm.so
+build_xb_libm_so_bin       = m.dll
 build_xb_libm_so_cflags    =
 build_xb_libm_so_ldflags   = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
 build_xb_libm_so_src_in    = 
@@ -1117,7 +1120,7 @@ build_xb_libscx_a_src_mk   = ${build_xb_libscx_a_src_in}
 ####
 # libstdc++.so
 ####
-build_xb_libscx_so_bin     = libstdc++.so
+build_xb_libscx_so_bin     = stdc++.dll
 build_xb_libscx_so_cflags  =
 build_xb_libscx_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
 build_xb_libscx_so_src_in  = 
@@ -1137,7 +1140,7 @@ build_xb_libtdb_a_src_mk   = ${build_xb_libtdb_a_src_in}
 ####
 # libthread_db.so
 ####
-build_xb_libtdb_so_bin     = libthread_db.so
+build_xb_libtdb_so_bin     = thread_db.dll
 build_xb_libtdb_so_cflags  =
 build_xb_libtdb_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a
 build_xb_libtdb_so_src_in  = 

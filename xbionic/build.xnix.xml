@@ -760,7 +760,7 @@
 		</copy>
 		<echo>libc-include : machine</echo>
 		<copy todir="${module_dir_output_inc}">
-			<fileset dir="${current_dir_abs}/libc/arch-${build_cfg_arch}/include" includes="**/**.h" />
+			<fileset dir="${current_dir_abs}/libc/arch-${build_xb_cfg_arch}/include" includes="**/**.h" />
 		</copy>
 		<echo>libc-include : linux</echo>
 		<copy todir="${module_dir_output_inck}">
@@ -768,7 +768,7 @@
 		</copy>
 		<echo>libc-include : asm</echo>
 		<copy todir="${module_dir_output_inck}">
-			<fileset dir="${current_dir_abs}/libc/kernel/arch-${build_cfg_arch}" includes="**/**.h" />
+			<fileset dir="${current_dir_abs}/libc/kernel/arch-${build_xb_cfg_arch}" includes="**/**.h" />
 		</copy>
 		<echo>libstdc++-include</echo>
 		<copy todir="${module_dir_output_incp}">

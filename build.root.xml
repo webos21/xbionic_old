@@ -178,7 +178,7 @@
 	<!-- xbionic -->
 	<target name="xbionic.build" depends="_prepare">
 		<echo>xbionic.build</echo>
-		<subant antfile="xbionic/build.xml" inheritall="true" buildpath="${basedir}" />
+		<subant antfile="wbionic/build.xml" inheritall="true" buildpath="${basedir}" />
 	</target>
 	<target name="xbionic.clean" depends="_prepare">
 		<echo>xbionic.clean</echo>

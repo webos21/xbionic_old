@@ -39,7 +39,7 @@
 		<basename property="xi_xbionic_rel" file="${xi_xbionic_abs}" />
 
 		<!-- Target -->
-		<property name="xi_xbionic_target" value="${basedir}/ant/${build_cfg_target}/xbionic" />
+		<property name="xi_xbionic_target" value="${basedir}/ant/${build_cfg_target}/${xi_xbionic_rel}" />
 		<mkdir dir="${xi_xbionic_target}" />
 	</target>
 
