@@ -833,10 +833,11 @@ build_xb_libc_bnx_src_mk  = ${build_xb_libc_bnx_src_in}
 build_xb_libc_com_bin     = libc_common.a
 build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} ${build_xb_libc_cmn_incs} \
 	-D_WCTYPE_T_DEFINED \
+	-I${basedir}/lib/${build_cfg_target}/include \
 	-I${basedir}/wbionic/libc/upstream-netbsd/libc/include \
 	-I${basedir}/wbionic/libm/include
 build_xb_libc_com_ldflags = ${build_xb_libc_cmn_ldflags}
-build_xb_libc_com_src_in  = ${build_xb_libc_r_common_src}
+build_xb_libc_com_src_in  = ${basedir}/lib/${build_cfg_target}/src/ntdll.c, ${build_xb_libc_r_common_src}
 build_xb_libc_com_src_ex  = 
 build_xb_libc_com_src_mk  = ${build_xb_libc_com_src_in}
 
