@@ -134,6 +134,8 @@ build_xb_libc_cmn_cflags = \
 	-DDEBUG \
 	-DSOFTFLOAT \
 	-DANDROID_SMP=1 \
+	-DUSE_SSE2 \
+	-DUSE_SSSE3 \
 	-I${basedir}/xbionic/libc/private
 
 build_xb_libc_cmn_ldflags = -Wl,--no-undefined

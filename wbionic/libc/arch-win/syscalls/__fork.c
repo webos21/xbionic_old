@@ -18,24 +18,36 @@
 #include <ntdll.h>
 
 int __fork(void) {
-	ntsc_t *ntfp = ntdll_getFP();
-	__set_errno(status);
-	ntfp->FP_RtlCreateUserProcess();
-}
+	NTSTATUS status;
+	SECURITY_ATTRIBUTES sa;
+	RTL_USER_PROCESS_INFORMATION *pi;
 
-ENTRY(__fork)
-    pushl   %ebx
-    mov     8(%esp), %ebx
-    movl    $__NR_fork, %eax
-    int     $0x80
-    cmpl    $-MAX_ERRNO, %eax
-    jb      1f
-    negl    %eax
-    pushl   %eax
-    call    __set_errno
-    addl    $4, %esp
-    orl     $-1, %eax
-1:
-    popl    %ebx
-    ret
-END(__fork)
+	int pid = -1;
+
+	ntsc_t *ntfp = ntdll_getFP();
+
+	sa.nLength = sizeof sa;
+	sa.lpSecurityDescriptor = NULL;
+	sa.bInheritHandle = TRUE;
+
+	pi = ntfp->FP_RtlAllocateHeap(DRtlGetProcessHeap(ntfp), 0, 4096);
+	ntfp->FP_RtlZeroMemory(pi, 4096);
+
+	status = ntfp->FP_RtlCloneUserProcess(
+			RTL_CLONE_PROCESS_FLAGS_INHERIT_HANDLES
+					| RTL_CLONE_PROCESS_FLAGS_NO_SYNCHRONIZE, NULL, NULL, NULL,
+			pi);
+	switch (status) {
+	case STATUS_SUCCESS :
+		pid = 0;
+		__set_errno(pid);
+		return pid;
+	case STATUS_PROCESS_CLONED:
+		pid = GetCurrentProcessId();
+		__set_errno(pid);
+		return pid;
+	default:
+		__set_errno(status);
+		return status;
+	}
+}

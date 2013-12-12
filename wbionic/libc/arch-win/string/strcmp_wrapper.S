@@ -28,13 +28,4 @@ ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#if defined(USE_SSSE3)
-
-# define ssse3_strcmp_latest strcmp
-# include "ssse3-strcmp-latest.S"
-
-#else
-
 # include "strcmp.S"
-
-#endif

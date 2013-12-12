@@ -93,8 +93,13 @@
 # endif
 #endif
 
+#ifndef _WIN32 // !_WIN32 : added by cmjo
 #define _ENTRY(x) \
 	.text; _ALIGN_TEXT; .globl x; .type x,@function; x:
+#else // _WIN32
+#define _ENTRY(x) \
+	.text; _ALIGN_TEXT; .globl x; x:
+#endif // _WIN32
 #define _LABEL(x) \
 	.globl x; x:
 
@@ -171,11 +176,19 @@
 # define _PROF_PROLOGUE
 #endif
 
+#ifndef _WIN32 // !_WIN32 : added by cmjo
 #define	ENTRY(y)	_ENTRY(_C_LABEL(y)); _PROF_PROLOGUE
+#else // _WIN32
+#define	ENTRY(y)	_ENTRY(_C_LABEL(y))
+#endif // _WIN32
 #define	NENTRY(y)	_ENTRY(_C_LABEL(y))
 #define	ASENTRY(y)	_ENTRY(_ASM_LABEL(y)); _PROF_PROLOGUE
 #define	LABEL(y)	_LABEL(_C_LABEL(y))
+#ifndef _WIN32 // added by cmjo
 #define	END(y)		.size y, . - y
+#else
+#define END(y)
+#endif
 
 #define	ASMSTR		.asciz
 
