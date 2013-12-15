@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 void bcopy(const void *src, void *dest, SIZE_T n) {
 	ntsc_t *ntfp = ntdll_getFP();
-	ntfp->FP_RtlCopyMemory(dest, src, n);
+	ntfp->FP_RtlCopyMemory(dest, (PVOID)src, n);
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 void bzero(void *s, SIZE_T n) {

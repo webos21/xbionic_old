@@ -718,17 +718,17 @@ build_xb_libc_r_common_src =  \
 	libc/bionic/pthread-timers.c, \
 	libc/bionic/ptrace.c, \
 	libc/string/strcpy.c, \
-	libc/arch-${build_xb_cfg_arch}/bionic/clone.S, \
-	libc/arch-${build_xb_cfg_arch}/bionic/_exit_with_stack_teardown.S, \
-	libc/arch-${build_xb_cfg_arch}/bionic/futex_x86.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/clone.c, \
+	libc/arch-${build_xb_cfg_arch}/bionic/_exit_with_stack_teardown.c, \
+	libc/arch-${build_xb_cfg_arch}/bionic/futex_x86.c, \
 	libc/arch-${build_xb_cfg_arch}/bionic/__get_sp.S, \
 	libc/arch-${build_xb_cfg_arch}/bionic/__get_tls.c, \
 	libc/arch-${build_xb_cfg_arch}/bionic/_setjmp.S, \
 	libc/arch-${build_xb_cfg_arch}/bionic/setjmp.S, \
 	libc/arch-${build_xb_cfg_arch}/bionic/__set_tls.c, \
 	libc/arch-${build_xb_cfg_arch}/bionic/sigsetjmp.S, \
-	libc/arch-${build_xb_cfg_arch}/bionic/syscall.S, \
-	libc/arch-${build_xb_cfg_arch}/bionic/vfork.S, \
+	libc/arch-${build_xb_cfg_arch}/bionic/syscall.c, \
+	libc/arch-${build_xb_cfg_arch}/bionic/vfork.c, \
 	libc/arch-${build_xb_cfg_arch}/string/bcopy_wrapper.c, \
 	libc/arch-${build_xb_cfg_arch}/string/bzero_wrapper.c, \
 	libc/arch-${build_xb_cfg_arch}/string/ffs.S, \

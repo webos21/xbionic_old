@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 void _exit_thread(int status) {
 	ntsc_t *ntfp = ntdll_getFP();
-	__set_errno(status);
+	errno = status;
 	ntfp->FP_RtlExitUserThread(status);
 }

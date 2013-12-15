@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 int memcmp(const void *s1, const void *s2, SIZE_T n) {
 	ntsc_t *ntfp = ntdll_getFP();
-	ntfp->FP_RtlCompareMemory(s1, s2, n);
+	return (int) ntfp->FP_RtlCompareMemory(s1, s2, n);
 }

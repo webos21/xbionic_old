@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 void *memset(void *s, int c, SIZE_T n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlFillMemory(s, n, c);
+	return s;
 }

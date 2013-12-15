@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <linux/err.h>
+#include <errno.h>
 #include <ntdll.h>
 
 int __fork(void) {
@@ -40,14 +40,14 @@ int __fork(void) {
 	switch (status) {
 	case STATUS_SUCCESS :
 		pid = 0;
-		__set_errno(pid);
+		errno = pid;
 		return pid;
 	case STATUS_PROCESS_CLONED:
-		pid = GetCurrentProcessId();
-		__set_errno(pid);
+		pid = (int) pi->ClientId.UniqueProcess;
+		errno = pid;
 		return pid;
 	default:
-		__set_errno(status);
+		errno = status;
 		return status;
 	}
 }
