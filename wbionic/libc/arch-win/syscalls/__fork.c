@@ -37,17 +37,20 @@ int __fork(void) {
 			RTL_CLONE_PROCESS_FLAGS_INHERIT_HANDLES
 					| RTL_CLONE_PROCESS_FLAGS_NO_SYNCHRONIZE, NULL, NULL, NULL,
 			pi);
+
+	// backup the pid and release heap
+	pid = (int)pi->ClientId.UniqueProcess;
+	ntfp->FP_RtlFreeHeap(DRtlGetProcessHeap(ntfp), 0, pi);
+
 	switch (status) {
 	case STATUS_SUCCESS :
-		pid = 0;
-		errno = pid;
+		errno = 0;
 		return pid;
 	case STATUS_PROCESS_CLONED:
-		pid = (int) pi->ClientId.UniqueProcess;
-		errno = pid;
-		return pid;
+		errno = 0;
+		return 0;
 	default:
 		errno = status;
-		return status;
+		return -1;
 	}
 }

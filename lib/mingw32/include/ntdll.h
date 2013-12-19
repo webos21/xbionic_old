@@ -17,323 +17,34 @@
 #ifndef __NTDLL_H__
 #define __NTDLL_H__
 
-#ifdef _WINNT_
-#pragma warning(push)
-#pragma warning(disable:4005)
-#include <ntstatus.h>
-#pragma warning(pop)
-#else
-#include <ntstatus.h>
-#endif
-
-#ifndef __ATTR_SAL
-//////////////////////////////////////////
-// Replacing the Specification Strings
-//////////////////////////////////////////
-#define __allowed(p)                       __$allowed_##p
-#define __$allowed_as_global_decl            /* empty */
-#define __$allowed_on_function_or_typedecl   /* empty */
-#define __$allowed_on_typedecl               /* empty */
-#define __$allowed_on_return                 /* empty */
-#define __$allowed_on_parameter              /* empty */
-#define __$allowed_on_function               /* empty */
-#define __$allowed_on_struct                 /* empty */
-#define __$allowed_on_field                  /* empty */
-#define __$allowed_on_parameter_or_return    /* empty */
-#define __$allowed_on_global_or_field        /* empty */
-
+#include "nttypes.h"
 
 //////////////////////////////////////////
-// the Specification Strings
+// NTDLL MACRO
 //////////////////////////////////////////
-#define __in                               __allowed(on_parameter)
-#define __in_opt                           __allowed(on_parameter)
-
-#define __out                              __allowed(on_parameter)
-#define __out_opt                          __allowed(on_parameter)
-
-#define __inout                            __allowed(on_parameter)
-
-#define __field_bcount_part(size,init)     __allowed(on_field)
-#endif // __ATTR_SAL
-
-//////////////////////////////////////////
-// Definition for Declaring Functions
-//////////////////////////////////////////
-#ifndef NULL
-#ifdef __cplusplus
-#define NULL 0
-#else
-#define NULL ((void *)0)
-#endif
-#endif //no-NULL
-
-#ifndef FALSE
-#define FALSE               0
-#endif
-
-#ifndef TRUE
-#define TRUE                1
-#endif
-
-#ifndef CONST
-#define CONST const
-#endif
-
-
-// NTSYSAPI(dllimport) is not required!!
-//#define NTSYSAPI
-#define NTSYSAPI_N
-
-#ifndef NTAPI
-#ifdef _MSC_VER
-#define NTAPI           __stdcall
-#else
-#define NTAPI           __attribute__((__stdcall__))
-#endif
-#endif //NTAPI
-
-#define INVALID_HANDLE_VALUE                     ((HANDLE)(LONG_PTR)-1)
-#define INVALID_FILE_SIZE                        ((DWORD)0xFFFFFFFF)
-#define INVALID_SET_FILE_POINTER                 ((DWORD)-1)
-#define INVALID_FILE_ATTRIBUTES                  ((DWORD)-1)
 
 #define RTL_CLONE_PROCESS_FLAGS_CREATE_SUSPENDED 0x00000001
 #define RTL_CLONE_PROCESS_FLAGS_INHERIT_HANDLES  0x00000002
 #define RTL_CLONE_PROCESS_FLAGS_NO_SYNCHRONIZE   0x00000004 // don't update synchronization objects
 
-#define HANDLE_FLAG_INHERIT                      0x00000001
-#define HANDLE_FLAG_PROTECT_FROM_CLOSE           0x00000002
 
-#define NT_SUCCESS(Status)                       (((NTSTATUS)(Status)) >= 0)
-
-
-//////////////////////////////////////////
-// Windows Types
-//////////////////////////////////////////
-
-#if !defined(_W64)
-#if !defined(__midl) && (defined(_X86_) || defined(_M_IX86)) && _MSC_VER >= 1300
-#define _W64 __w64
-#else
-#define _W64
-#endif
-#endif
-
-#if defined(_M_MRX000) && !(defined(MIDL_PASS) || defined(RC_INVOKED)) && defined(ENABLE_RESTRICTED)
-#define RESTRICTED_POINTER __restrict
-#else
-#define RESTRICTED_POINTER
-#endif
-
-// Basics
-#ifndef VOID
-#define VOID               void
-typedef char               CHAR;
-typedef short              SHORT;
-typedef long               LONG;
-#if !defined(MIDL_PASS)
-typedef int                INT;
-#endif
-#endif
-
-#ifndef BASETYPES
-#define BASETYPES
-typedef unsigned long      ULONG;
-typedef ULONG             *PULONG;
-typedef unsigned short     USHORT;
-typedef USHORT            *PUSHORT;
-typedef unsigned char      UCHAR;
-typedef UCHAR             *PUCHAR;
-typedef char              *PSZ;
-#endif  /* !BASETYPES */
-
-typedef int                BOOL;
-
-typedef long long          LONGLONG;
-typedef unsigned long long ULONGLONG;
-
-typedef VOID              *PVOID;
-typedef VOID              *LPVOID;
-
-typedef unsigned short     WCHAR;
-typedef WCHAR             *PWCHAR,*LPWCH,*PWCH;
-
-typedef UCHAR              BOOLEAN;    // winnt
-typedef BOOLEAN           *PBOOLEAN;   // winnt
-
-typedef ULONG              LOGICAL;
-typedef ULONG             *PLOGICAL;
-
-typedef unsigned char      BYTE;
-typedef unsigned short     WORD;
-typedef unsigned long      DWORD;
-typedef void              *HANDLE;
-
-#ifdef _WINDOWS_
-#pragma warning(push)
-#pragma warning(disable:4142)
-typedef int                NTSTATUS;
-#pragma warning(pop)
-#else
-typedef int                NTSTATUS;
-#endif
-
-typedef DWORD              ACCESS_MASK;
-typedef ACCESS_MASK       *PACCESS_MASK;
-
-
-#if defined(_WIN64)
-typedef long long           INT_PTR, *PINT_PTR;
-typedef unsigned long long  UINT_PTR, *PUINT_PTR;
-
-typedef long long          LONG_PTR, *PLONG_PTR;
-typedef unsigned long long ULONG_PTR, *PULONG_PTR;
-
-#define __int3264          __int64
-
-#else
-typedef _W64 int           INT_PTR, *PINT_PTR;
-typedef _W64 unsigned int  UINT_PTR, *PUINT_PTR;
-
-typedef _W64 long          LONG_PTR, *PLONG_PTR;
-typedef _W64 unsigned long ULONG_PTR, *PULONG_PTR;
-
-#define __int3264           __int32
-
-#endif
-
-
-typedef ULONG_PTR          DWORD_PTR, *PDWORD_PTR;
-
-typedef ULONG_PTR          SIZE_T, *PSIZE_T;
-
-
-typedef CHAR              *NPSTR, *LPSTR, *PSTR;
-typedef CONST char        *PCSZ;
-typedef CONST WCHAR       *LPCWSTR, *PCWSTR;
-typedef CHAR              *PCHAR, *LPCH, *PCH;
-typedef CONST CHAR        *LPCSTR, *PCSTR;
-
-
-//////////////////////////////////////////
-// Structured Types
-//////////////////////////////////////////
-
-typedef struct _ANSI_STRING {
-	USHORT  Length;
-	USHORT  MaximumLength;
-	PSTR    Buffer;
-} ANSI_STRING, STRING, *PSTRING;
-typedef ANSI_STRING *PANSI_STRING;
-typedef const ANSI_STRING *PCANSI_STRING;
-
-typedef struct _UNICODE_STRING {
-	USHORT   Length;
-	USHORT   MaximumLength;
-#ifdef MIDL_PASS
-    [size_is(MaximumLength / 2), length_is((Length) / 2) ] USHORT * Buffer;
-#else // MIDL_PASS
-    __field_bcount_part(MaximumLength, Length) PWCH   Buffer;
-#endif // MIDL_PASS
-} UNICODE_STRING, *PUNICODE_STRING;
-typedef const UNICODE_STRING *PCUNICODE_STRING;
-
-#define UNICODE_NULL ((WCHAR)0) // winnt
-
-#ifndef _WINNT_
-typedef struct _LIST_ENTRY {
-	struct _LIST_ENTRY       *Flink;
-	struct _LIST_ENTRY       *Blink;
-} LIST_ENTRY, *PLIST_ENTRY, *RESTRICTED_POINTER PRLIST_ENTRY;
-typedef struct _RTL_CRITICAL_SECTION_DEBUG {
-	WORD                      Type;
-	WORD                      CreatorBackTraceIndex;
-	struct _RTL_CRITICAL_SECTION *CriticalSection;
-	LIST_ENTRY                ProcessLocksList;
-	DWORD                     EntryCount;
-	DWORD                     ContentionCount;
-	DWORD                     Flags;
-	WORD                      CreatorBackTraceIndexHigh;
-	WORD                      SpareWORD;
-} RTL_CRITICAL_SECTION_DEBUG, *PRTL_CRITICAL_SECTION_DEBUG, RTL_RESOURCE_DEBUG, *PRTL_RESOURCE_DEBUG;
-
-#pragma pack(push, 8)
-typedef struct _RTL_CRITICAL_SECTION {
-	PRTL_CRITICAL_SECTION_DEBUG DebugInfo;
-	//  The following three fields control entering and exiting the critical
-	//  section for the resource
-	LONG                      LockCount;
-	LONG                      RecursionCount;
-	HANDLE                    OwningThread;     // from the thread's ClientId->UniqueThread
-	HANDLE                    LockSemaphore;
-	ULONG_PTR                 SpinCount;        // force size on 64-bit systems when packed
-} RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
-#pragma pack(pop)
-
-typedef struct _RTL_SRWLOCK {
-	PVOID                     Ptr;
-} RTL_SRWLOCK, *PRTL_SRWLOCK;
-#define RTL_SRWLOCK_INIT {0}
-
-typedef struct _RTL_CONDITION_VARIABLE {
-	PVOID                     Ptr;
-} RTL_CONDITION_VARIABLE, *PRTL_CONDITION_VARIABLE;
-#define RTL_CONDITION_VARIABLE_INIT {0}
-#define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1
-
-#if defined(MIDL_PASS)
-typedef struct _LARGE_INTEGER {
-#else // MIDL_PASS
-typedef union _LARGE_INTEGER {
-	struct {
-		DWORD LowPart;
-		LONG HighPart;
-	} DUMMYSTRUCTNAME;
-	struct {
-		DWORD LowPart;
-		LONG HighPart;
-	} u;
-#endif //MIDL_PASS
-	LONGLONG QuadPart;
-} LARGE_INTEGER;
-
-typedef LARGE_INTEGER *PLARGE_INTEGER;
-
-#if defined(MIDL_PASS)
-typedef struct _ULARGE_INTEGER {
-#else // MIDL_PASS
-typedef union _ULARGE_INTEGER {
-	struct {
-		DWORD LowPart;
-		DWORD HighPart;
-	} DUMMYSTRUCTNAME;
-	struct {
-		DWORD LowPart;
-		DWORD HighPart;
-	} u;
-#endif //MIDL_PASS
-	ULONGLONG QuadPart;
-} ULARGE_INTEGER;
-
-typedef ULARGE_INTEGER *PULARGE_INTEGER;
-
-#endif // _WINNT_
-
-#ifndef _WINBASE_
-typedef struct _SECURITY_ATTRIBUTES {
-	DWORD                     nLength;
-	LPVOID                    lpSecurityDescriptor;
-	BOOL                      bInheritHandle;
-} SECURITY_ATTRIBUTES, *PSECURITY_ATTRIBUTES, *LPSECURITY_ATTRIBUTES;
-#endif //_WINBASE_
-
-#ifndef _WINDEF_
-typedef struct _HKEY {
-	int                       unused;
-} HKEY, *PHKEY;
-#endif
-
+//////////////
+// AccessMask
+//////////////
+#define PROCESS_TERMINATE                  (0x0001)
+#define PROCESS_CREATE_THREAD              (0x0002)
+#define PROCESS_SET_SESSIONID              (0x0004)
+#define PROCESS_VM_OPERATION               (0x0008)
+#define PROCESS_VM_READ                    (0x0010)
+#define PROCESS_VM_WRITE                   (0x0020)
+#define PROCESS_DUP_HANDLE                 (0x0040)
+#define PROCESS_CREATE_PROCESS             (0x0080)
+#define PROCESS_SET_QUOTA                  (0x0100)
+#define PROCESS_SET_INFORMATION            (0x0200)
+#define PROCESS_QUERY_INFORMATION          (0x0400)
+#define PROCESS_SUSPEND_RESUME             (0x0800)
+#define PROCESS_QUERY_LIMITED_INFORMATION  (0x1000)
+#define PROCESS_ALL_ACCESS                 (0x001FFFFF)
 
 //////////////////////////////////////////
 // NTDLL Structures
@@ -395,8 +106,16 @@ typedef struct _SECTION_IMAGE_INFORMATION {
   ULONG                     CheckSum;
 } SECTION_IMAGE_INFORMATION, *PSECTION_IMAGE_INFORMATION;
 
-typedef struct _PROCESS_BASIC_INFORMATION
-{
+typedef struct _OBJECT_ATTRIBUTES {
+	ULONG           Length;
+	HANDLE          RootDirectory;
+	PUNICODE_STRING ObjectName;
+	ULONG           Attributes;
+	PVOID           SecurityDescriptor;
+	PVOID           SecurityQualityOfService;
+}  OBJECT_ATTRIBUTES, *POBJECT_ATTRIBUTES;
+
+typedef struct _PROCESS_BASIC_INFORMATION {
   DWORD_PTR                 ExitStatus;
   PVOID                     PebBaseAddress;
   DWORD_PTR                 AffinityMask;
@@ -412,6 +131,14 @@ typedef enum _PROCESSINFOCLASS {
   ProcessImageFileName = 27,
   ProcessBreakOnTermination = 29
 } PROCESSINFOCLASS;
+
+typedef struct _IO_STATUS_BLOCK {
+	union {
+		NTSTATUS Status;
+		PVOID    Pointer;
+	};
+	ULONG_PTR Information;
+} IO_STATUS_BLOCK, *PIO_STATUS_BLOCK;
 
 typedef struct _RTL_DRIVE_LETTER_CURDIR {
   USHORT                    Flags;
@@ -465,6 +192,20 @@ typedef struct _RTL_USER_PROCESS_INFORMATION {
   SECTION_IMAGE_INFORMATION ImageInformation;
 } RTL_USER_PROCESS_INFORMATION, *PRTL_USER_PROCESS_INFORMATION;
 
+typedef struct _MEMORY_BASIC_INFORMATION {
+	PVOID                   BaseAddress;
+	PVOID                   AllocationBase;
+	ULONG                   AllocationProtect;
+	ULONG                   RegionSize;
+	ULONG                   State;
+	ULONG                   Protect;
+	ULONG                   Type;
+} MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
+
+typedef enum _MEMORY_INFORMATION_CLASS {
+	MemoryBasicInformation
+} MEMORY_INFORMATION_CLASS, *PMEMORY_INFORMATION_CLASS;
+
 typedef enum _SYSTEM_INFORMATION_CLASS {
 	SystemBasicInformation,
 	SystemProcessorInformation,
@@ -513,6 +254,36 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
 	SystemCurrentTimeZoneInformation,
 	SystemLookasideInformation
 } SYSTEM_INFORMATION_CLASS, *PSYSTEM_INFORMATION_CLASS;
+
+typedef enum _THREAD_INFORMATION_CLASS {
+	ThreadBasicInformation,
+	ThreadTimes,
+	ThreadPriority,
+	ThreadBasePriority,
+	ThreadAffinityMask,
+	ThreadImpersonationToken,
+	ThreadDescriptorTableEntry,
+	ThreadEnableAlignmentFaultFixup,
+	ThreadEventPair,
+	ThreadQuerySetWin32StartAddress,
+	ThreadZeroTlsCell,
+	ThreadPerformanceCount,
+	ThreadAmILastThread,
+	ThreadIdealProcessor,
+	ThreadPriorityBoost,
+	ThreadSetTlsArrayAddress,
+	ThreadIsIoPending,
+	ThreadHideFromDebugger
+} THREAD_INFORMATION_CLASS, *PTHREAD_INFORMATION_CLASS;
+
+typedef struct _THREAD_BASIC_INFORMATION {
+	NTSTATUS                ExitStatus;
+	PVOID                   TebBaseAddress;
+	CLIENT_ID               ClientId;
+	KAFFINITY               AffinityMask;
+	KPRIORITY               Priority;
+	KPRIORITY               BasePriority;	
+} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
 
 typedef struct _SYSTEM_HANDLE {
   ULONG                     ProcessId;
@@ -693,16 +464,13 @@ typedef struct _PEB_VISTA_7 {
 // Structure for NTDLL APIs
 //////////////////////////////////////////
 
-/* MACROS */
-/* FIXME? Windows NT's ntdll doesn't export RtlGetProcessHeap() */
-//#define RtlGetProcessHeap() ((HANDLE)NtCurrentPeb()->ProcessHeap)
-
 typedef struct _st_ntsc {
 
 	/////////////////////
 	// Process ENV Block
 	/////////////////////
 	NTSYSAPI_N PPEB_VISTA_7 (NTAPI *FP_RtlGetCurrentPeb)(void);
+
 
 	/////////////////////
 	// Debug Functions
@@ -712,29 +480,364 @@ typedef struct _st_ntsc {
 		__in  LPCSTR Format,
 		__in  ...
 		);
-
-
-	/////////////////////
-	// Exit Functions
-	/////////////////////
-
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlExitUserProcess) (
-		__in NTSTATUS ExitStatus
-		);
+	
 
 	/////////////////////
-	// Thread_Exit Functions
+	// Error Functions
 	/////////////////////
 
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlExitUserThread) (
-		__in NTSTATUS ExitStatus
+	NTSYSAPI_N DWORD (NTAPI *FP_RtlGetLastWin32Error) (void);
+	
+	NTSYSAPI_N void (NTAPI *FP_RtlSetLastWin32Error) (
+		DWORD err
 		);
 
 
 	/////////////////////
-	// Fork Functions
+	// CloseHandle Functions : NtOpenProcess / NtOpenThread
 	/////////////////////
 
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtClose) (
+		__in      HANDLE Handle
+		);
+
+
+	/////////////////////
+	// Memory Functions
+	/////////////////////
+
+	NTSYSAPI_N PVOID (NTAPI *FP_RtlAllocateHeap) (
+		__in      PVOID HeapHandle,
+		__in_opt  ULONG Flags,
+		__in      SIZE_T Size
+		);
+
+	NTSYSAPI_N PVOID (NTAPI *FP_RtlReAllocateHeap) (
+		__in      PVOID HeapHandle,
+		__in_opt  ULONG Flags,
+		__in      PVOID MemoryPointer,
+		__in      SIZE_T Size
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlFreeHeap) (
+		__in      PVOID HeapHandle,
+		__in_opt  ULONG Flags,
+		__in      PVOID HeapBase
+		);
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlZeroMemory) (
+		__out  PVOID Destination,
+		__in   SIZE_T Length
+		);
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlFillMemory) (
+		__out  PVOID Destination,
+		__in   SIZE_T Length,
+		__in   UCHAR Fill
+		);
+
+	NTSYSAPI_N SIZE_T (NTAPI *FP_RtlCompareMemory) (
+		__in  const VOID *Source1,
+		__in  const VOID *Source2,
+		__in  SIZE_T Length
+		);
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlCopyMemory) (
+		__out  PVOID Destination,
+		__in   const PVOID Source,
+		__in   SIZE_T Length
+		);
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlMoveMemory) (
+		__out  PVOID Destination,
+		__in   const PVOID Source,
+		__in   SIZE_T Length
+		);
+
+
+	/////////////////////
+	// Virtual Memory Functions
+	/////////////////////
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtAllocateVirtualMemory) (
+		__in     HANDLE     ProcessHandle,
+		__inout  PVOID     *BaseAddress,
+		__in     ULONG_PTR  ZeroBits,
+		__inout  PSIZE_T    RegionSize,
+		__in     ULONG      AllocationType,
+		__in     ULONG      Protect
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtFlushVirtualMemory) (
+		__in     HANDLE            ProcessHandle,
+		__inout  PVOID            *BaseAddress,
+		__inout  PSIZE_T           RegionSize,
+		__out    PIO_STATUS_BLOCK  IoStatus
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtFreeVirtualMemory) (
+		__in     HANDLE   ProcessHandle,
+		__inout  PVOID   *BaseAddress,
+		__inout  PSIZE_T  RegionSize,
+		__in     ULONG    FreeType
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtLockVirtualMemory) (
+		__in    HANDLE    ProcessHandle,
+		__in    PVOID    *BaseAddress,
+		__inout PULONG    NumberOfBytesToLock,
+		__in    ULONG     LockOption
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtProtectVirtualMemory) (
+		__in    HANDLE    ProcessHandle,
+		__inout PVOID    *BaseAddress,
+		__inout PULONG    NumberOfBytesToProtect,
+		__in    ULONG     NewAccessProtection,
+		__out   PULONG    OldAccessProtection
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtQueryVirtualMemory) (
+		__in      HANDLE                   ProcessHandle,
+		__in      PVOID                    BaseAddress,
+		__in      MEMORY_INFORMATION_CLASS MemoryInformationClass,
+		__out     PVOID                    Buffer,
+		__in      ULONG                    Length,
+		__out_opt PULONG                   ResultLength
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtReadVirtualMemory) (
+		__in      HANDLE    ProcessHandle,
+		__in      PVOID     BaseAddress,
+		__out     PVOID     Buffer,
+		__in      ULONG     NumberOfBytesToRead,
+		__out_opt PULONG    NumberOfBytesReaded
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtUnlockVirtualMemory) (
+		__in    HANDLE      ProcessHandle,
+		__in    PVOID      *BaseAddress,
+		__inout PULONG      NumberOfBytesToUnlock,
+		__in    ULONG       LockType
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtWriteVirtualMemory) (
+		__in      HANDLE    ProcessHandle,
+		__in      PVOID     BaseAddress,
+		__in      PVOID     Buffer,
+		__in      ULONG     NumberOfBytesToWrite,
+		__out_opt PULONG    NumberOfBytesWritten
+		);
+
+
+	/////////////////////
+	// String Functions
+	/////////////////////
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlInitString) (
+		__inout  PSTRING DestinationString,
+		__in     PCSZ SourceString
+		);
+
+	// Same as RtlInitAnsiString
+	//NTSYSAPI_N VOID (NTAPI *FP_RtlInitAnsiString) (
+	//	__out     PANSI_STRING DestinationString,
+	//	__in_opt  PCSZ SourceString
+	//	);
+
+	// Obsolete : Use  RtlUnicodeStringInit
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlInitUnicodeString) (
+		__out  PUNICODE_STRING DestinationString,
+		__in   PCWSTR SourceString
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlCreateUnicodeStringFromAsciiz) (
+		__out PUNICODE_STRING  Destination,  
+		__in  PCSZ  Source  
+		);
+
+	NTSYSAPI_N ULONG (NTAPI *FP_RtlAnsiStringToUnicodeSize) (
+		 __in  PANSI_STRING AnsiString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAnsiStringToUnicodeString) (
+		__inout  PUNICODE_STRING DestinationString,
+		__in     PCANSI_STRING SourceString,
+		__in     BOOLEAN AllocateDestinationString
+		);
+
+	NTSYSAPI_N ULONG (NTAPI *FP_RtlUnicodeStringToAnsiSize) (
+		__in  PUNICODE_STRING UnicodeString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlUnicodeStringToAnsiString) (
+		__inout  PANSI_STRING DestinationString,
+		__in     PCUNICODE_STRING SourceString,
+		__in     BOOLEAN AllocateDestinationString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCopyString) (
+		__out     PSTRING DestinationString,
+		__in_opt  const STRING *SourceString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCopyUnicodeString) (
+		__out     PUNICODE_STRING DestinationString,
+		__in_opt  PCUNICODE_STRING SourceString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAppendAsciizToString) (
+		__inout PSTRING  Destination,  
+		__in    PCSZ  Source  
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAppendStringToString) (
+		__inout  PSTRING Destination,
+		__in     const STRING *Source
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAppendUnicodeStringToString) (
+		__inout  PUNICODE_STRING Destination,
+		__in     PCUNICODE_STRING Source
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAppendUnicodeToString) (
+		__inout   PUNICODE_STRING Destination,
+		__in_opt  PCWSTR Source
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlMultiAppendUnicodeStringBuffer) ( 
+		__inout PRTL_UNICODE_STRING_BUFFER pStrBuffer, 
+		__in ULONG numAddends, 
+		__in PCUNICODE_STRING pAddends 
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlEqualString) (
+		__in  const STRING *String1,
+		__in  const STRING *String2,
+		__in  BOOLEAN CaseInSensitive
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlEqualUnicodeString) (
+		__in  PCUNICODE_STRING String1,
+		__in  PCUNICODE_STRING String2,
+		__in  BOOLEAN CaseInSensitive
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlCompareString) (
+		__in  const STRING *String1,
+		__in  const STRING *String2,
+		__in  BOOLEAN CaseInSensitive
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlCompareUnicodeString) (
+		__in  PCUNICODE_STRING String1,
+		__in  PCUNICODE_STRING String2,
+		__in  BOOLEAN CaseInSensitive
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlUpperString) (
+		__inout  PSTRING DestinationString,
+		__in     const STRING *SourceString
+		);
+
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlUpcaseUnicodeString) (
+		__inout  PUNICODE_STRING DestinationString,
+		__in     PCUNICODE_STRING SourceString,
+		__in     BOOLEAN AllocateDestinationString
+		);
+
+	NTSYSAPI_N WCHAR (NTAPI *FP_RtlDowncaseUnicodeChar) (
+		__in  WCHAR SourceCharacter
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlDowncaseUnicodeString) (
+		__inout PUNICODE_STRING DestinationString,
+		__in    PCUNICODE_STRING SourceString,
+		__in    BOOLEAN AllocateDestinationString
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlIntegerToChar) (
+		__in      ULONG  value,  
+		__in_opt  ULONG  base,  
+		__in      ULONG  length,  
+		__inout   PCHAR  str
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlIntegerToUnicodeString) (
+		__in      ULONG Value,
+		__in_opt  ULONG Base,
+		__inout   PUNICODE_STRING String
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCharToInteger) (
+		__in      PCSZ String,
+		__in_opt  ULONG Base,
+		__out     PULONG Value
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlUnicodeStringToInteger) (
+		__in      PCUNICODE_STRING String,
+		__in_opt  ULONG Base,
+		__out     PULONG Value
+		);
+
+	NTSYSAPI_N VOID  (NTAPI *FP_RtlFreeAnsiString) (
+		__inout  PANSI_STRING UnicodeString
+		);
+
+	NTSYSAPI_N VOID  (NTAPI *FP_RtlFreeUnicodeString) (
+		__inout  PUNICODE_STRING UnicodeString
+		);
+
+	
+	/////////////////////
+	// Environment Functions
+	/////////////////////
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCreateEnvironment) (
+		__in      BOOLEAN   Inherit,
+		__out     PVOID    *Environment
+		);
+
+	NTSYSAPI_N VOID (NTAPI *FP_RtlDestroyEnvironment) (
+		__in      PVOID     Environment
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlExpandEnvironmentStrings_U) (
+		__in_opt   PVOID               Environment,
+		__in       PUNICODE_STRING     SourceString,
+		__out      PUNICODE_STRING     DestinationString,
+		__out_opt  PULONG              DestinationBufferLength
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlQueryEnvironmentVariable_U) (
+		__in_opt   PVOID               Environment,
+		__in       PUNICODE_STRING     VariableName,
+		__out      PUNICODE_STRING     VariableValue
+		);
+		
+	NTSYSAPI_N VOID (NTAPI *FP_RtlSetCurrentEnvironment) (
+		__in      PVOID                NewEnvironment,
+		__out_opt PVOID               *OldEnvironment
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlSetEnvironmentStrings) (
+		__in      PWCHAR               NewEnvironment,
+		__in      ULONG                NewEnvironmentSize
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlSetEnvironmentVariable) (
+		__inout_opt PVOID             *Environment,
+		__in        PUNICODE_STRING    VariableName,
+		__in        PUNICODE_STRING    VariableValue
+		);
+
+
+	/////////////////////
+	// Process Functions
+	/////////////////////
+	
 	NTSYSAPI_N NTSTATUS  (NTAPI *FP_RtlCreateProcessParameters) (
 		__out PRTL_USER_PROCESS_PARAMETERS *pProcessParameters,
 		__in PUNICODE_STRING ImagePathName,
@@ -747,14 +850,16 @@ typedef struct _st_ntsc {
 		__in_opt PUNICODE_STRING ShellInfo,
 		__in_opt PUNICODE_STRING RuntimeData
 		);
+
 	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlDestroyProcessParameters) (
-		__in PRTL_USER_PROCESS_PARAMETERS *pProcessParameters
+		__in PRTL_USER_PROCESS_PARAMETERS pProcessParameters
 		);
+
 	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCreateUserProcess) (
 		__in PUNICODE_STRING  ImageFileName,
 		__in ULONG  Attributes,
 		__inout PRTL_USER_PROCESS_PARAMETERS  ProcessParameters,
-		__in_opt PSECURITY_DESCRIPTOR ProcessSecurityDescriptor,
+	__in_opt PSECURITY_DESCRIPTOR ProcessSecurityDescriptor,
 		__in_opt PSECURITY_DESCRIPTOR ThreadSecurityDescriptor,
 		__in_opt HANDLE ParentProcess,
 		__in BOOLEAN  InheritHandles,
@@ -795,172 +900,100 @@ typedef struct _st_ntsc {
 		__in LOGICAL Shared // TRUE to set to shared acquire
 		);
 
-	/////////////////////
-	// Memory Functions
-	/////////////////////
-
-	NTSYSAPI_N PVOID (NTAPI *FP_RtlAllocateHeap)(
-		__in      PVOID HeapHandle,
-		__in_opt  ULONG Flags,
-		__in      SIZE_T Size
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlExitUserProcess) (
+		__in NTSTATUS ExitStatus
 		);
 
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlFreeHeap)(
-		__in      PVOID HeapHandle,
-		__in_opt  ULONG Flags,
-		__in      PVOID HeapBase
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtWaitForSingleObject) (
+		__in  HANDLE Handle,
+		__in  BOOLEAN Alertable,
+		__in  PLARGE_INTEGER Timeout
 		);
 
-	NTSYSAPI_N VOID (NTAPI *FP_RtlZeroMemory)(
-		__out  PVOID Destination,
-		__in   SIZE_T Length
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtOpenProcess) (
+		__out     PHANDLE ProcessHandle,
+		__in      ACCESS_MASK DesiredAccess,
+		__in      POBJECT_ATTRIBUTES ObjectAttributes,
+		__in_opt  PCLIENT_ID ClientId
 		);
 
-	NTSYSAPI_N VOID (NTAPI *FP_RtlFillMemory)(
-		__out  PVOID Destination,
-		__in   SIZE_T Length,
-		__in   UCHAR Fill
-		);
-
-	NTSYSAPI_N SIZE_T (NTAPI *FP_RtlCompareMemory)(
-		__in  const VOID *Source1,
-		__in  const VOID *Source2,
-		__in  SIZE_T Length
-		);
-
-	NTSYSAPI_N VOID (NTAPI *FP_RtlCopyMemory)(
-		__out  PVOID Destination,
-		__in   const PVOID Source,
-		__in   SIZE_T Length
-		);
-
-	NTSYSAPI_N VOID (NTAPI *FP_RtlMoveMemory)(
-		__out  PVOID Destination,
-		__in   const PVOID Source,
-		__in   SIZE_T Length
-		);
 
 	/////////////////////
-	// String Functions
+	// Thread Functions
 	/////////////////////
 
-	NTSYSAPI_N VOID (NTAPI *FP_RtlInitString) (
-		__inout  PSTRING DestinationString,
-		__in     PCSZ SourceString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCreateUserThread) (
+		__in     HANDLE               ProcessHandle,
+		__in_opt PSECURITY_DESCRIPTOR SecurityDescriptor,
+		__in     BOOLEAN              CreateSuspended,
+		__in     ULONG                StackZeroBits,
+		__inout  PULONG               StackReserved,
+		__inout  PULONG               StackCommit,
+		__in     PVOID                StartAddress,
+		__in_opt PVOID                StartParameter,
+		__out    PHANDLE              ThreadHandle,
+		__out    PCLIENT_ID           ClientID
 		);
 
-	// Same as RtlInitAnsiString
-	//NTSYSAPI_N VOID (NTAPI *FP_RtlInitAnsiString) (
-	//	__out     PANSI_STRING DestinationString,
-	//	__in_opt  PCSZ SourceString
-	//	);
-
-	// Obsolete : Use  RtlUnicodeStringInit
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlInitUnicodeString) (
-		__out  PUNICODE_STRING DestinationString,
-		__in   PCWSTR SourceString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlExitUserThread) (
+		__in NTSTATUS ExitStatus
 		);
 
-	NTSYSAPI_N ULONG (NTAPI *FP_RtlAnsiStringToUnicodeSize) (
-		 __in  PANSI_STRING AnsiString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtDelayExecution) (
+		__in BOOLEAN              Alertable,
+		__in PLARGE_INTEGER       DelayInterval // 100-us
 		);
 
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlAnsiStringToUnicodeString) (
-		__inout  PUNICODE_STRING DestinationString,
-		__in     PCANSI_STRING SourceString,
-		__in     BOOLEAN AllocateDestinationString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtSuspendThread) (
+		__in      HANDLE          ThreadHandle,
+		__out_opt PULONG          PreviousSuspendCount
 		);
 
-	NTSYSAPI_N ULONG (NTAPI *FP_RtlUnicodeStringToAnsiSize) (
-		__in  PUNICODE_STRING UnicodeString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtResumeThread) (
+		__in      HANDLE          ThreadHandle,
+		__out_opt PULONG          SuspendCount
 		);
 
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlUnicodeStringToAnsiString) (
-		__inout  PANSI_STRING DestinationString,
-		__in     PCUNICODE_STRING SourceString,
-		__in     BOOLEAN AllocateDestinationString
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtOpenThread) (
+		__out  PHANDLE             ThreadHandle,
+		__in   ACCESS_MASK         DesiredAccess,
+		__in   POBJECT_ATTRIBUTES  ObjectAttributes,
+		__in   PCLIENT_ID          ClientId
+		);
+	
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtQueryInformationThread) (
+		__in       HANDLE                    ThreadHandle,
+		__in       THREAD_INFORMATION_CLASS  ThreadInformationClass,
+		__inout    PVOID                     ThreadInformation,
+		__in       ULONG                     ThreadInformationLength,
+		__out_opt  PULONG                    ReturnLength
 		);
 
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCopyString) (
-		__out     PSTRING DestinationString,
-		__in_opt  const STRING *SourceString
-		);
 
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCopyUnicodeString) (
-		__out     PUNICODE_STRING DestinationString,
-		__in_opt  PCUNICODE_STRING SourceString
-		);
+	/////////////////////
+	// PATH Functions
+	/////////////////////
 
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlEqualString) (
-		__in  const STRING *String1,
-		__in  const STRING *String2,
-		__in  BOOLEAN CaseInSensitive
-		);
-
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlEqualUnicodeString) (
-		__in  PCUNICODE_STRING String1,
-		__in  PCUNICODE_STRING String2,
-		__in  BOOLEAN CaseInSensitive
-		);
-
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlCompareString) (
-		__in  const STRING *String1,
-		__in  const STRING *String2,
-		__in  BOOLEAN CaseInSensitive
-		);
-
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlCompareUnicodeString) (
-		__in  PCUNICODE_STRING String1,
-		__in  PCUNICODE_STRING String2,
-		__in  BOOLEAN CaseInSensitive
-		);
-
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlUpperString) (
-		__inout  PSTRING DestinationString,
-		__in     const STRING *SourceString
-		);
-
-	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlUpcaseUnicodeString) (
-		__inout  PUNICODE_STRING DestinationString,
-		__in     PCUNICODE_STRING SourceString,
-		__in     BOOLEAN AllocateDestinationString
-		);
-
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlIntegerToChar) (
-		__in      ULONG  value,  
-		__in_opt  ULONG  base,  
-		__in      ULONG  length,  
-		__inout   PCHAR  str
-		);
-
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlIntegerToUnicodeString) (
-		__in      ULONG Value,
-		__in_opt  ULONG Base,
-		__inout   PUNICODE_STRING String
-		);
-
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlCharToInteger) (
-		__in      PCSZ String,
-		__in_opt  ULONG Base,
-		__out     PULONG Value
-		);
-
-	NTSYSAPI_N NTSTATUS (NTAPI *FP_RtlUnicodeStringToInteger) (
-		__in      PCUNICODE_STRING String,
-		__in_opt  ULONG Base,
-		__out     PULONG Value
-		);
-
-	NTSYSAPI_N VOID  (NTAPI *FP_RtlFreeAnsiString) (
-		__inout  PANSI_STRING UnicodeString
-		);
-
-	NTSYSAPI_N VOID  (NTAPI *FP_RtlFreeUnicodeString) (
-		__inout  PUNICODE_STRING UnicodeString
+	NTSYSAPI_N BOOLEAN (NTAPI *FP_RtlDosPathNameToNtPathName_U) (
+		__in PCWSTR DosName,
+		__out PUNICODE_STRING NtName,
+		__out_opt PCWSTR* DosFilePath,
+		__out_opt PUNICODE_STRING NtFilePath
 		);
 
 } ntsc_t;
 
+//////////////////////////////////////////
+// Macro for NTDLL APIs
+//////////////////////////////////////////
+
+#define NtCurrentProcess() ( (HANDLE)(LONG_PTR) -1 )
+#define NtCurrentThread()  ( (HANDLE)(LONG_PTR) -2 )
+#define ZwCurrentProcess() NtCurrentProcess()
+#define ZwCurrentThread()  NtCurrentThread()
+
+/* FIXME? Windows NT's ntdll doesn't export RtlGetProcessHeap() */
+//#define RtlGetProcessHeap() ((HANDLE)NtCurrentPeb()->ProcessHeap)
 #define DRtlGetProcessHeap(pFP) ((HANDLE)((pFP)->FP_RtlGetCurrentPeb()->ProcessHeap))
 
 

@@ -151,31 +151,31 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/_exit.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/_exit_thread.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__fork.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/_waitpid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__waitid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/wait4.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__sys_clone.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/execve.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__setuid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getuid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/geteuid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getegid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getresuid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getresgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/gettid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/readahead.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getgroups.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getpgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getppid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getsid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setsid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__setreuid.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/_waitpid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__waitid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/wait4.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__sys_clone.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/execve.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/geteuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getegid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getresuid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getresgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/gettid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/readahead.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getgroups.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getpgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getppid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getsid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setsid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setreuid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__setresuid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setresgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__brk.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/kill.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setresgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__brk.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/kill.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/tkill.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/tgkill.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__ptrace.S, \
