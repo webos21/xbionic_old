@@ -251,3 +251,17 @@ td_thr_tls_get_addr(const td_thrhandle_t * th,
 {
     return TD_NOAPLIC; // FIXME: TODO
 }
+
+// added by cmjo : dummy function
+// {{{
+#if defined(__MINGW32__) || defined(__MINGW64__)
+int ps_pglobal_lookup (void *x, const char *obj, const char *name, void **sym_addr) {
+	return 0;
+}
+
+pid_t ps_getpid(struct ps_prochandle *ph) {
+	return -1;
+}
+#endif
+// }}}
+

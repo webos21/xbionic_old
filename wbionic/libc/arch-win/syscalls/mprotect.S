@@ -3,6 +3,10 @@
 #include <machine/asm.h>
 #include <asm/unistd.h>
 
+
+// modified by cmjo : temporary blanking
+#if 0
+
 ENTRY(mprotect)
     pushl   %ebx
     pushl   %ecx
@@ -25,3 +29,5 @@ ENTRY(mprotect)
     popl    %ebx
     ret
 END(mprotect)
+
+#endif

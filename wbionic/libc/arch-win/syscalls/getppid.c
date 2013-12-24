@@ -24,7 +24,7 @@ int getppid(void) {
 
 	ntsc_t *ntfp = ntdll_getFP();
 
-	ntfp->FP_NtQueryInformationProcess(NtCurrentProcess(), ProcessBasicInformation, &pbi, sizeof(pbi), NULL);
+	ntfp->FP_NtQueryInformationProcess(XbNtCurrentProcess(), ProcessBasicInformation, &pbi, sizeof(pbi), NULL);
 	errno = 0;
 	return (int) pbi.InheritedFromUniqueProcessId;
 }

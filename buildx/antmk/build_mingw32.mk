@@ -176,10 +176,10 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setresgid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__brk.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/kill.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/tkill.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/tgkill.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__ptrace.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__set_thread_area.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/tkill.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/tgkill.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__ptrace.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__set_thread_area.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__getpriority.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setpriority.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setrlimit.S, \
@@ -870,7 +870,9 @@ build_xb_libc_lca_src_mk  = ${build_xb_libc_lca_src_in}
 build_xb_libc_lcs_bin     = c.dll
 build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
-		${basedir}/lib/${build_cfg_target}/libgcc.a
+		${basedir}/lib/${build_cfg_target}/libgcc.a \
+		${basedir}/lib/${build_cfg_target}/libgcc_eh.a \
+		"C:/Program Files/Microsoft SDKs/Windows/v7.1/Lib/Kernel32.lib"
 #		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
@@ -1147,6 +1149,49 @@ build_xb_libtdb_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a
 build_xb_libtdb_so_src_in  = 
 build_xb_libtdb_so_src_ex  = 
 build_xb_libtdb_so_src_mk  =
+
+####
+# linker
+####
+build_xb_linker_bin        = linker.exe
+build_xb_linker_cflags     = \
+		-m32 -g -O2 -Wall -Wextra -Werror -fno-exceptions \
+		-ffunction-sections \
+		-finline-functions -finline-limit=300 -fno-inline-functions-called-once \
+		-fno-short-enums \
+		-fstrict-aliasing \
+		-funswitch-loops \
+		-funwind-tables \
+		-fmessage-length=0 \
+		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/wbionic/libc/include \
+		-isystem ${basedir}/wbionic/libc/kernel/common \
+		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch} \
+		-fno-stack-protector \
+        -Wstrict-overflow=5 \
+        -fvisibility=hidden \
+        -DANDROID_X86_LINKER \
+        -I${basedir}/wbionic/libc
+build_xb_linker_ldflags    = \
+		-Wl,-Bsymbolic \
+		-Wl,--warn-shared-textrel \
+		-Wl,--no-export-dynamic \
+		-Wl,--gc-sections \
+		-nostdlib \
+		-Bstatic \
+		-shared -Wl,--exclude-libs,ALL -Wl,--no-undefined \
+		${basedir}/lib/${build_cfg_target}/libgcc.a \
+		-lkernel32
+build_xb_linker_src_in     = \
+    linker/arch/${build_xb_cfg_arch}/begin.c, \
+    linker/debugger.cpp, \
+    linker/dlfcn.cpp, \
+    linker/linker.cpp, \
+    linker/linker_environ.cpp, \
+    linker/linker_phdr.cpp, \
+    linker/rt.cpp
+build_xb_linker_src_ex     = 
+build_xb_linker_src_mk     = ${build_xb_linker_src_in}
 
 
 ########################

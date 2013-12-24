@@ -23,6 +23,6 @@
 int gettid(void) {
 	THREAD_BASIC_INFORMATION tinfo;
 	ntsc_t *ntfp = ntdll_getFP();
-	ntfp->FP_NtQueryInformationThread(NtCurrentThread(), ThreadBasicInformation, (PVOID)&tinfo, sizeof(tinfo), NULL);
+	ntfp->FP_NtQueryInformationThread(XbNtCurrentThread(), ThreadBasicInformation, (PVOID)&tinfo, sizeof(tinfo), NULL);
 	return (int) tinfo.ClientId.UniqueThread;
 }

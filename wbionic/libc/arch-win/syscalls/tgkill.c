@@ -17,11 +17,11 @@
 #include <errno.h>
 #include <ntdll.h>
 
-void _exit_with_stack_teardown(void *stackBase, int stackSize, int *retCode) {
-	int status = (*retCode);
+// sends the signal sig to the thread with the thread ID tid in the thread group tgid
+// int tgkill(int tgid, int tid, int sig);
+int tgkill(int tgid, int tid, int sig) {
 	ntsc_t *ntfp = ntdll_getFP();
-
-	ntfp->FP_NtFreeVirtualMemory(XbNtCurrentProcess(), &stackBase, (PSIZE_T)&stackSize, 0);
-	errno = status;
-	ntfp->FP_RtlExitUserThread(status);
+	ntfp->FP_DbgPrint("tgkill() is called, but it is not implemented!!!\n");
+	errno = 0;
+	return 0;
 }

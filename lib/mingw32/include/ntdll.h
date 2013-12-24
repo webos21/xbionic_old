@@ -132,6 +132,36 @@ typedef enum _PROCESSINFOCLASS {
   ProcessBreakOnTermination = 29
 } PROCESSINFOCLASS;
 
+typedef struct _THREAD_BASIC_INFORMATION {
+	NTSTATUS                ExitStatus;
+	PVOID                   TebBaseAddress;
+	CLIENT_ID               ClientId;
+	KAFFINITY               AffinityMask;
+	KPRIORITY               Priority;
+	KPRIORITY               BasePriority;	
+} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
+
+typedef enum _THREAD_INFORMATION_CLASS {
+	ThreadBasicInformation,
+	ThreadTimes,
+	ThreadPriority,
+	ThreadBasePriority,
+	ThreadAffinityMask,
+	ThreadImpersonationToken,
+	ThreadDescriptorTableEntry,
+	ThreadEnableAlignmentFaultFixup,
+	hreadEventPair,
+	ThreadQuerySetWin32StartAddress,
+	ThreadZeroTlsCell,
+	ThreadPerformanceCount,
+	ThreadAmILastThread,
+	ThreadIdealProcessor,
+	ThreadPriorityBoost,
+	ThreadSetTlsArrayAddress,
+	ThreadIsIoPending,
+	ThreadHideFromDebugger
+} THREAD_INFORMATION_CLASS, *PTHREAD_INFORMATION_CLASS;
+
 typedef struct _IO_STATUS_BLOCK {
 	union {
 		NTSTATUS Status;
@@ -254,36 +284,6 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
 	SystemCurrentTimeZoneInformation,
 	SystemLookasideInformation
 } SYSTEM_INFORMATION_CLASS, *PSYSTEM_INFORMATION_CLASS;
-
-typedef enum _THREAD_INFORMATION_CLASS {
-	ThreadBasicInformation,
-	ThreadTimes,
-	ThreadPriority,
-	ThreadBasePriority,
-	ThreadAffinityMask,
-	ThreadImpersonationToken,
-	ThreadDescriptorTableEntry,
-	ThreadEnableAlignmentFaultFixup,
-	ThreadEventPair,
-	ThreadQuerySetWin32StartAddress,
-	ThreadZeroTlsCell,
-	ThreadPerformanceCount,
-	ThreadAmILastThread,
-	ThreadIdealProcessor,
-	ThreadPriorityBoost,
-	ThreadSetTlsArrayAddress,
-	ThreadIsIoPending,
-	ThreadHideFromDebugger
-} THREAD_INFORMATION_CLASS, *PTHREAD_INFORMATION_CLASS;
-
-typedef struct _THREAD_BASIC_INFORMATION {
-	NTSTATUS                ExitStatus;
-	PVOID                   TebBaseAddress;
-	CLIENT_ID               ClientId;
-	KAFFINITY               AffinityMask;
-	KPRIORITY               Priority;
-	KPRIORITY               BasePriority;	
-} THREAD_BASIC_INFORMATION, *PTHREAD_BASIC_INFORMATION;
 
 typedef struct _SYSTEM_HANDLE {
   ULONG                     ProcessId;
@@ -460,6 +460,191 @@ typedef struct _PEB_VISTA_7 {
 } PEB_VISTA_7, *PPEB_VISTA_7;
 
 
+typedef struct _NT_TIB {
+	struct _EXCEPTION_REGISTRATION_RECORD *ExceptionList;
+	PVOID StackBase;
+	PVOID StackLimit;
+	PVOID SubSystemTib;
+#if defined(_MSC_EXTENSIONS)
+	union {
+		PVOID FiberData;
+		DWORD Version;
+	};
+#else
+	PVOID FiberData;
+#endif
+	PVOID ArbitraryUserPointer;
+	struct _NT_TIB *Self;
+} NT_TIB;
+typedef NT_TIB *PNT_TIB;
+
+typedef struct _ACTIVATION_CONTEXT_STACK {
+	ULONG Flags;
+	ULONG NextCookieSequenceNumber;
+	PVOID ActiveFrame;
+	LIST_ENTRY FrameListCache;
+} ACTIVATION_CONTEXT_STACK;
+
+typedef struct _GDI_TEB_BATCH {
+	ULONG Offset;
+	HDC hdc;
+	ULONG buffer[310];
+} GDI_TEB_BATCH;
+
+typedef struct _TEB_ACTIVE_FRAME_CONTEXT {
+	ULONG Flags;
+	char* FrameName;
+} TEB_ACTIVE_FRAME_CONTEXT;
+
+typedef struct _TEB_ACTIVE_FRAME {
+	ULONG Flags;
+	struct _TEB_ACTIVE_FRAME* Previous;
+	TEB_ACTIVE_FRAME_CONTEXT* Context;
+} TEB_ACTIVE_FRAME;
+
+typedef struct _PROCESSOR_NUMBER {
+	WORD   Group;
+	BYTE  Number;
+	BYTE  Reserved;
+} PROCESSOR_NUMBER, *PPROCESSOR_NUMBER;
+
+// Win7, 7 SP1 layout
+typedef struct _TEB_7{
+	NT_TIB					NtTib;
+	PVOID                   EnvironmentPointer;
+	CLIENT_ID               Cid;
+	PVOID                   ActiveRpcInfo;
+	PVOID                   ThreadLocalStoragePointer;
+	PPEB_VISTA_7            Peb;
+	ULONG                   LastErrorValue;
+	ULONG                   CountOfOwnedCriticalSections;
+	PVOID                   CsrClientThread;
+	PVOID                   Win32ThreadInfo;
+	ULONG                   User32Reserved[0x1a];
+	ULONG                   UserReserved[0x5];
+	PVOID                   WOW32Reserved;
+	ULONG                   CurrentLocale;
+	ULONG                   FpSoftwareStatusRegister;
+	PVOID                   SystemReserved1[0x36];
+	ULONG                   ExceptionCode;
+	ACTIVATION_CONTEXT_STACK* ActivationContextStack;
+#ifdef _WIN64
+	BYTE                    SpareBytes1[0x18];
+#else
+	BYTE                    SpareBytes1[0x24];
+#endif
+	ULONG					TxFsContext;
+	GDI_TEB_BATCH			GdiTebBatch;
+	CLIENT_ID               RealClientId;
+	HANDLE					GdiCachedProcessHandle;
+	ULONG					GdiClientPID;
+	ULONG					GdiClientTID;
+	PVOID                   GdiThreadLocaleInfo;
+	UINT_PTR                Win32ClientInfo[0x3e];
+	PVOID                   GlDispatchTable[0xe9];	
+	UINT_PTR                GlReserved1[0x1d];
+	PVOID                   GlReserved2;
+	PVOID                   GlSectionInfo;
+	PVOID                   GlSection;
+	PVOID                   GlTable;
+	PVOID                   GlCurrentRC;
+	PVOID                   GlContext;
+	NTSTATUS                LastStatusValue;
+	UNICODE_STRING          StaticUnicodeString;
+	WCHAR                   StaticUnicodeBuffer[0x105];
+	PVOID                   DeallocationStack;
+	PVOID                   TlsSlots[0x40];
+	LIST_ENTRY              TlsLinks;
+	PVOID                   Vdm;
+	PVOID                   ReservedForNtRpc;
+	PVOID                   DbgSsReserved[0x2];
+	ULONG                   HardErrorsAreDisabled;
+#ifdef _WIN64
+	PVOID                   Instrumentation[0xB];
+#else
+	PVOID                   Instrumentation[0x9];
+#endif
+	GUID                    ActivityId;
+	PVOID                   EtwLocalData;
+	PVOID                   EtwTraceData;
+	PVOID					WinSockData;
+	union
+	{
+		ULONG               GdiBatchCount;
+		struct _TEB_7*		pTeb64;
+	};
+#include <pshpack1.h>
+	union
+	{
+		PROCESSOR_NUMBER        CurrentIdealProcessor;
+		ULONG                   IdealProcessorValue;
+		struct
+		{
+			BOOLEAN                 ReservedPad0;
+			BOOLEAN                 ReservedPad1;
+			BOOLEAN                 ReservedPad2;
+			BOOLEAN                 IdealProcessor;
+		};
+	};
+#include <poppack.h>
+	ULONG                   GuaranteedStackBytes;
+	PVOID                   ReservedForPerf;
+	PVOID                   ReservedForOle;
+	ULONG                   WaitingOnLoaderLock;
+	PVOID                   SavedPriorityState;
+	ULONG_PTR				SoftPatchPtr1;
+	PVOID					ThreadPoolData;
+	PVOID*                  TlsExpansionSlots;
+	ULONG                   MuiGeneration;
+	ULONG                   IsImpersonating;
+	PVOID                   NlsCache;
+	PVOID                   pShimData;
+	ULONG                   HeapVirtualAffinity;
+	HANDLE                  CurrentTransactionHandle;
+	TEB_ACTIVE_FRAME*       ActiveFrame;
+	PVOID					FlsData;
+	PVOID					PreferredLanguages;
+	PVOID					UserPrefLanguages;
+	PVOID					MergedPrefLanguages;
+	ULONG					MuiImpersonation;
+#include <pshpack1.h>
+	union
+	{
+		volatile USHORT		CrossTebFlags;
+		USHORT				SpareCrossTebBits: 0x10;
+	};
+	union
+	{
+		USHORT				SameTebFlags;
+		struct
+		{
+			USHORT          SafeThunkCall: 1;
+			USHORT          InDbgPrint: 1;
+			USHORT          HasFiberData: 1;
+			USHORT          SkipThreadAttach: 1;
+			USHORT          WerInShipAssertCode: 1;
+			USHORT          RanProcessInit: 1;
+			USHORT          ClonedThread: 1;
+			USHORT          SuppressDebugMsg: 1;
+			USHORT          DisableUserStackWalk: 1;
+			USHORT          RtlExceptionAttached: 1;
+			USHORT          InitialThread: 1;
+			USHORT          SpareSameTebBits: 5;
+		};
+	};
+#include <poppack.h>
+	BOOLEAN                 FreeStackOnTermination;
+	ULONG                   ImpersonationLocale;
+	PVOID					TxnScopeEnterCallback;
+	PVOID					TxnScopeExitCallback;
+	PVOID					TxnScopeContext;
+	ULONG					LockCount;
+	ULONG					SpareUlong0;
+	PVOID					ResourceRetValue;
+} TEB_7, *PTEB_7;
+
+
+
 //////////////////////////////////////////
 // Structure for NTDLL APIs
 //////////////////////////////////////////
@@ -491,6 +676,11 @@ typedef struct _st_ntsc {
 	NTSYSAPI_N void (NTAPI *FP_RtlSetLastWin32Error) (
 		DWORD err
 		);
+
+
+	/////////////////////
+	// ProcMon(Stack Trace) Functions
+	/////////////////////
 
 
 	/////////////////////
@@ -987,14 +1177,45 @@ typedef struct _st_ntsc {
 // Macro for NTDLL APIs
 //////////////////////////////////////////
 
-#define NtCurrentProcess() ( (HANDLE)(LONG_PTR) -1 )
-#define NtCurrentThread()  ( (HANDLE)(LONG_PTR) -2 )
-#define ZwCurrentProcess() NtCurrentProcess()
-#define ZwCurrentThread()  NtCurrentThread()
+#define XbNtCurrentProcess() ( (HANDLE)(LONG_PTR) -1 )
+#define XbNtCurrentThread()  ( (HANDLE)(LONG_PTR) -2 )
+#define XbZwCurrentProcess() XbNtCurrentProcess()
+#define XbZwCurrentThread()  XbNtCurrentThread()
 
 /* FIXME? Windows NT's ntdll doesn't export RtlGetProcessHeap() */
 //#define RtlGetProcessHeap() ((HANDLE)NtCurrentPeb()->ProcessHeap)
-#define DRtlGetProcessHeap(pFP) ((HANDLE)((pFP)->FP_RtlGetCurrentPeb()->ProcessHeap))
+#define XbRtlGetProcessHeap(pFP) ((HANDLE)((pFP)->FP_RtlGetCurrentPeb()->ProcessHeap))
+
+#ifdef _MSC_VER
+#ifdef _WIN64
+#define FIELD_OFFSET(type, field)    ((LONG)(LONG_PTR)&(((type *)0)->field))
+DWORD64 Xb__readgsqword (__in DWORD Offset);
+__forceinline PTEB_7 XbNtCurrentTeb(void) {
+	return (PTEB_7)Xb__readgsqword(FIELD_OFFSET(NT_TIB, Self));
+}
+#else  // !_WIN64
+#define PcTeb 0x18
+__forceinline PTEB_7 XbNtCurrentTeb(void) {
+	__asm mov eax, fs:[PcTeb]
+}
+#endif // _WIN64
+#else  // !_MSC_VER
+#ifdef _WIN64
+#define PcTeb 0x30
+inline __attribute__((always_inline)) static PTEB_7 XbNtCurrentTeb(void) {
+	PTEB_7 _teb = NULL;
+	__asm__ __volatile__("movl %%fs:$PcTeb, %k[_teb]" : [_teb] "=r" (_teb));
+	return _teb;
+}
+#else  // !_WIN64
+#define PcTeb 0x18
+inline __attribute__((always_inline)) static PTEB_7 XbNtCurrentTeb(void) {
+	PTEB_7 _teb = NULL;
+	__asm__ __volatile__("movl %%fs:$PcTeb, %k[_teb]" : [_teb] "=r" (_teb));
+	return _teb;
+}
+#endif // _WIN64
+#endif // _MSC_VER
 
 
 //////////////////////////////////////////

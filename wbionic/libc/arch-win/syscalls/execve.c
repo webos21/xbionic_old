@@ -47,7 +47,7 @@ int execve(const char *filename, char *const argv[], char *const envp[]) {
 
 		tmpcmd.Length = 0;
 		tmpcmd.MaximumLength = MAX_ARG_SIZE;
-		tmpcmd.Buffer = (PSTR) ntfp->FP_RtlAllocateHeap(DRtlGetProcessHeap(ntfp), 0, MAX_ARG_SIZE);
+		tmpcmd.Buffer = (PSTR) ntfp->FP_RtlAllocateHeap(XbRtlGetProcessHeap(ntfp), 0, MAX_ARG_SIZE);
 		ntfp->FP_RtlZeroMemory(tmpcmd.Buffer, MAX_ARG_SIZE);
 
 		idx = 0;
@@ -58,7 +58,7 @@ int execve(const char *filename, char *const argv[], char *const envp[]) {
 		}
 		ntfp->FP_RtlAnsiStringToUnicodeString(&cmdLine, &tmpcmd, TRUE);
 		pCmd = &cmdLine;
-		ntfp->FP_RtlFreeHeap(DRtlGetProcessHeap(ntfp), 0, tmpcmd.Buffer);
+		ntfp->FP_RtlFreeHeap(XbRtlGetProcessHeap(ntfp), 0, tmpcmd.Buffer);
 	}
 	if (envp != NULL) {
 		ntfp->FP_RtlCreateEnvironment(FALSE, &pEnv);
@@ -122,7 +122,7 @@ int execve(const char *filename, char *const argv[], char *const envp[]) {
 		// execve will not return, just exit
 		ntfp->FP_NtWaitForSingleObject(pinfo.ProcessHandle, FALSE, NULL);
 		ntfp->FP_NtQueryInformationProcess(pinfo.ProcessHandle, ProcessBasicInformation, &pbi, sizeof(pbi), NULL);
-		exeRet = pbi.ExitStatus;
+		exeRet = (int) pbi.ExitStatus;
 		errno = 0;
 	}
 

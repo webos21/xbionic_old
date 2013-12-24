@@ -720,25 +720,6 @@
 			</chainedmapper>
 		</apply>
 		<echo>Build : xbionic-linker.bin</echo>
-		<scriptdef name="setloglevel" language="javascript">
-			<attribute name="level"/>
-			<![CDATA[
-			    var logger = project.getBuildListeners().firstElement();
-				var strlevel = attributes.get("level");
-				if (strlevel == "error") {
-					logger.setMessageOutputLevel(0);
-				} else if (strlevel == "warning") {
-					logger.setMessageOutputLevel(1);
-				} else if (strlevel == "info") {
-					logger.setMessageOutputLevel(2);
-				} else if (strlevel == "verbose") {
-					logger.setMessageOutputLevel(3);
-				} else {
-					logger.setMessageOutputLevel(4);
-				}
-			]]>
-		</scriptdef>
-		<setloglevel level="debug"/>
 		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
 			<arg line="${build_xb_opt_ld}" />
 			<arg line="-o" />
@@ -748,7 +729,6 @@
 			<arg line="${build_xb_linker_ldflags}" />
 			<fileset dir="${module_dir_ex_linker}" includes="*.o" />
 		</apply>
-		<setloglevel level="info"/>
 	</target>
 
 	<!-- OUPUT : copying needed files  -->

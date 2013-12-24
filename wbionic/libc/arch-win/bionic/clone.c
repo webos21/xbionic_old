@@ -1,58 +1,58 @@
-#include <asm/unistd.h>
-#include <machine/asm.h>
+/*
+ * Copyright 2013 Cheolmin Jo (webos21@gmail.com)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include <errno.h>
+#include <ntdll.h>
 
 // int  __pthread_clone(void* (*fn)(void*), void* tls, int flags, void* arg);
-ENTRY(__pthread_clone)
-        pushl   %ebx
-        pushl   %ecx
-        movl    16(%esp), %ecx
+int  __pthread_clone(void* (*fn)(void*), void* tls, int flags, void* arg)
+{
+	HANDLE hThd;
+	CLIENT_ID cid;
+	NTSTATUS status;
+	ntsc_t *ntfp = ntdll_getFP();
 
-        # save tls
-        movl    %ecx, %ebx
-        # 16-byte alignment on child stack
-        andl    $~15, %ecx
+	status = ntfp->FP_RtlCreateUserThread(XbNtCurrentProcess(),NULL,FALSE,0,0,0,fn,arg,&hThd,&cid);
+	if (status == 0) {
+		return (int) cid.UniqueThread;
+	} else {
+		errno = status;
+		return -1;
+	}
+}
 
-        # insert arguments onto the child stack
-        movl    12(%esp), %eax
-        movl    %eax, -16(%ecx)
-        movl    24(%esp), %eax
-        movl    %eax, -12(%ecx)
-        movl    %ebx, -8(%ecx)
+typedef struct ___bionic_clone_args {
+	int (*fn)(void *);
+	void *args;
+} __bionic_clone_args;
 
-        subl    $16, %ecx
-        movl    20(%esp), %ebx
+extern void __bionic_clone_entry( int (*fn)(void *), void *arg );
 
-        # make system call
-        movl    $__NR_clone, %eax
-        int     $0x80
+static void *__bionic_clone_fn(void *args) {
+	__bionic_clone_args *xargs = (__bionic_clone_args *)args;
 
-        cmpl    $0, %eax
-        je      pc_child
-        jg      pc_parent
+	int (*rfunc)(void *) = xargs->fn;
+	void *rargs = xargs->args;
 
-        # an error occurred, set errno and return -1
-        negl    %eax
-        pushl   %eax
-        call    __set_errno
-        addl    $4, %esp
-        orl     $-1, %eax
-        jmp     pc_return
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlFreeHeap(XbRtlGetProcessHeap(ntfp), 0, args);
 
-pc_child:
-        # we're in the child thread now, call __thread_entry
-        # with the appropriate arguments on the child stack
-        # we already placed most of them
-        call    __thread_entry
-        hlt
-
-pc_parent:
-        # we're the parent; nothing to do.
-pc_return:
-        popl    %ecx
-        popl    %ebx
-        ret
-END(__pthread_clone)
-
+	__bionic_clone_entry(rfunc, rargs);
+	return NULL;
+}
 
 /*
  * int  __bionic_clone(unsigned long clone_flags,
@@ -63,53 +63,31 @@ END(__pthread_clone)
  *                     int           (*fn)(void *),
  *                     void          *arg);
  */
-ENTRY(__bionic_clone)
-        pushl   %ebx
-        pushl   %esi
-        pushl   %edi
+int  __bionic_clone(unsigned long clone_flags,
+	void*         newsp,
+	int           *parent_tidptr,
+	void          *new_tls,
+	int           *child_tidptr,
+	int           (*fn)(void *),
+	void          *arg)
+{
+	HANDLE hThd;
+	CLIENT_ID cid;
+	NTSTATUS status;
 
-        # insert arguments onto the child stack
-        movl    20(%esp), %ecx
-        andl    $~15, %ecx
-        movl    36(%esp), %eax
-        movl    %eax, -16(%ecx)
-        movl    40(%esp), %eax
-        movl    %eax, -12(%ecx)
+	__bionic_clone_args *xargs;
 
-        subl    $16, %ecx
-        movl    16(%esp), %ebx
-        movl    24(%esp), %edx
-        movl    32(%esp), %esi
-        movl    28(%esp), %edi
+	ntsc_t *ntfp = ntdll_getFP();
 
-        # make system call
-        movl    $__NR_clone, %eax
-        int     $0x80
+	xargs = ntfp->FP_RtlAllocateHeap(XbRtlGetProcessHeap(ntfp), 0, sizeof(__bionic_clone_args));
+	xargs->fn = fn;
+	xargs->args = arg;
 
-        cmpl    $0, %eax
-        je      bc_child
-        jg      bc_parent
-
-        # an error occurred, set errno and return -1
-        negl    %eax
-        pushl   %eax
-        call    __set_errno
-        addl    $4, %esp
-        orl     $-1, %eax
-        jmp     bc_return
-
-bc_child:
-        # we're in the child now, call __bionic_clone_entry
-        # with the appropriate arguments on the child stack
-        # we already placed most of them
-        call    __bionic_clone_entry
-        hlt
-
-bc_parent:
-        # we're the parent; nothing to do.
-bc_return:
-        popl    %edi
-        popl    %esi
-        popl    %ebx
-        ret
-END(__bionic_clone)
+	status = ntfp->FP_RtlCreateUserThread(XbNtCurrentProcess(),NULL,FALSE,0,0,0,&__bionic_clone_fn,xargs,&hThd,&cid);
+	if (status == 0) {
+		return (int) cid.UniqueThread;
+	} else {
+		errno = status;
+		return -1;
+	}
+}

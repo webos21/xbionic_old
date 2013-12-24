@@ -17,11 +17,11 @@
 #include <errno.h>
 #include <ntdll.h>
 
-void _exit_with_stack_teardown(void *stackBase, int stackSize, int *retCode) {
-	int status = (*retCode);
-	ntsc_t *ntfp = ntdll_getFP();
-
-	ntfp->FP_NtFreeVirtualMemory(XbNtCurrentProcess(), &stackBase, (PSIZE_T)&stackSize, 0);
-	errno = status;
-	ntfp->FP_RtlExitUserThread(status);
+// obsolete predecessor to tgkill(). It only allows the target thread ID
+// int tkill(int tid, int sig);
+int tkill(int tid, int sig) {
+	// do not use this system-call
+	// use tgkill()
+	errno = 0;
+	return 0;
 }

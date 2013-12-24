@@ -30,7 +30,7 @@ int __fork(void) {
 	sa.lpSecurityDescriptor = NULL;
 	sa.bInheritHandle = TRUE;
 
-	pi = ntfp->FP_RtlAllocateHeap(DRtlGetProcessHeap(ntfp), 0, 4096);
+	pi = ntfp->FP_RtlAllocateHeap(XbRtlGetProcessHeap(ntfp), 0, 4096);
 	ntfp->FP_RtlZeroMemory(pi, 4096);
 
 	status = ntfp->FP_RtlCloneUserProcess(
@@ -40,7 +40,7 @@ int __fork(void) {
 
 	// backup the pid and release heap
 	pid = (int)pi->ClientId.UniqueProcess;
-	ntfp->FP_RtlFreeHeap(DRtlGetProcessHeap(ntfp), 0, pi);
+	ntfp->FP_RtlFreeHeap(XbRtlGetProcessHeap(ntfp), 0, pi);
 
 	switch (status) {
 	case STATUS_SUCCESS :
