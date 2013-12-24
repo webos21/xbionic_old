@@ -27,7 +27,7 @@
 -L/home/appos/gitrepo/xbionic/ant/linux32/emul/lib -L .%s %{!static:--eh-frame-hdr}
 
 *libgcc:
-libgcc.a%s %:if-exists(libgcc_eh.a%s)
+/home/appos/gitrepo/xbionic/ant/linux32/emul/lib/libgcc.a%s %:if-exists(/home/appos/gitrepo/xbionic/ant/linux32/emul/lib/libgcc_eh.a%s)
 
 *startfile:
 %{mno-android|tno-android-ld:%{!shared: %{pg|p|profile:gcrt1.o%s;pie:Scrt1.o%s;:crt1.o%s}} \
