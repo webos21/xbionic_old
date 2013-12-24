@@ -358,11 +358,18 @@
                 <mapper type="regexp" from="^(.*)\.[S|c]" to="\1.o" />
 			</chainedmapper>
 		</apply>
+		<!-- Split the command for Windows (argument size) -->
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
 			<srcfile />
-			<fileset dir="${module_dir_a_ccmn}" includes="*.o" />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
 			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
 			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
 			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
@@ -399,12 +406,19 @@
                 <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
+		<!-- Split the command for Windows (argument size)-->
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
 			<srcfile />
 			<fileset dir="${module_dir_a_nomalloc}" includes="*.o" />
-			<fileset dir="${module_dir_a_ccmn}" includes="*.o" />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
 			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
 			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
 			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
@@ -441,12 +455,19 @@
                 <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
+		<!-- Split the command for Windows (argument size) -->
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
 			<srcfile />
 			<fileset dir="${module_dir_a_libc}" includes="*.o" />
-			<fileset dir="${module_dir_a_ccmn}" includes="*.o" />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
 			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
 			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
 			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
@@ -770,19 +791,19 @@
 		-->
 		<echo>libc-shared-objects</echo>
 		<copy todir="${module_dir_output_lib}">
-			<fileset dir="${module_dir_objso}" includes="*.so" />
+			<fileset dir="${module_dir_objso}" includes="*.so, *.dll" />
 		</copy>
 		<echo>libc-executables</echo>
 		<copy todir="${module_dir_output_bin}">
-			<fileset dir="${module_dir_objex}" includes="linker" />
+			<fileset dir="${module_dir_objex}" includes="linker, linker.exe" />
 		</copy>
 		<echo>libc-libgcc.a</echo>
 		<copy todir="${module_dir_output_lib}">
-			<fileset dir="${basedir}/lib/${build_cfg_target}" includes="libgcc.a" />
+			<fileset dir="${basedir}/lib/${build_cfg_target}" includes="libgcc.a, libgcc_eh.a" />
 		</copy>
 		<echo>change the permission of copied files</echo>
 		<chmod perm="0755">
-			<fileset dir="${module_dir_output_lib}" includes="*.so" />
+			<fileset dir="${module_dir_output_lib}" includes="*.so, *.dll" />
 		</chmod>
 		<chmod file="${module_dir_output_bin}/linker" perm="0755" />
 	</target>

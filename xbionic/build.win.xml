@@ -234,7 +234,7 @@
 
 	<!-- BUILD : bionic-libc-static  -->
 	<target name="_build.xbionic.libc.static" depends="_prepare">
-
+		
 		<echo>Build : xbionic-libc-ssp</echo>
 		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_ssp}" failonerror="true">
 			<arg line="${build_xb_opt_cxx}" />
@@ -343,7 +343,7 @@
 		<exec executable="${build_tool_ranlib}" failonerror="true">
 			<arg file="${module_dir_obja}/${build_xb_libc_bnx_bin}" />
 		</exec>
-		
+
 		<echo>Build : xbionic-libc-common</echo>
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_ccmn}" failonerror="true">
 			<arg line="${build_xb_opt_c}" />
@@ -358,7 +358,7 @@
                 <mapper type="regexp" from="^(.*)\.[S|c]" to="\1.o" />
 			</chainedmapper>
 		</apply>
-		<!-- Split the command for Windows -->
+		<!-- Split the command for Windows (argument size) -->
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
@@ -406,7 +406,7 @@
                 <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
-		<!-- Split the command for Windows -->
+		<!-- Split the command for Windows (argument size)-->
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
@@ -455,7 +455,7 @@
                 <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
-		<!-- Split the command for Windows -->
+		<!-- Split the command for Windows (argument size) -->
 		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
 			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
