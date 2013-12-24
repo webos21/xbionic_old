@@ -16,19 +16,19 @@
  * limitations under the License.
 -->
 
-<project name="xi.src.base.win" default="mingw64" basedir="..">
+<project name="xi.xbionic.libc" default="all" basedir="..">
 
 	<!-- ====================          PREPARE           ================== -->
 
 	<!-- PREPARE : Check Environment -->
-	<target name="_prepare.prop">
+	<target name="_prepare.prop" unless="ant_cfg_issetTarget">
+		<echo>Warning : you are here without proper command!!!!</echo>
 		<property environment="env" />
 		<property file="${basedir}/buildx/antmk/project.mk" />
 		<property file="${basedir}/buildx/antmk/java.mk" />
-		<condition property="ant_cfg_loadfile" value="win64" else="win32">
-			<equals arg1="${ant_cfg_target}" arg2="mingw64" />
-		</condition>
-		<property file="${basedir}/buildx/antmk/build_${ant_cfg_loadfile}.mk" />
+		<property file="${basedir}/buildx/antmk/build_${project_def_target}.mk" />
+		<property name="ant_cfg_target" value="${project_def_target}" />
+		<property name="ant_cfg_issetTarget" value="true" />
 	</target>
 
 	<!-- PREPARE : Make Directories -->
@@ -38,44 +38,73 @@
 		<basename property="current_dir_rel" file="${current_dir_abs}" />
 
 		<!-- Target -->
-		<property name="module_dir_target" value="${basedir}/ant/${ant_cfg_target}/xi/${current_dir_rel}" />
-		<property name="module_dir_object" value="${module_dir_target}/objects" />
-		<property name="module_dir_test" value="${module_dir_target}/test" />
+		<property name="module_dir_target" value="${basedir}/ant/${build_cfg_target}/${current_dir_rel}" />
+		<property name="module_dir_obja" value="${module_dir_target}/static" />
+		<property name="module_dir_a_ssp" value="${module_dir_obja}/libbionic_ssp" />
+		<property name="module_dir_a_freebsd" value="${module_dir_obja}/libc_freebsd" />
+		<property name="module_dir_a_netbsd" value="${module_dir_obja}/libc_netbsd" />
+		<property name="module_dir_a_bionic" value="${module_dir_obja}/libc_bionic" />
+		<property name="module_dir_a_ccmn" value="${module_dir_obja}/libc_common" />
+		<property name="module_dir_a_nomalloc" value="${module_dir_obja}/libc_nomalloc" />
+		<property name="module_dir_a_libc" value="${module_dir_obja}/libc" />
+		<property name="module_dir_a_libm" value="${module_dir_obja}/libm" />
+		<property name="module_dir_a_libstdcxx" value="${module_dir_obja}/libstdcxx" />
+		<property name="module_dir_a_libtdb" value="${module_dir_obja}/libthread_db" />
+		<property name="module_dir_objso" value="${module_dir_target}/shared" />
+		<property name="module_dir_so_libdl" value="${module_dir_objso}/libdl" />
+		<property name="module_dir_so_crt" value="${module_dir_objso}/libc_crt" />
+		<property name="module_dir_so_libc" value="${module_dir_objso}/libc" />
+		<property name="module_dir_so_md_leak" value="${module_dir_objso}/libc_md_leak" />
+		<property name="module_dir_so_md_qemu" value="${module_dir_objso}/libc_md_qemu" />
+		<property name="module_dir_objex" value="${module_dir_target}/exec" />
+		<property name="module_dir_ex_linker" value="${module_dir_objex}/linker_obj" />
 		<mkdir dir="${module_dir_target}" />
-		<mkdir dir="${module_dir_object}" />
-		<mkdir dir="${module_dir_test}" />
+		<mkdir dir="${module_dir_obja}" />
+		<mkdir dir="${module_dir_a_ssp}" />
+		<mkdir dir="${module_dir_a_freebsd}" />
+		<mkdir dir="${module_dir_a_netbsd}" />
+		<mkdir dir="${module_dir_a_bionic}" />
+		<mkdir dir="${module_dir_a_ccmn}" />
+		<mkdir dir="${module_dir_a_nomalloc}" />
+		<mkdir dir="${module_dir_a_libc}" />
+		<mkdir dir="${module_dir_a_libm}" />
+		<mkdir dir="${module_dir_a_libstdcxx}" />
+		<mkdir dir="${module_dir_a_libtdb}" />
+		<mkdir dir="${module_dir_objso}" />
+		<mkdir dir="${module_dir_so_libdl}" />
+		<mkdir dir="${module_dir_so_crt}" />
+		<mkdir dir="${module_dir_so_libc}" />
+		<mkdir dir="${module_dir_so_md_leak}" />
+		<mkdir dir="${module_dir_so_md_qemu}" />
+		<mkdir dir="${module_dir_objex}" />
+		<mkdir dir="${module_dir_ex_linker}" />
 
 		<!-- Output -->
-		<property name="module_dir_output_base" value="${basedir}/ant/${ant_cfg_target}/emul" />
+		<property name="module_dir_output_base" value="${basedir}/ant/${build_cfg_target}/emul" />
 		<property name="module_dir_output_bin" value="${module_dir_output_base}/bin" />
 		<property name="module_dir_output_inc" value="${module_dir_output_base}/include" />
+		<property name="module_dir_output_inck" value="${module_dir_output_inc}/kernel" />
+		<property name="module_dir_output_incp" value="${module_dir_output_inc}/c++" />
 		<property name="module_dir_output_lib" value="${module_dir_output_base}/lib" />
 		<property name="module_dir_output_res" value="${module_dir_output_base}/res" />
 		<property name="module_dir_output_test" value="${module_dir_output_base}/test" />
 		<mkdir dir="${module_dir_output_base}" />
 		<mkdir dir="${module_dir_output_bin}" />
 		<mkdir dir="${module_dir_output_inc}" />
+		<mkdir dir="${module_dir_output_inck}" />
+		<mkdir dir="${module_dir_output_incp}" />
 		<mkdir dir="${module_dir_output_lib}" />
 		<mkdir dir="${module_dir_output_res}" />
 		<mkdir dir="${module_dir_output_test}" />
 
 		<!-- Options -->
-		<property name="module_build_src_bin" value="${build_xibase_src_bin}" />
-		<property name="module_build_src_in" value="${build_xibase_src_in}" />
-		<property name="module_build_src_ex" value="${build_xibase_src_ex}" />
-		<property name="module_build_cflags" value="${build_xibase_cflags}" />
-		<property name="module_build_ldflags" value="${build_xibase_ldflags}" />
-		<property name="module_build_target_a" value="${build_opt_a_pre}xibase.${build_opt_a_ext}" />
-		<property name="module_build_target_so" value="${build_opt_so_pre}xibase.${build_opt_so_ext}" />
-
-		<property name="module_test_src_bin" value="${buildtc_xibase_src_bin}" />
-		<property name="module_test_src_in" value="${buildtc_xibase_src_in}" />
-		<property name="module_test_src_ex" value="${buildtc_xibase_src_ex}" />
-		<property name="module_test_cflags" value="${buildtc_xibase_cflags}" />
-		<property name="module_test_ldflags" value="-LIBPATH:${module_dir_target} ${buildtc_xibase_ldflags}" />
-		<property name="module_test_target_a" value="${build_opt_a_pre}xibasetest.${build_opt_a_ext}" />
-		<property name="module_test_target_so" value="${build_opt_so_pre}xibasetest.${build_opt_so_ext}" />
-		<property name="module_test_target_bin" value="xibasetest${build_opt_exe_ext}" />
+		<property name="build_xb_opt_c" value="${build_xb_opt_c}" />
+		<property name="build_xb_opt_cxx" value="${build_xb_opt_cxx}" />
+		<property name="build_xb_opt_ld" value="${build_xb_opt_ld}" />
+		<property name="build_xb_libc_cflags" value="${build_xb_libc_cflags}" />
+		<property name="build_xb_libc_ldflags" value="${build_xb_libc_ldflags}" />
+		<property name="module_build_target_a" value="${build_opt_a_pre}c.${build_opt_a_ext}" />
+		<property name="module_build_target_so" value="${build_opt_so_pre}c.${build_opt_so_ext}" />
 	</target>
 
 	<!-- PREPARE : Display prepared values  -->
@@ -87,32 +116,41 @@
 		<echo>current_dir_rel         : ${current_dir_rel}</echo>
 		<echo>----------------------------------------------------------------</echo>
 		<echo>module_dir_target       : ${module_dir_target}</echo>
-		<echo>module_dir_object       : ${module_dir_object}</echo>
-		<echo>module_dir_test         : ${module_dir_test}</echo>
+		<echo>module_dir_obja         : ${module_dir_obja}</echo>
+		<echo>module_dir_a_ssp        : ${module_dir_a_ssp}</echo>
+		<echo>module_dir_a_freebsd    : ${module_dir_a_freebsd}</echo>
+		<echo>module_dir_a_netbsd     : ${module_dir_a_netbsd}</echo>
+		<echo>module_dir_a_bionic     : ${module_dir_a_bionic}</echo>
+		<echo>module_dir_a_ccmn       : ${module_dir_a_ccmn}</echo>
+		<echo>module_dir_a_nomalloc   : ${module_dir_a_nomalloc}</echo>
+		<echo>module_dir_a_libc       : ${module_dir_a_libc}</echo>
+		<echo>module_dir_a_libm       : ${module_dir_a_libm}</echo>
+		<echo>module_dir_a_libstdcxx  : ${module_dir_a_libstdcxx}</echo>
+		<echo>module_dir_a_libtdb     : ${module_dir_a_libtdb}</echo>
+		<echo>module_dir_objso        : ${module_dir_objso}</echo>
+		<echo>module_dir_so_libdl     : ${module_dir_so_libdl}</echo>
+		<echo>module_dir_so_crt       : ${module_dir_so_crt}</echo>
+		<echo>module_dir_so_md_leak   : ${module_dir_so_md_leak}</echo>
+		<echo>module_dir_so_md_qemu   : ${module_dir_so_md_qemu}</echo>
 		<echo>----------------------------------------------------------------</echo>
 		<echo>module_dir_output_base  : ${module_dir_output_base}</echo>
 		<echo>module_dir_output_bin   : ${module_dir_output_bin}</echo>
 		<echo>module_dir_output_inc   : ${module_dir_output_inc}</echo>
+		<echo>module_dir_output_inck  : ${module_dir_output_inck}</echo>
+		<echo>module_dir_output_incp  : ${module_dir_output_incp}</echo>
 		<echo>module_dir_output_lib   : ${module_dir_output_lib}</echo>
 		<echo>module_dir_output_res   : ${module_dir_output_res}</echo>
 		<echo>module_dir_output_test  : ${module_dir_output_test}</echo>
 		<echo>----------------------------------------------------------------</echo>
-		<echo>module_build_src_bin    : ${module_build_src_bin}</echo>
-		<echo>module_build_src_in     : ${module_build_src_in}</echo>
-		<echo>module_build_src_ex     : ${module_build_src_ex}</echo>
-		<echo>module_build_cflags     : ${module_build_cflags}</echo>
-		<echo>module_build_ldflags    : ${module_build_ldflags}</echo>
+		<echo>build_xb_opt_c          : ${build_xb_opt_c}</echo>
+		<echo>build_xb_opt_cxx        : ${build_xb_opt_cxx}</echo>
+		<echo>build_xb_opt_ld         : ${build_xb_opt_ld}</echo>
+		<echo>----------------------------------------------------------------</echo>
+		<echo>build_xb_libc_cmn_cflags: ${build_xb_libc_cmn_cflags}</echo>
+		<echo>build_xb_libc_cmn_ldflag: ${build_xb_libc_cmn_ldflags}</echo>
+		<echo>----------------------------------------------------------------</echo>
 		<echo>module_build_target_a   : ${module_build_target_a}</echo>
 		<echo>module_build_target_so  : ${module_build_target_so}</echo>
-		<echo>----------------------------------------------------------------</echo>
-		<echo>module_test_src_bin     : ${module_test_src_bin}</echo>
-		<echo>module_test_src_in      : ${module_test_src_in}</echo>
-		<echo>module_test_src_ex      : ${module_test_src_ex}</echo>
-		<echo>module_test_cflags      : ${module_test_cflags}</echo>
-		<echo>module_test_ldflags     : ${module_test_ldflags}</echo>
-		<echo>module_test_target_a    : ${module_test_target_a}</echo>
-		<echo>module_test_target_so   : ${module_test_target_so}</echo>
-		<echo>module_test_target_bin  : ${module_test_target_bin}</echo>
 		<echo>================================================================</echo>
 	</target>
 
@@ -120,214 +158,663 @@
 
 	<!-- ====================            BUILD           ================== -->
 
-	<!-- BUILD : xibase  -->
-	<target name="_build.xibase.o" depends="_prepare" if="build_run_a">
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_object}" failonerror="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_c}" />
-			<arg line="${module_build_cflags}" />
-			<arg line="${build_opt_cl_conly}" />
-			<arg line="-Fd${module_dir_object}/vc100.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<targetfile prefix="${build_opt_cl_pfx}" />
+	<!-- BUILD : bionic-libc-crt  -->
+	<target name="_build.xbionic.libc.crt" depends="_prepare">
+		<echo>Build : xbionic-libc-crt</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_crt}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_crt_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}/src" includes="${module_build_src_in}" excludes="${module_build_src_ex}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_crt_src_in}" excludes="${build_xb_libc_crt_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="regexp" from="^(.*)\.[c|S]" to="\1.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-libc-crt-mix</echo>
+		<move tofile="${module_dir_so_crt}/crtend_android.o" file="${module_dir_so_crt}/crtend.o"/>
+		<copy tofile="${module_dir_so_crt}/crtbegin_static1.o" file="${module_dir_so_crt}/crtbegin.o"/>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_xb_libc_crt_ldflags}" />
+			<arg line="-r" />
+			<arg line="-o" />
+			<arg file="${module_dir_so_crt}/crtbegin_static.o" />
+			<srcfile />
+			<fileset dir="${module_dir_so_crt}" includes="crtbegin_static1.o, crtbrand.o" />
+		</apply>
+		<copy tofile="${module_dir_so_crt}/crtbegin_dynamic1.o" file="${module_dir_so_crt}/crtbegin.o"/>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_xb_libc_crt_ldflags}" />
+			<arg line="-r" />
+			<arg line="-o" />
+			<arg file="${module_dir_so_crt}/crtbegin_dynamic.o" />
+			<srcfile />
+			<fileset dir="${module_dir_so_crt}" includes="crtbegin_dynamic1.o, crtbrand.o" />
+		</apply>
+		<echo>Build : xbionic-libc-crt-remove</echo>
+		<delete file="${module_dir_so_crt}/crtbegin.o"/>
+		<delete file="${module_dir_so_crt}/crtbrand.o"/>
+		<delete file="${module_dir_so_crt}/crtbegin_dynamic1.o"/>
+		<delete file="${module_dir_so_crt}/crtbegin_static1.o"/>
+	</target>
+
+	<!-- BUILD : bionic-dl  -->
+	<target name="_build.xbionic.libdl" depends="_prepare">
+		<echo>Build : xbionic-libdl</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_libdl}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libdl_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libdl_src_in}" excludes="${build_xb_libdl_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.lo" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libdl_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libdl_bin}" />
+			<!-- <arg line="${module_dir_so_crt}/crtbegin_so.o" /> -->
+			<srcfile />
+			<arg line="${build_xb_libdl_ldflags}" />
+			<!-- <arg line="${module_dir_so_crt}/crtend_so.o" /> -->
+			<fileset dir="${module_dir_so_libdl}" includes="*.lo" />
+		</apply>
+	</target>
+
+	<!-- BUILD : bionic-libc-static  -->
+	<target name="_build.xbionic.libc.static" depends="_prepare">
+
+		<echo>Build : xbionic-libc-ssp</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_ssp}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_ssp_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_ssp_src_in}" excludes="${build_xb_libc_ssp_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_ssp_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libc_ssp_bin}" />
+		</exec>
+		
+		<echo>Build : xbionic-libc-upstream-freebsd</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_freebsd}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_ufb_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_ufb_src_in}" excludes="${build_xb_libc_ufb_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
 				<mapper type="glob" from="*.c" to="*.o" />
 			</chainedmapper>
 		</apply>
-	</target>
-	<target name="_build.xibase.lo" depends="_prepare" if="build_run_so">
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_object}" failonerror="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_c}" />
-			<arg line="${build_opt_cl_fPIC}" />
-			<arg line="${module_build_cflags}" />
-			<arg line="${build_opt_cl_conly}" />
-			<arg line="-Fd${module_dir_object}/vc100.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<targetfile prefix="${build_opt_cl_pfx}" />
-			<srcfile />
-			<fileset dir="${current_dir_abs}/src" includes="${module_build_src_in}" excludes="${module_build_src_ex}" />
-			<chainedmapper>
-				<mapper type="flatten" />
-				<mapper type="glob" from="*.c" to="*.lo" />
-			</chainedmapper>
-		</apply>
-	</target>
-	<target name="_build.xibase.a" depends="_build.xibase.o" if="build_run_a">
-		<apply verbose="true" executable="${build_tool_ar}" failonerror="true">
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
-			<arg file="${module_dir_target}/${module_build_target_a}" />
+			<arg file="${module_dir_obja}/${build_xb_libc_ufb_bin}" />
 			<srcfile />
-			<fileset dir="${module_dir_object}" includes="*.o" />
+			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
 		</apply>
 		<exec executable="${build_tool_ranlib}" failonerror="true">
-			<arg file="${module_dir_target}/${module_build_target_a}" />
+			<arg file="${module_dir_obja}/${build_xb_libc_ufb_bin}" />
 		</exec>
-	</target>
-	<target name="_build.xibase.so" depends="_build.xibase.lo" if="build_run_so">
-		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_ld}" />
-			<arg line="${build_opt_ld_so}" />
-			<!--
-			<arg line="${build_opt_ld_so}${module_build_target_so}" />
-			-->
-			<arg line="-PDB:${module_dir_target}/${module_build_target_so}.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<arg line="${build_opt_ld_out}${module_dir_target}/${module_build_target_so}" />
-			<srcfile />
-			<arg line="${module_build_ldflags}" />
-			<arg line="${build_opt_ld_mgwcx}" />
-			<fileset dir="${module_dir_object}" includes="*.lo" />
-		</apply>
-	</target>
-	<target name="_build.xibase" depends="_build.xibase.a, _build.xibase.so" />
 
-	<!-- BUILD : test  -->
-	<target name="_build.test.o" depends="_prepare" if="build_run_a">
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_test}" failonerror="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_c}" />
-			<arg line="${module_test_cflags}" />
-			<arg line="${build_opt_cl_conly}" />
-			<arg line="-Fd${module_dir_test}/vc100.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<targetfile prefix="${build_opt_cl_pfx}" />
+		<echo>Build : xbionic-libc-upstream-netbsd</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_netbsd}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_unb_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
 			<srcfile />
-			<fileset dir="${current_dir_abs}/test" includes="${module_test_src_in}" excludes="${module_test_src_ex}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_unb_src_in}" excludes="${build_xb_libc_unb_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
 				<mapper type="glob" from="*.c" to="*.o" />
 			</chainedmapper>
 		</apply>
-	</target>
-	<target name="_build.test.lo" depends="_prepare" if="build_run_test">
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_test}" failonerror="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_c}" />
-			<arg line="${build_opt_cl_fPIC}" />
-			<arg line="${module_test_cflags}" />
-			<arg line="${build_opt_cl_conly}" />
-			<arg line="-Fd${module_dir_test}/vc100.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<targetfile prefix="${build_opt_cl_pfx}" />
-			<srcfile />
-			<fileset dir="${current_dir_abs}/test" includes="${module_test_src_in}" excludes="${module_test_src_ex}" />
-			<chainedmapper>
-				<mapper type="flatten" />
-				<mapper type="glob" from="*.c" to="*.lo" />
-			</chainedmapper>
-		</apply>
-	</target>
-	<target name="_build.test.a" depends="_build.test.o" if="build_run_a">
-		<apply verbose="true" executable="${build_tool_ar}" failonerror="true">
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
 			<arg line="rcu" />
-			<arg file="${module_dir_target}/${module_test_target_a}" />
+			<arg file="${module_dir_obja}/${build_xb_libc_unb_bin}" />
 			<srcfile />
-			<fileset dir="${module_dir_test}" includes="*.o" />
+			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
 		</apply>
 		<exec executable="${build_tool_ranlib}" failonerror="true">
-			<arg file="${module_dir_target}/${module_test_target_a}" />
+			<arg file="${module_dir_obja}/${build_xb_libc_unb_bin}" />
 		</exec>
-	</target>
-	<target name="_build.test.so" depends="_build.test.lo" if="build_run_test">
-		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_ld}" />
-			<arg line="${build_opt_ld_so}" />
-			<!--
-			<arg line="${build_opt_ld_so}${module_test_target_so}" />
-			-->
-			<arg line="-PDB:${module_dir_target}/${module_test_target_so}.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<arg line="${build_opt_ld_out}${module_dir_target}/${module_test_target_so}" />
+
+		<echo>Build : xbionic-libc-bionic</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_bionic}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_bnx_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
 			<srcfile />
-			<arg line="${module_test_ldflags}" />
-			<arg line="${build_opt_ld_mgwcx}" />
-			<fileset dir="${module_dir_test}" includes="*.lo" />
-		</apply>
-	</target>
-	<target name="_build.test.bin" depends="_build.test.so" if="build_run_test">
-		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_test}" failonerror="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB}" />
-			<arg line="${build_opt_c}" />
-			<arg line="${build_opt_cl_fPIC}" />
-			<arg line="${module_test_cflags}" />
-			<arg line="${build_opt_cl_conly}" />
-			<arg line="-Fd${module_dir_test}/vc100.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<targetfile prefix="${build_opt_cl_pfx}" />
-			<srcfile />
-			<fileset dir="${current_dir_abs}/test" includes="${module_test_src_bin}" />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_bnx_src_in}" excludes="${build_xb_libc_bnx_src_ex}" />
 			<chainedmapper>
 				<mapper type="flatten" />
-				<mapper type="glob" from="*.c" to="*.lo" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_bionic}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_bnx_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_bnx_src_in}" excludes="${build_xb_libc_bnx_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_bnx_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_bionic}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libc_bnx_bin}" />
+		</exec>
+		
+		<echo>Build : xbionic-libc-common</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_ccmn}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_com_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_com_src_in}" excludes="${build_xb_libc_com_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="regexp" from="^(.*)\.[S|c]" to="\1.o" />
+			</chainedmapper>
+		</apply>
+		<!-- Split the command for Windows -->
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
+			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
+			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_bionic}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libc_com_bin}" />
+		</exec>
+
+		<echo>Build : xbionic-libc-nomalloc</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_nomalloc}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_nml_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_nml_src_in}" excludes="${build_xb_libc_nml_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_nomalloc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_nml_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_nml_src_in}" excludes="${build_xb_libc_nml_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<!-- Split the command for Windows -->
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_nomalloc}" includes="*.o" />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
+			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
+			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_bionic}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+		</exec>
+
+		<echo>Build : xbionic-libc.a</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_libc}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_lca_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lca_src_in}" excludes="${build_xb_libc_lca_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_libc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_lca_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lca_src_in}" excludes="${build_xb_libc_lca_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<!-- Split the command for Windows -->
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_ccmn}" includes="*.o" excludes="_*.o" />
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_libc}" includes="*.o" />
+			<fileset dir="${module_dir_a_ccmn}" includes="_*.o" />
+			<fileset dir="${module_dir_a_ssp}" includes="*.o" />
+			<fileset dir="${module_dir_a_freebsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_netbsd}" includes="*.o" />
+			<fileset dir="${module_dir_a_bionic}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libc_lca_bin}" />
+		</exec>
+
+	</target>
+	
+	<!-- BUILD : bionic-libc-shared  -->
+	<target name="_build.xbionic.libc.shared" depends="_prepare">
+
+		<echo>Build : xbionic-libc.so</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_libc}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libc_lcs_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lcs_src_in}" excludes="${build_xb_libc_lcs_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_libc}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_lcs_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_lcs_src_in}" excludes="${build_xb_libc_lcs_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
 			</chainedmapper>
 		</apply>
 		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
-			<env key="Path" path="${build_winxx_path};${env.Path}" />
-            <env key="INCLUDE" path="${build_winxx_inc};${env.INCLUDE}" />
-            <env key="LIB" path="${build_winxx_lib};${env.LIB};${module_dir_target}" />
-			<arg line="${build_opt_ld}" />
-			<arg line="-PDB:${module_dir_target}/${module_test_target_bin}.pdb" />
-			<arg line="${build_opt_cl_out}" />
-			<arg line="${build_opt_ld_out}${module_dir_target}/${module_test_target_bin}" />
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libc_lcs_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libc_lcs_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
 			<srcfile />
-			<arg line="xibasetest.lib" />
-			<arg line="${build_opt_ld_mgwcx}" />
-			<fileset dir="${module_dir_test}" includes="tc_main.lo" />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<arg line="${build_xb_libc_lcs_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_so_libc}" includes="*.o" />
+		</apply>
+
+		<echo>Build : xbionic-libc_malloc_debug_leak.so</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_md_leak}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_mdl_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_mdl_src_in}" excludes="${build_xb_libc_mdl_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libc_mdl_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libc_mdl_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<arg line="${build_xb_libc_lcs_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc -ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_so_md_leak}" includes="*.o" />
+		</apply>
+		
+		<echo>Build : xbionic-libc-malloc_debug_qemu.so</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_so_md_qemu}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libc_mdq_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libc_mdq_src_in}" excludes="${build_xb_libc_mdq_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libc_mdq_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libc_mdq_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
+			<arg line="${build_xb_libc_lcs_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc -ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_so_md_qemu}" includes="*.o" />
 		</apply>
 	</target>
-	<target name="_build.test" depends="_build.test.a, _build.test.so, _build.test.bin" />
 
-	<target name="_build.output" depends="_build.xibase, _build.test">
+	<!-- BUILD : bionic-libm  -->
+	<target name="_build.xbionic.libm" depends="_prepare">
+		<echo>Build : xbionic-libm.a</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_libm}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libm_a_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libm_a_src_in}" excludes="${build_xb_libm_a_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libm_a_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_libm}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libm_a_bin}" />
+		</exec>
+		<echo>Build : xbionic-libm.so</echo>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libm_so_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libm_so_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="${build_xb_libm_so_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_a_libm}" includes="*.o" />
+		</apply>
+	</target>
+
+	<!-- BUILD : bionic-libstdc++  -->
+	<target name="_build.xbionic.libstdc++" depends="_prepare">
+		<echo>Build : xbionic-libstdc++.a</echo>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_a_libstdcxx}" failonerror="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_libscx_a_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libscx_a_src_in}" excludes="${build_xb_libscx_a_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libscx_a_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_libstdcxx}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libscx_a_bin}" />
+		</exec>
+		<echo>Build : xbionic-libstdc++.so</echo>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libscx_so_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libscx_so_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="${build_xb_libscx_so_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_a_libm}" includes="*.o" />
+		</apply>
+	</target>
+
+	<!-- BUILD : bionic-libthread_db  -->
+	<target name="_build.xbionic.libthread_db" depends="_prepare">
+		<echo>Build : xbionic-libthread_db.a</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_a_libtdb}" failonerror="true">
+			<arg line="${build_xb_opt_c}" />
+			<arg line="${build_xb_libtdb_a_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_libtdb_a_src_in}" excludes="${build_xb_libtdb_a_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_ar}" failonerror="true" parallel="true">
+			<arg line="rcu" />
+			<arg file="${module_dir_obja}/${build_xb_libtdb_a_bin}" />
+			<srcfile />
+			<fileset dir="${module_dir_a_libtdb}" includes="*.o" />
+		</apply>
+		<exec executable="${build_tool_ranlib}" failonerror="true">
+			<arg file="${module_dir_obja}/${build_xb_libtdb_a_bin}" />
+		</exec>
+		<echo>Build : xbionic-libthread_db.so</echo>
+		<apply verbose="true" executable="${build_tool_linker}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_cxx}" />
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="${build_opt_ld_so}${build_xb_libtdb_so_bin}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objso}/${build_xb_libtdb_so_bin}" />
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<srcfile />
+			<arg line="${build_xb_libtdb_so_ldflags}" />
+			<arg line="-L${module_dir_objso}" />
+			<arg line="-lc -ldl" />
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<fileset dir="${module_dir_a_libtdb}" includes="*.o" />
+		</apply>
+	</target>
+
+	<!-- BUILD : bionic-linker  -->
+	<target name="_build.xbionic.linker" depends="_prepare">
+		<echo>Build : xbionic-linker.o</echo>
+		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_ex_linker}" failonerror="true">
+			<arg line="${build_xb_linker_cflags}" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_linker_src_in}" excludes="${build_xb_linker_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.c" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<apply verbose="true" executable="${build_tool_cxx}" dest="${module_dir_ex_linker}" failonerror="true">
+			<arg line="${build_xb_linker_cflags}" />
+			<arg line="-fno-rtti" />
+			<arg line="-c" />
+			<arg line="-o" />
+			<targetfile />
+			<srcfile />
+			<fileset dir="${current_dir_abs}" includes="${build_xb_linker_src_in}" excludes="${build_xb_linker_src_ex}" />
+			<chainedmapper>
+				<mapper type="flatten" />
+                <mapper type="glob" from="*.cpp" to="*.o" />
+			</chainedmapper>
+		</apply>
+		<echo>Build : xbionic-linker.bin</echo>
+		<apply verbose="true" executable="${build_tool_cc}" failonerror="true" parallel="true">
+			<arg line="${build_xb_opt_ld}" />
+			<arg line="-o" />
+			<arg file="${module_dir_objex}/${build_xb_linker_bin}" />
+			<srcfile />
+			<arg line="${module_dir_obja}/${build_xb_libc_nml_bin}" />
+			<arg line="${build_xb_linker_ldflags}" />
+			<fileset dir="${module_dir_ex_linker}" includes="*.o" />
+		</apply>
+	</target>
+
+	<!-- OUPUT : copying needed files  -->
+	<target name="_build.output" depends="_prepare">
+		<!-- depends="_build.xbionic.libc" -->
+		<echo>libc-include : base</echo>
 		<copy todir="${module_dir_output_inc}">
-			<fileset dir="${basedir}/include" includes="**/**.h" />
+			<fileset dir="${current_dir_abs}/libc/include" includes="**/**.h" />
 		</copy>
+		<echo>libc-include : machine</echo>
+		<copy todir="${module_dir_output_inc}">
+			<fileset dir="${current_dir_abs}/libc/arch-${build_xb_cfg_arch}/include" includes="**/**.h" />
+		</copy>
+		<echo>libc-include : linux</echo>
+		<copy todir="${module_dir_output_inck}">
+			<fileset dir="${current_dir_abs}/libc/kernel/common" includes="**/**.h" />
+		</copy>
+		<echo>libc-include : asm</echo>
+		<copy todir="${module_dir_output_inck}">
+			<fileset dir="${current_dir_abs}/libc/kernel/arch-${build_xb_cfg_arch}" includes="**/**.h" />
+		</copy>
+		<echo>libstdc++-include</echo>
+		<copy todir="${module_dir_output_incp}">
+			<fileset dir="${current_dir_abs}/libstdc++/include" includes="*" />
+		</copy>
+		<echo>libthread_db-include</echo>
+		<copy todir="${module_dir_output_inc}">
+			<fileset dir="${current_dir_abs}/libthread_db/include" includes="**/**.h" />
+		</copy>
+		<echo>libc-crt</echo>
 		<copy todir="${module_dir_output_lib}">
-			<fileset dir="${module_dir_target}" includes="${module_build_target_a}, ${module_build_target_so}" />
+			<fileset dir="${module_dir_so_crt}" includes="*.o" />
 		</copy>
-		<copy todir="${module_dir_output_base}">
-			<fileset dir="${basedir}/lib/${ant_cfg_target}" includes="**/**" />
+		<!--
+		<echo>libc-static-objects</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${module_dir_obja}" includes="*.a" />
 		</copy>
-		<copy todir="${module_dir_output_res}">
-			<fileset dir="${basedir}/res" includes="**/*" />
+		-->
+		<echo>libc-shared-objects</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${module_dir_objso}" includes="*.so, *.dll" />
 		</copy>
-		<copy todir="${module_dir_output_test}">
-			<fileset dir="${module_dir_target}" includes="${module_test_target_a}, ${module_test_target_so}, ${module_test_target_bin}" />
+		<echo>libc-executables</echo>
+		<copy todir="${module_dir_output_bin}">
+			<fileset dir="${module_dir_objex}" includes="linker, linker.exe" />
 		</copy>
+		<echo>libc-libgcc.a</echo>
+		<copy todir="${module_dir_output_lib}">
+			<fileset dir="${basedir}/lib/${build_cfg_target}" includes="libgcc.a, libgcc_eh.a" />
+		</copy>
+		<echo>change the permission of copied files</echo>
+		<chmod perm="0755">
+			<fileset dir="${module_dir_output_lib}" includes="*.so, *.dll" />
+		</chmod>
+		<chmod file="${module_dir_output_bin}/linker" perm="0755" />
 	</target>
 
 	<!-- ====================           ENTRY            ================== -->
 
 	<!-- All -->
-	<target name="mingw32">
-		<property name="ant_cfg_target" value="mingw32" />
-		<antcall target="_prepare" />
-		<antcall target="_build.output" />
-	</target>
-	<target name="mingw64">
-		<property name="ant_cfg_target" value="mingw64" />
-		<antcall target="_prepare" />
-		<antcall target="_build.output" />
-	</target>
+	<target name="all" depends="_prepare, _build.xbionic.libc.crt, _build.xbionic.libdl, _build.xbionic.libc.static, _build.xbionic.libc.shared, _build.xbionic.libm, _build.xbionic.libstdc++, _build.xbionic.libthread_db, _build.xbionic.linker, _build.output" />
+	<!--
+	<target name="all" depends="_prepare, _build.output" />
+	-->
 
 	<!-- CLEAN -->
 	<target name="clean" depends="_prepare">

@@ -36,3 +36,14 @@ extern "C" int __set_errno(int n) {
   errno = n;
   return -1;
 }
+
+// added by cmjo : avoid the name mangling error!!!!
+// {{{
+#if defined(__MINGW32__) || defined(__MINGW64__)
+// TODO: this should be __LIBC_HIDDEN__ but was exposed in <errno.h> in the NDK.
+extern "C" int _set_errno(int n) {
+  errno = n;
+  return -1;
+}
+#endif
+// }}}

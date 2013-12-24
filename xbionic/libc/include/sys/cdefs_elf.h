@@ -98,8 +98,12 @@
 /* GCC visibility helper macro */
 /* This must be used to tag non-static functions that are private, i.e.
  * never exposed by the shared library. */
+#ifndef _WIN32 // added by cmjo
 #define __LIBC_HIDDEN__							\
 	__attribute__ ((visibility ("hidden")))
+#else
+#define __LIBC_HIDDEN__
+#endif
 
 /* This must be used to tag non-static functions that are public, i.e.
  * exposed by the shared library, and part of the stable NDK ABI */
@@ -116,7 +120,11 @@
 
 #define	__IDSTRING(_n,_s)		__SECTIONSTRING(.ident,_s)
 
+#ifndef _WIN32 // added by cmjo
 #define	__RCSID(_s)			__IDSTRING(rcsid,_s)
+#else
+#define	__RCSID(_s)
+#endif
 #define	__SCCSID(_s)
 #define __SCCSID2(_s)
 #if 0	/* XXX userland __COPYRIGHTs have \ns in them */

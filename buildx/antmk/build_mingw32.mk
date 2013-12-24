@@ -95,10 +95,10 @@ build_xb_opt_c      = -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -std=gnu99 \
 		-funwind-tables \
 		-fstack-protector \
 		-fmessage-length=0 \
-		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
-		-isystem ${basedir}/wbionic/libc/include \
-		-isystem ${basedir}/wbionic/libc/kernel/common \
-		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch}
+		-isystem ${basedir}/xbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/xbionic/libc/include \
+		-isystem ${basedir}/xbionic/libc/kernel/common \
+		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_xb_cfg_arch}
 build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-exceptions -fno-rtti \
 		-ffunction-sections \
 		-fdata-sections \
@@ -109,10 +109,10 @@ build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-except
 		-funwind-tables \
 		-fstack-protector \
 		-fmessage-length=0 \
-		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
-		-isystem ${basedir}/wbionic/libc/include \
-		-isystem ${basedir}/wbionic/libc/kernel/common \
-		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch}
+		-isystem ${basedir}/xbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/xbionic/libc/include \
+		-isystem ${basedir}/xbionic/libc/kernel/common \
+		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_xb_cfg_arch}
 build_xb_opt_ld     = -m32 -nostdlib
 
 #####
@@ -131,15 +131,15 @@ build_xb_libc_cmn_cflags = \
 	-DDEBUG \
 	-DSOFTFLOAT \
 	-DANDROID_SMP=1 \
-	-I${basedir}/wbionic/libc/private
+	-I${basedir}/xbionic/libc/private
 
 build_xb_libc_cmn_ldflags = -Wl,--no-undefined
 
 build_xb_libc_cmn_incs = \
-	-I${basedir}/wbionic/libc \
-	-I${basedir}/wbionic/libc/stdlib \
-	-I${basedir}/wbionic/libc/string \
-	-I${basedir}/wbionic/libc/stdio \
+	-I${basedir}/xbionic/libc \
+	-I${basedir}/xbionic/libc/stdlib \
+	-I${basedir}/xbionic/libc/string \
+	-I${basedir}/xbionic/libc/stdio \
 	-I${basedir}/external/safe-iop/include
 
 
@@ -759,9 +759,9 @@ build_xb_libc_arch_dynamic_src =
 ####
 build_xb_libc_crt_bin     =
 build_xb_libc_crt_cflags  = -DUSE_SSE2=1 -DUSE_SSE3=1 -DPLATFORM_SDK_VERSION=18 \
-	-I${basedir}/wbionic/libc/include \
-    -I${basedir}/wbionic/libc/private \
-    -I${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include
+	-I${basedir}/xbionic/libc/include \
+    -I${basedir}/xbionic/libc/private \
+    -I${basedir}/xbionic/libc/arch-${build_xb_cfg_arch}/include
 build_xb_libc_crt_ldflags = 
 build_xb_libc_crt_src_in  = libc/bionic/crtbrand.c, libc/arch-${build_xb_cfg_arch}/bionic/crt*.S, libc/arch-${build_xb_cfg_arch}/bionic/crt*.c
 build_xb_libc_crt_src_ex  = 
@@ -793,8 +793,8 @@ build_xb_libc_ssp_src_mk  = ${build_xb_libc_ssp_src_in}
 build_xb_libc_ufb_bin     = libc_freebsd.a
 build_xb_libc_ufb_cflags  = ${build_xb_libc_cmn_cflags} \
 	-D_WCTYPE_T_DEFINED \
-	-I${basedir}/wbionic/libc/upstream-freebsd \
-	-include ${basedir}/wbionic/libc/upstream-freebsd/freebsd-compat.h
+	-I${basedir}/xbionic/libc/upstream-freebsd \
+	-include ${basedir}/xbionic/libc/upstream-freebsd/freebsd-compat.h
 build_xb_libc_ufb_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_ufb_src_in  = ${build_xb_libc_ufreebsd_src}
 build_xb_libc_ufb_src_ex  = 
@@ -805,11 +805,11 @@ build_xb_libc_ufb_src_mk  = ${build_xb_libc_ufb_src_in}
 ####
 build_xb_libc_unb_bin     = libc_netbsd.a
 build_xb_libc_unb_cflags  = ${build_xb_libc_cmn_cflags} \
-	-I${basedir}/wbionic/libc/stdio \
-	-I${basedir}/wbionic/libm/include \
-	-I${basedir}/wbionic/libc/upstream-netbsd \
-	-I${basedir}/wbionic/libc/upstream-netbsd/libc/include \
-	-include ${basedir}/wbionic/libc/upstream-netbsd/netbsd-compat.h
+	-I${basedir}/xbionic/libc/stdio \
+	-I${basedir}/xbionic/libm/include \
+	-I${basedir}/xbionic/libc/upstream-netbsd \
+	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
+	-include ${basedir}/xbionic/libc/upstream-netbsd/netbsd-compat.h
 build_xb_libc_unb_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_unb_src_in  = ${build_xb_libc_unetbsd_src}
 build_xb_libc_unb_src_ex  =
@@ -834,8 +834,8 @@ build_xb_libc_com_bin     = libc_common.a
 build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} ${build_xb_libc_cmn_incs} \
 	-D_WCTYPE_T_DEFINED \
 	-I${basedir}/lib/${build_cfg_target}/include \
-	-I${basedir}/wbionic/libc/upstream-netbsd/libc/include \
-	-I${basedir}/wbionic/libm/include
+	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
+	-I${basedir}/xbionic/libm/include
 build_xb_libc_com_ldflags = ${build_xb_libc_cmn_ldflags}
 build_xb_libc_com_src_in  = libc/arch-${build_xb_cfg_arch}/_ntdll/ntdll.c, ${build_xb_libc_r_common_src}
 build_xb_libc_com_src_ex  = 
@@ -1163,15 +1163,15 @@ build_xb_linker_cflags     = \
 		-funswitch-loops \
 		-funwind-tables \
 		-fmessage-length=0 \
-		-isystem ${basedir}/wbionic/libc/arch-${build_xb_cfg_arch}/include \
-		-isystem ${basedir}/wbionic/libc/include \
-		-isystem ${basedir}/wbionic/libc/kernel/common \
-		-isystem ${basedir}/wbionic/libc/kernel/arch-${build_xb_cfg_arch} \
+		-isystem ${basedir}/xbionic/libc/arch-${build_xb_cfg_arch}/include \
+		-isystem ${basedir}/xbionic/libc/include \
+		-isystem ${basedir}/xbionic/libc/kernel/common \
+		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_xb_cfg_arch} \
 		-fno-stack-protector \
         -Wstrict-overflow=5 \
         -fvisibility=hidden \
         -DANDROID_X86_LINKER \
-        -I${basedir}/wbionic/libc
+        -I${basedir}/xbionic/libc
 build_xb_linker_ldflags    = \
 		-Wl,-Bsymbolic \
 		-Wl,--warn-shared-textrel \

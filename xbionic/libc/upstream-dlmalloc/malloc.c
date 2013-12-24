@@ -1663,21 +1663,38 @@ static int dev_zero_fd = -1; /* Cached file descriptor for /dev/zero. */
 
 #else /* WIN32 */
 
+// changed by cmjo
+// FORCEINLINE is not working on MINGW.
+#ifdef __cplusplus
+#define _XI_INLINE inline
+#else // !__cplusplus
+#	ifdef _MSC_VER
+#		define _XI_INLINE __forceinline                                   ///< Mark the function is INLINE on WIN32
+#	elif defined(__linux__) || defined(__MINGW32__)
+#		define _XI_INLINE inline __attribute__((always_inline)) static    ///< Mark the function is INLINE on *NIX
+#	else
+#		define _XI_INLINE static                                          ///< Mark the function is INLINE on Others
+#	endif
+#endif // __cplusplus
+
 /* Win32 MMAP via VirtualAlloc */
-static FORCEINLINE void* win32mmap(size_t size) {
+//static FORCEINLINE
+_XI_INLINE void* win32mmap(size_t size) {
   void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT, PAGE_READWRITE);
   return (ptr != 0)? ptr: MFAIL;
 }
 
 /* For direct MMAP, use MEM_TOP_DOWN to minimize interference */
-static FORCEINLINE void* win32direct_mmap(size_t size) {
+//static FORCEINLINE
+_XI_INLINE void* win32direct_mmap(size_t size) {
   void* ptr = VirtualAlloc(0, size, MEM_RESERVE|MEM_COMMIT|MEM_TOP_DOWN,
                            PAGE_READWRITE);
   return (ptr != 0)? ptr: MFAIL;
 }
 
 /* This function supports releasing coalesed segments */
-static FORCEINLINE int win32munmap(void* ptr, size_t size) {
+//static FORCEINLINE
+_XI_INLINE int win32munmap(void* ptr, size_t size) {
   MEMORY_BASIC_INFORMATION minfo;
   char* cptr = (char*)ptr;
   while (size) {

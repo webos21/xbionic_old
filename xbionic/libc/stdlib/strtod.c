@@ -174,9 +174,19 @@ extern void *MALLOC(size_t);
 #define MALLOC malloc
 #endif
 
+// change the include sequence - by cmjo
+// ------------------------------------------------------
+// Bionic's ctype.h has the definition "#define _X 0x40",
+// and it causes the error on "float.h".
+#ifndef _WIN32
 #include "ctype.h"
 #include "errno.h"
 #include "float.h"
+#else
+#include "errno.h"
+#include "float.h"
+#include "ctype.h"
+#endif
 
 #ifndef __MATH_H__
 #include "math.h"
