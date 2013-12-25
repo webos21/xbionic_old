@@ -18,8 +18,6 @@
 #include <errno.h>
 #include <sys/types.h>
 
-#define TINFO_SIZE	4096
-
 // pid_t gettid(void);
 pid_t gettid(void) {
 	THREAD_BASIC_INFORMATION tinfo;

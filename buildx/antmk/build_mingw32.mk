@@ -872,7 +872,7 @@ build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREA
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
 		${basedir}/lib/${build_cfg_target}/libgcc.a \
 		${basedir}/lib/${build_cfg_target}/libgcc_eh.a \
-		"C:/Program Files/Microsoft SDKs/Windows/v7.1/Lib/Kernel32.lib"
+		-lkernel32
 #		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \

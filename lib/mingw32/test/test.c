@@ -22,11 +22,8 @@ int test_peb() {
 	return 0;
 }
 
-extern PTEB_7 NtCurrentTeb();
-
 int test_teb() {
 	PTEB_7 x = XbNtCurrentTeb();
-//	PTEB_7 x = NtCurrentTeb();
 	return 0;
 }
 
