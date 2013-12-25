@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 int __fork(void) {
 	NTSTATUS status;

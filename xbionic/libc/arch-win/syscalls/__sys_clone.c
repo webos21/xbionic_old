@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 // pid_t waitpid(pid_t pid, int *status, int options)
 int __sys_clone(void* (*fn)(void*), void* tls, int flags, void* arg) {

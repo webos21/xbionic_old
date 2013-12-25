@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // sends the signal sig to the thread with the thread ID tid in the thread group tgid
 // int tgkill(int tgid, int tid, int sig);

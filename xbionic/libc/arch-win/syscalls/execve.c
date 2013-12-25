@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 #define MAX_ARG_SIZE   (32768)
 

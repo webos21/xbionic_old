@@ -28,7 +28,11 @@
 
 extern void *__dso_handle;
 
+// modified by cmjo for VS2010 {{{
+#ifndef _MSC_VER
 __attribute__ ((visibility ("hidden")))
+#endif
+// }}}
 int atexit(void (*func)(void))
 {
   return (__cxa_atexit((void (*)(void *))func, (void *)0, &__dso_handle));

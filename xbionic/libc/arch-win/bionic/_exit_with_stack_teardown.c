@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 void _exit_with_stack_teardown(void *stackBase, int stackSize, int *retCode) {
 	int status = (*retCode);

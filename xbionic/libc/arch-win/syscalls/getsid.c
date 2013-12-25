@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __GID    64
 
 // Get session ID (session id = group id of session leader)
 // pid_t getsid(pid_t pid);
-int getsid(int pid) {
+pid_t getsid(pid_t pid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getsid() is called, but it is not implemented!!!\n");
 	errno = 0;

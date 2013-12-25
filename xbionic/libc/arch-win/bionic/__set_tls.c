@@ -88,14 +88,13 @@ int __set_tls(void *ptr)
     }
 
     /* this weird computation comes from GLibc */
+	/* - FIXME : must change this code (by cmjo)
     segment = _tls_desc.entry_number*8 + 3;
     asm __volatile__ (
         "   movw %w0, %%gs" :: "q"(segment)
     );
+	*/
     pthread_mutex_unlock(&_tls_desc_lock);
 
     return 0;
 }
-
-
-

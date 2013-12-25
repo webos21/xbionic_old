@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // int __setuid(uid_t);
-int __setuid(int uid) {
+int __setuid(uid_t uid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("__setuid() is called, but it is not implemented!!!\n");
 	errno = 0;

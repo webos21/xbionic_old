@@ -1,0 +1,424 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\sys">
+      <UniqueIdentifier>{0431ffbf-aff1-4c26-879b-f0afac6cee80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\asm">
+      <UniqueIdentifier>{6ad0aa52-1692-46d5-ad4a-87515a767d55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\asm-generic">
+      <UniqueIdentifier>{04b22120-e114-4520-894a-c200723c5252}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\linux">
+      <UniqueIdentifier>{3f236eb4-a571-4b86-9fbe-64cec21dcab7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\machine">
+      <UniqueIdentifier>{7f6002ac-7b2c-40c7-8a42-d4daefac0ff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\bionic">
+      <UniqueIdentifier>{2fd69e11-be04-4c24-96e8-15ab3026daf0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\string">
+      <UniqueIdentifier>{a7f40ae3-0f42-4f2e-bf0b-bfc8d79c94b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\syscalls">
+      <UniqueIdentifier>{95b0f0f3-bc68-4770-a62a-d25c66858d4d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\syscalls-notused">
+      <UniqueIdentifier>{628a82d2-6acf-4bab-9389-f27dde61e916}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\syscalls-unimp">
+      <UniqueIdentifier>{7e217163-3eef-44e8-8e81-7d0cacb973cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_ntdll">
+      <UniqueIdentifier>{67059c79-b456-48f0-8456-66ef6ee6c205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\_test">
+      <UniqueIdentifier>{1f15bee7-f03a-40d6-87ef-fac6a86dfdf1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\android">
+      <UniqueIdentifier>{d9f3ae50-c942-4b6a-b8a7-7d2a3c673209}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lib\mingw32\include\ntdll.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\ntstatus.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\nttypes.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\poppack.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack1.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack2.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack4.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack8.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\errno.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ldt.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\page.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\page_32.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\posix_types.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\posix_types_32.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ptrace.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ptrace-abi.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\siginfo.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\signal.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\types.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\unistd.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\unistd_32.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\errno.h">
+      <Filter>헤더 파일\asm-generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\errno-base.h">
+      <Filter>헤더 파일\asm-generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\siginfo.h">
+      <Filter>헤더 파일\asm-generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\signal.h">
+      <Filter>헤더 파일\asm-generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\compiler.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\err.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\errno.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\limits.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\posix_types.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\ptrace.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\stddef.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\time.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\types.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\unistd.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\_types.h">
+      <Filter>헤더 파일\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\internal_types.h">
+      <Filter>헤더 파일\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\kernel.h">
+      <Filter>헤더 파일\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\limits.h">
+      <Filter>헤더 파일\machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\_types.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\cdefs.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\cdefs_elf.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\limits.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\ptrace.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\syslimits.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\time.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\sysmacros.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\types.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\dlfcn.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\errno.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\limits.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\malloc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\pthread.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sched.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\signal.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\stdint.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\time.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\string.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\test\stddef.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\android\api-level.h">
+      <Filter>헤더 파일\android</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\bionic\__stack_chk_fail_local.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\bionic\libc_init_common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\arch-win\bionic\atexit.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\test\test.h">
+      <Filter>소스 파일\_test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\resource.h">
+      <Filter>헤더 파일\asm</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\resource.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\resource.h">
+      <Filter>헤더 파일\asm-generic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\resource.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\sys\wait.h">
+      <Filter>헤더 파일\sys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\wait.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\_ntdll\ntdll.c">
+      <Filter>소스 파일\_ntdll</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\bcopy_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\bzero_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memcmp_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memcpy_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memmove_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memset_wrapper.c">
+      <Filter>소스 파일\string</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__brk.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__ptrace.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setresuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setreuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__waitid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getegid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\geteuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getgid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getgroups.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getpgid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getresgid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getresuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getsid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getuid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\kill.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\readahead.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setgid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setresgid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setsid.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\tgkill.c">
+      <Filter>소스 파일\syscalls-unimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__fork.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__set_thread_area.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_exit.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_exit_thread.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\execve.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\wait4.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\gettid.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getppid.c">
+      <Filter>소스 파일\syscalls</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\__get_tls.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\__set_tls.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\_exit_with_stack_teardown.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\clone.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\futex_x86.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\syscall.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\vfork.c">
+      <Filter>소스 파일\bionic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__sys_clone.c">
+      <Filter>소스 파일\syscalls-notused</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_waitpid.c">
+      <Filter>소스 파일\syscalls-notused</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\tkill.c">
+      <Filter>소스 파일\syscalls-notused</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\mingw32\test\test.c">
+      <Filter>소스 파일\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\mingw32\test\__errno.c">
+      <Filter>소스 파일\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\mingw32\test\__set_errno.c">
+      <Filter>소스 파일\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\mingw32\test\dlfcn.c">
+      <Filter>소스 파일\_test</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\mingw32\test\pthread.c">
+      <Filter>소스 파일\_test</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\lib\mingw64\test\__readgsqword.asm">
+      <Filter>소스 파일\_test</Filter>
+    </MASM>
+  </ItemGroup>
+</Project>

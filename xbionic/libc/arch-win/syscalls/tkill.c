@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 // obsolete predecessor to tgkill(). It only allows the target thread ID
 // int tkill(int tid, int sig);

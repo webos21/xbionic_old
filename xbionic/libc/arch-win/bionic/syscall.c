@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 int syscall(int number, ...) {
 	ntsc_t *ntfp = ntdll_getFP();

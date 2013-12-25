@@ -19,6 +19,11 @@
 #ifndef _ASM_X86_TYPES_H
 #define _ASM_X86_TYPES_H
 #ifndef __ASSEMBLY__
+// modified by cmjo for VS2010 {{{
+#if defined(_MSC_VER) && !defined(__signed__)
+#define __signed__
+#endif
+// }}}
 typedef unsigned short umode_t;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 typedef __signed__ char __s8;

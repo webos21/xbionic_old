@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __UID    64
 
 // Get real GID
 //int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid);
-int getresuid(int *ruid, int *euid, int *suid) {
+int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getresuid() is called, but it is not implemented!!!\n");
 	errno = 0;

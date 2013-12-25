@@ -26,7 +26,10 @@
  * SUCH DAMAGE.
  */
 
-
+// modified by cmjo for VS2010 {{{
+#ifndef _MSC_VER
 __attribute__ ((visibility ("hidden")))
 __attribute__ ((section (".data")))
+#endif
+// }}}
 void *__dso_handle = &__dso_handle;

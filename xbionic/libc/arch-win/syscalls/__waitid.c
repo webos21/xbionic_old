@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
+
+#include <sys/wait.h>
 
 #define P_ALL  0
 #define P_PID  1
 #define P_PGID 2
 
 // int __waitid(idtype_t which, id_t id, siginfo_t* info, int options, struct rusage* ru);
-int __waitid(int which, unsigned int id, void* info, int options, void* ru) {
+int __waitid(idtype_t which, id_t id, siginfo_t* info, int options, struct rusage* ru) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("syscall is called, but it is not implemented!!!\n");
 	errno = 0;

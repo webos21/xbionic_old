@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // sets the effective group ID
 // int setgid(gid_t gid);
-int setgid(int gid) {
+int setgid(gid_t gid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setgid() is called, but it is not implemented!!!\n");
 	errno = 0;

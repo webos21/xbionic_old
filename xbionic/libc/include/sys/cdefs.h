@@ -244,6 +244,8 @@
 #endif /* NO_KERNEL_RCSIDS */
 #endif /* _KERNEL */
 
+// modified by cmjo for VS2010 {{{
+#ifndef _MSC_VER
 #if !defined(_STANDALONE) && !defined(_KERNEL)
 #ifdef __GNUC__
 #define	__RENAME(x)	___RENAME(x)
@@ -257,6 +259,7 @@
 #else /* _STANDALONE || _KERNEL */
 #define	__RENAME(x)	no renaming in kernel or standalone environment
 #endif
+#endif // _MSC_VER
 
 /*
  * A barrier to stop the optimizer from moving code or assume live

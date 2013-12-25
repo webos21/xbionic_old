@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // sets the real GID, effective GID, and saved set-group-ID
 // int setresgid(gid_t rgid, gid_t egid, gid_t sgid);
-int setresgid(int rgid, int egid, int sgid) {
+int setresgid(gid_t rgid, gid_t egid, gid_t sgid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setresgid() is called, but it is not implemented!!!\n");
 	errno = 0;

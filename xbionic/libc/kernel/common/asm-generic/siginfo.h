@@ -59,7 +59,14 @@ typedef struct siginfo {
  struct {
  timer_t _tid;
  int _overrun;
+// modified by cmjo for VS2010 {{{
+// - Windows do not allow the zero-size array!!!
+#ifdef _MSC_VER
+ char _pad[4 + sizeof(__ARCH_SI_UID_T) - sizeof(int)];
+#else  // !_MSC_VER
  char _pad[sizeof( __ARCH_SI_UID_T) - sizeof(int)];
+#endif // _MSC_VER
+// }}}
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
  sigval_t _sigval;
  int _sys_private;

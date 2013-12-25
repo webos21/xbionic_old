@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
-void bzero(void *s, SIZE_T n) {
+void bzero(void *s, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlZeroMemory(s, n);
 }

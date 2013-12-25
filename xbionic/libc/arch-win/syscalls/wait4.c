@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
+
+#include <sys/wait.h>
 
 #define P_ALL  0
 #define P_PID  1
 #define P_PGID 2
 
 // pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru);
-int wait4(int pid, int *status, int options, void *ru) {
+pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru) {
 	// Only cover that the pid is specified. (pid == -1 is not implemented!!)
 	// we can implement the full specification with ProcessEnumeration
 

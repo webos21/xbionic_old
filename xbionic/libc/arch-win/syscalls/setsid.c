@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // creates a new session
 // pid_t setsid(void);
-int setsid(void) {
+pid_t setsid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setsid() is called, but it is not implemented!!!\n");
 	errno = 0;

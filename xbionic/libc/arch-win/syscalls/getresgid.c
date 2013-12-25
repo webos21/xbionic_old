@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __GID    64
 
 // Get real GID
 //int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid);
-int getresgid(int *rgid, int *egid, int *sgid) {
+int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getresgid() is called, but it is not implemented!!!\n");
 	errno = 0;

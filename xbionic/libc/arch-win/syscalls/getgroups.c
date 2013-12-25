@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 //int getgroups(int size, gid_t list[]);
-int getgroups(int size, int list[]) {
+int getgroups(int size, gid_t list[]) {
 	// This system call is not used!!!
 	errno = 0;
 	return 0;

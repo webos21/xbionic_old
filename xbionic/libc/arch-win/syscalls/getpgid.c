@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __GID    64
 
 // Get GID of Process(pid)
 //pid_t getpgid(pid_t pid);
-int getpgid(int pid) {
+pid_t getpgid(pid_t pid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getpgid() is called, but it is not implemented!!!\n");
 	errno = 0;

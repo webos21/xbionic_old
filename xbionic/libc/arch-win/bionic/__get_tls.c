@@ -31,7 +31,8 @@
  */
 void*   __get_tls(void)
 {
-  void*  tls;
-  asm ( "   movl  %%gs:0, %0" : "=r"(tls) );
+  void*  tls = ((void *)0);
+// FIXME : must change this code (by cmjo)
+//  asm ( "   movl  %%gs:0, %0" : "=r"(tls) );
   return tls;
 }

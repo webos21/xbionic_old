@@ -14,11 +14,21 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
+// modified by cmjo for VS2010 {{{
+#ifdef _MSC_VER
+void W_exit(int status) {
+	ntsc_t *ntfp = ntdll_getFP();
+	errno = status;
+	ntfp->FP_RtlExitUserProcess(status);
+}
+#else
 void _exit(int status) {
 	ntsc_t *ntfp = ntdll_getFP();
 	errno = status;
 	ntfp->FP_RtlExitUserProcess(status);
 }
+#endif
+// }}}

@@ -35,6 +35,13 @@
 #ifndef _I386__TYPES_H_
 #define _I386__TYPES_H_
 
+// modified by cmjo for VS2010 {{{
+// - Windows already have __wchar_t
+#if defined(_MSC_VER) && !defined(__signed)
+#define __signed
+#endif
+// }}}
+
 /* 7.18.1.1 Exact-width integer types */
 typedef	__signed char		__int8_t;
 typedef	unsigned char		__uint8_t;
@@ -100,7 +107,14 @@ typedef	char *			__va_list;
 
 /* Wide character support types */
 #ifndef __cplusplus
+// modified by cmjo for VS2010 {{{
+// - Windows already have __wchar_t
+#ifdef _MSC_VER
+typedef	int			___wchar_t;
+#else  // !_MSC_VER
 typedef	int			__wchar_t;
+#endif // _MSC_VER
+// }}}
 #endif
 typedef int			__wint_t;
 typedef	int			__rune_t;

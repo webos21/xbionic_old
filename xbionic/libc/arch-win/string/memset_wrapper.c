@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
-void *memset(void *s, int c, SIZE_T n) {
+// modified by cmjo for VS2010 {{{
+#ifdef _MSC_VER
+void *Wmemset(void *s, int c, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlFillMemory(s, n, c);
 	return s;
 }
+#else  // !_MSC_VER
+void *memset(void *s, int c, size_t n) {
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlFillMemory(s, n, c);
+	return s;
+}
+#endif // _MSC_VER
+// }}}

@@ -57,34 +57,40 @@ typedef int sig_atomic_t;
 extern const char* const sys_siglist[];
 extern const char* const sys_signame[];
 
+// modified by cmjo for VS2010
+// - before C90, variable must be declared first!!!
+
 static __inline__ int sigismember(const sigset_t* set, int signum) {
+  const unsigned long* local_set;
   int bit = signum - 1; // Signal numbers start at 1, but bit positions start at 0.
   if (set == NULL || bit < 0 || bit >= (int) (8*sizeof(sigset_t))) {
     errno = EINVAL;
     return -1;
   }
-  const unsigned long* local_set = (const unsigned long*) set;
+  local_set = (const unsigned long*) set;
   return (int) ((local_set[bit / LONG_BIT] >> (bit % LONG_BIT)) & 1);
 }
 
 static __inline__ int sigaddset(sigset_t* set, int signum) {
+  unsigned long* local_set;
   int bit = signum - 1; // Signal numbers start at 1, but bit positions start at 0.
   if (set == NULL || bit < 0 || bit >= (int) (8*sizeof(sigset_t))) {
     errno = EINVAL;
     return -1;
   }
-  unsigned long* local_set = (unsigned long*) set;
+  local_set = (unsigned long*) set;
   local_set[bit / LONG_BIT] |= 1UL << (bit % LONG_BIT);
   return 0;
 }
 
 static __inline__ int sigdelset(sigset_t* set, int signum) {
+  unsigned long* local_set;
   int bit = signum - 1; // Signal numbers start at 1, but bit positions start at 0.
   if (set == NULL || bit < 0 || bit >= (int) (8*sizeof(sigset_t))) {
     errno = EINVAL;
     return -1;
   }
-  unsigned long* local_set = (unsigned long*) set;
+  local_set = (unsigned long*) set;
   local_set[bit / LONG_BIT] &= ~(1UL << (bit % LONG_BIT));
   return 0;
 }

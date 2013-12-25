@@ -1,0 +1,293 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{2184B018-291D-412B-97F4-630D1C8B0C2C}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>xbionic</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\intermediate\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)..\..\avs\$(PlatformShortName)\$(ProjectName)\$(Configuration)\intermediate\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib\mingw32\test;$(SolutionDir)..\..\lib\mingw32\include;$(SolutionDir)..\..\xbionic\libc\arch-win\include;$(SolutionDir)..\..\xbionic\libc\arch-win\bionic;$(SolutionDir)..\..\xbionic\libc\kernel\arch-win;$(SolutionDir)..\..\xbionic\libc\kernel\common;$(SolutionDir)..\..\xbionic\libc\include;$(SolutionDir)..\..\xbionic\libc\bionic</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib\mingw32\test;$(SolutionDir)..\..\lib\mingw32\include;$(SolutionDir)..\..\xbionic\libc\arch-win\include;$(SolutionDir)..\..\xbionic\libc\arch-win\bionic;$(SolutionDir)..\..\xbionic\libc\kernel\arch-win;$(SolutionDir)..\..\xbionic\libc\kernel\common;$(SolutionDir)..\..\xbionic\libc\include;$(SolutionDir)..\..\xbionic\libc\bionic</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib\mingw32\test;$(SolutionDir)..\..\lib\mingw32\include;$(SolutionDir)..\..\xbionic\libc\arch-win\include;$(SolutionDir)..\..\xbionic\libc\arch-win\bionic;$(SolutionDir)..\..\xbionic\libc\kernel\arch-win;$(SolutionDir)..\..\xbionic\libc\kernel\common;$(SolutionDir)..\..\xbionic\libc\include;$(SolutionDir)..\..\xbionic\libc\bionic</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\..\lib\mingw32\test;$(SolutionDir)..\..\lib\mingw32\include;$(SolutionDir)..\..\xbionic\libc\arch-win\include;$(SolutionDir)..\..\xbionic\libc\arch-win\bionic;$(SolutionDir)..\..\xbionic\libc\kernel\arch-win;$(SolutionDir)..\..\xbionic\libc\kernel\common;$(SolutionDir)..\..\xbionic\libc\include;$(SolutionDir)..\..\xbionic\libc\bionic</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>
+      </AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lib\mingw32\include\ntdll.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\ntstatus.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\nttypes.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\poppack.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack1.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack2.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack4.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\pshpack8.h" />
+    <ClInclude Include="..\..\lib\mingw32\test\stddef.h" />
+    <ClInclude Include="..\..\lib\mingw32\test\test.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\bionic\atexit.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\bionic\__stack_chk_fail_local.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\internal_types.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\kernel.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\limits.h" />
+    <ClInclude Include="..\..\xbionic\libc\arch-win\include\machine\_types.h" />
+    <ClInclude Include="..\..\xbionic\libc\bionic\libc_init_common.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\android\api-level.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\dlfcn.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\errno.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\limits.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\malloc.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\pthread.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sched.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\signal.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\stdint.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\string.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\cdefs.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\cdefs_elf.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\limits.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\ptrace.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\resource.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\syslimits.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\sysmacros.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\time.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\types.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\wait.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\sys\_types.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\time.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\errno.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ldt.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\page.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\page_32.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\posix_types.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\posix_types_32.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ptrace-abi.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\ptrace.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\resource.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\siginfo.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\signal.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\types.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\unistd.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\arch-win\asm\unistd_32.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\errno-base.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\errno.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\resource.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\siginfo.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\asm-generic\signal.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\compiler.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\err.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\errno.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\limits.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\posix_types.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\ptrace.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\resource.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\stddef.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\time.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\types.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\unistd.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\wait.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\lib\mingw32\test\dlfcn.c" />
+    <ClCompile Include="..\..\lib\mingw32\test\pthread.c" />
+    <ClCompile Include="..\..\lib\mingw32\test\test.c" />
+    <ClCompile Include="..\..\lib\mingw32\test\__errno.c" />
+    <ClCompile Include="..\..\lib\mingw32\test\__set_errno.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\clone.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\futex_x86.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\syscall.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\vfork.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\_exit_with_stack_teardown.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\__get_tls.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\bionic\__set_tls.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\bcopy_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\bzero_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memcmp_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memcpy_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memmove_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\string\memset_wrapper.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\execve.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getegid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\geteuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getgid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getgroups.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getpgid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getppid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getresgid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getresuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getsid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\gettid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\getuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\kill.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\readahead.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setgid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setresgid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setsid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\tgkill.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\tkill.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\wait4.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_exit.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_exit_thread.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\_waitpid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__brk.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__fork.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__ptrace.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setresuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setreuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__setuid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__set_thread_area.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__sys_clone.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\__waitid.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\_ntdll\ntdll.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="..\..\lib\mingw64\test\__readgsqword.asm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </MASM>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>

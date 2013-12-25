@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // Get parent process ID
 // pid_t getppid(void);
-int getppid(void) {
+pid_t getppid(void) {
 	PROCESS_BASIC_INFORMATION pbi;
 
 	ntsc_t *ntfp = ntdll_getFP();

@@ -33,6 +33,12 @@
 # include <sys/types.h>
 #endif
 
+// modified by cmjo for VS2010 {{{
+#if defined(_MSC_VER) && !defined(__inline__)
+#define __inline__ __forceinline
+#endif
+// }}}
+
 static __inline__ int major(dev_t _dev)
 {
   return (_dev >> 8) & 0xfff;

@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // sets real and effective user IDs, set-user-id
 // int __setresuid(uid_t ruid, uid_t euid, uid_t suid);
-int __setresuid(int ruid, int euid) {
+int __setresuid(uid_t ruid, uid_t euid, uid_t suid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("__setresuid() is called, but it is not implemented!!!\n");
 	errno = 0;

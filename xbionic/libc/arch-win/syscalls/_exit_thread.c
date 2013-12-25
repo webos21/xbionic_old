@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 void _exit_thread(int status) {
 	ntsc_t *ntfp = ntdll_getFP();

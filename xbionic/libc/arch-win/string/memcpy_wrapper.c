@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
-void *memcpy(void *dest, const void *src, SIZE_T n){
+// modified by cmjo for VS2010 {{{
+#ifdef _MSC_VER
+void *Wmemcpy(void *dest, const void *src, size_t n){
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlCopyMemory(dest, (const PVOID)src, n);
 	return dest;
 }
+#else  // !_MSC_VER
+void *memcpy(void *dest, const void *src, size_t n){
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlCopyMemory(dest, (const PVOID)src, n);
+	return dest;
+}
+#endif // _MSC_VER
+// }}}

@@ -27,8 +27,19 @@
  */
 
 #include <sys/endian.h>
+// modified by cmjo {{{
+// - change the include sequence
+// ------------------------------------------------------
+// Bionic's ctype.h has the definition "#define _X 0x40",
+// and it causes the error on "float.h".
+#ifdef _WIN32
+#include <float.h>
+#include <ctype.h>
+#else  // !_WIN32
 #include <ctype.h>
 #include <float.h>
+#endif // _WIN32
+// }}}
 #include <math.h>
 #include <stdint.h>
 #include <strings.h>

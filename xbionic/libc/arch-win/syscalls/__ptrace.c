@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
-
+#include <errno.h>
 #include <sys/types.h>
+
 #include <linux/ptrace.h>
 
 // used to implement breakpoint debugging and system call tracing

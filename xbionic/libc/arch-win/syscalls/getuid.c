@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __UID    64
 
 // Get real UID
 // uid_t getuid(void);
-int getuid(void) {
+uid_t getuid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getuid() is called, but it is not implemented!!!\n");
 	errno = 0;

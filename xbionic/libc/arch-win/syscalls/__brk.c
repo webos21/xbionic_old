@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
 
 int __brk(void* end_data) {
 	ntsc_t *ntfp = ntdll_getFP();

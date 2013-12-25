@@ -29,7 +29,13 @@
 #define __iomem
 #define __chk_user_ptr(x) (void)0
 #define __chk_io_ptr(x) (void)0
+// modified by cmjo for VS2010 {{{
+#ifdef _MSC_VER
+#define __builtin_warning(x, ...) (1)
+#else  // !_MSC_VER
 #define __builtin_warning(x, y...) (1)
+#endif // _MSC_VER
+// }}}
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 #define __acquires(x)
 #define __releases(x)

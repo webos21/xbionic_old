@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define __EGID    64
 
 // Get effective GID
 //gid_t getegid(void);
-int getegid(void) {
+gid_t getegid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getegid() is called, but it is not implemented!!!\n");
 	errno = 0;

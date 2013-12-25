@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // send any signal to any process group or process
 // int kill(pid_t pid, int sig);
-int kill(int pid, int sig) {
+int kill(pid_t pid, int sig) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("kill() is called, but it is not implemented!!!\n");
 	errno = 0;

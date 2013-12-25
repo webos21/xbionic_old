@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
-void *memmove(void *dest, const void *src, SIZE_T n) {
+void *memmove(void *dest, const void *src, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlMoveMemory(dest, (PVOID)src, n);
 	return dest;

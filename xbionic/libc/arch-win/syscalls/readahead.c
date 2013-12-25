@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 //ssize_t readahead(int fd, off64_t offset, size_t count);
-SSIZE_T readahead(int fd, LONGLONG offset, SIZE_T count) {
+ssize_t readahead(int fd, off64_t offset, size_t count) {
 	// This system call is not used!!!
 	errno = 0;
 	return 0;

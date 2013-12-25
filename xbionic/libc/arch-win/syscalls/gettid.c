@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 #define TINFO_SIZE	4096
 
 // pid_t gettid(void);
-int gettid(void) {
+pid_t gettid(void) {
 	THREAD_BASIC_INFORMATION tinfo;
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_NtQueryInformationThread(XbNtCurrentThread(), ThreadBasicInformation, (PVOID)&tinfo, sizeof(tinfo), NULL);

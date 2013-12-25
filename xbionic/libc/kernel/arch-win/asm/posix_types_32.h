@@ -53,6 +53,11 @@ typedef unsigned short __kernel_old_dev_t;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 typedef long long __kernel_loff_t;
 #endif
+// modified by cmjo for VS2010 {{{
+#ifdef _MSC_VER
+typedef long long __kernel_loff_t;
+#endif
+// }}}
 typedef struct {
 #ifdef __USE_ALL
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */

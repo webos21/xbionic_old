@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-#include <errno.h>
 #include <ntdll.h>
+#include <errno.h>
+#include <sys/types.h>
 
 // pid_t waitpid(pid_t pid, int *status, int options)
-int _waitpid(int pid, int *status, int options) {
+pid_t _waitpid(pid_t pid, int *status, int options) {
 	// This system call is not used!!!
 	// wait4 is called by wait.cpp
 	errno = 0;

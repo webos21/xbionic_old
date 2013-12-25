@@ -172,7 +172,7 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setsid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setgid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__setreuid.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__setresuid.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__setresuid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/setresgid.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__brk.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/kill.c, \
