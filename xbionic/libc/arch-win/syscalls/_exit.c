@@ -17,18 +17,24 @@
 #include <ntdll.h>
 #include <errno.h>
 
+// terminate the calling process 
+// ref {
+//     http://linux.die.net/man/2/_exit
+// }
+
 // modified by cmjo for VS2010 {{{
+// - The name is same as Windows API
 #ifdef _MSC_VER
 void W_exit(int status) {
 	ntsc_t *ntfp = ntdll_getFP();
 	errno = status;
 	ntfp->FP_RtlExitUserProcess(status);
 }
-#else
+#else  // !_MSC_VER
 void _exit(int status) {
 	ntsc_t *ntfp = ntdll_getFP();
 	errno = status;
 	ntfp->FP_RtlExitUserProcess(status);
 }
-#endif
+#endif // _MSC_VER
 // }}}

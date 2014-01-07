@@ -20,8 +20,11 @@
 
 #define __GID    64
 
-// Get session ID (session id = group id of session leader)
-// pid_t getsid(pid_t pid);
+// Get session ID(session id = group id of session leader)
+// (pid == 0 : calling process, pid != 0 : specific process)
+// ref {
+//     http://linux.die.net/man/2/getsid
+// }
 pid_t getsid(pid_t pid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getsid() is called, but it is not implemented!!!\n");

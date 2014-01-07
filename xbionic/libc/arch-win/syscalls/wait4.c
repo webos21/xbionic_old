@@ -20,11 +20,10 @@
 
 #include <sys/wait.h>
 
-#define P_ALL  0
-#define P_PID  1
-#define P_PGID 2
-
-// pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru);
+// wait for process to change state, BSD style 
+// ref {
+//     http://linux.die.net/man/2/wait4
+// }
 pid_t wait4(pid_t pid, int *status, int options, struct rusage *ru) {
 	// Only cover that the pid is specified. (pid == -1 is not implemented!!)
 	// we can implement the full specification with ProcessEnumeration

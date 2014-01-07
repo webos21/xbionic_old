@@ -23,12 +23,13 @@
 
 // sets an entry in the current thread's thread-local storage (TLS) array
 // ref {
-//   http://linux.die.net/man/2/set_thread_area
+//     http://linux.die.net/man/2/set_thread_area
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/hh285210(v=vs.85).aspx
 // }
-// int __set_thread_area(struct user_desc *u_info);
 int __set_thread_area(struct user_desc *u_info) {
 	ntsc_t *ntfp = ntdll_getFP();
-	ntfp->FP_DbgPrint("__set_thread_area() is called, but it is not implemented!!!\n");
+	PTEB_7 x = XbNtCurrentTeb();
+	x->ThreadLocalStoragePointer = (PVOID) u_info;
 	errno = 0;
 	return 0;
 }

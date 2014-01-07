@@ -20,8 +20,10 @@
 
 #define __EUID    64
 
-// Get effective UID
-// uid_t geteuid(void);
+// Get the effective user ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/geteuid
+// }
 uid_t geteuid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("geteuid() is called, but it is not implemented!!!\n");

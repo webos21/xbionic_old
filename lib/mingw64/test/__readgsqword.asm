@@ -18,7 +18,7 @@
 Xb__readgsqword PROC
 	mov [rsp+8], rcx        ; offset (save parameters as locals)
 	sub rsp, 18h
-	mov rax, gs:[rcx]		; get fs value with offset in [rcx] ==> x64 TEB
+	mov rax, gs:[rcx]		; get gs value with offset in [rcx] ==> x64 TEB
 	add rsp, 18h
 	ret
 Xb__readgsqword ENDP

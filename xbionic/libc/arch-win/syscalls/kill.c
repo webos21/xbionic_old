@@ -19,7 +19,9 @@
 #include <sys/types.h>
 
 // send any signal to any process group or process
-// int kill(pid_t pid, int sig);
+// ref {
+//     http://linux.die.net/man/2/kill
+// }
 int kill(pid_t pid, int sig) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("kill() is called, but it is not implemented!!!\n");

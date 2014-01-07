@@ -17,6 +17,10 @@
 #include <ntdll.h>
 #include <errno.h>
 
+// change data segment size
+// ref {
+//     http://man7.org/linux/man-pages/man2/brk.2.html
+// }
 int __brk(void* end_data) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("__brk() is called, but it is not implemented!!!\n");

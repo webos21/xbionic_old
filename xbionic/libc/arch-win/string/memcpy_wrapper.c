@@ -18,7 +18,14 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// copy memory area 
+// ref {
+//     http://man7.org/linux/man-pages/man3/memcpy.3.html
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff561808(v=vs.85).aspx
+// }
+
 // modified by cmjo for VS2010 {{{
+// - The name is same as Windows API
 #ifdef _MSC_VER
 void *Wmemcpy(void *dest, const void *src, size_t n){
 	ntsc_t *ntfp = ntdll_getFP();

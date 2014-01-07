@@ -18,8 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// sets the real GID, effective GID, and saved set-group-ID
-// int setresgid(gid_t rgid, gid_t egid, gid_t sgid);
+// Set the real GID, effective GID, and saved set-group-ID
+// ref {
+//     http://man7.org/linux/man-pages/man2/setresgid.2.html
+// }
 int setresgid(gid_t rgid, gid_t egid, gid_t sgid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setresgid() is called, but it is not implemented!!!\n");

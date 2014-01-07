@@ -18,16 +18,47 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// compare memory areas 
+// ref {
+//     http://man7.org/linux/man-pages/man3/memcmp.3.html
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff561778(v=vs.85).aspx
+// }
+
 // modified by cmjo for VS2010 {{{
+// - The name is same as Windows API
 #ifdef _MSC_VER
 int Wmemcmp(const void *s1, const void *s2, size_t n) {
+	SIZE_T ret;
 	ntsc_t *ntfp = ntdll_getFP();
-	return (int) ntfp->FP_RtlCompareMemory(s1, s2, n);
+	ret = ntfp->FP_RtlCompareMemory(s1, s2, n);
+	if (ret == n) {
+		return 0;
+	} else {
+		char rs1 = ((char *)s1)[ret];
+		char rs2 = ((char *)s2)[ret];
+		if (rs1 < rs2) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
 }
 #else  // !_MSC_VER
 int memcmp(const void *s1, const void *s2, size_t n) {
+	SIZE_T ret;
 	ntsc_t *ntfp = ntdll_getFP();
-	return (int) ntfp->FP_RtlCompareMemory(s1, s2, n);
+	ret = ntfp->FP_RtlCompareMemory(s1, s2, n);
+	if (ret == n) {
+		return 0;
+	} else {
+		char rs1 = ((char *)s1)[ret];
+		char rs2 = ((char *)s2)[ret];
+		if (rs1 < rs2) {
+			return -1;
+		} else {
+			return 1;
+		}
+	}
 }
 #endif // _MSC_VER
 // }}}

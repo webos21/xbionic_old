@@ -22,15 +22,15 @@
 
 // used to implement breakpoint debugging and system call tracing
 // ref {
-//   http://linux.die.net/man/2/ptrace
-//   http://mikecvet.wordpress.com/2010/08/14/ptrace-tutorial/
-//   http://stackoverflow.com/questions/865106/is-there-something-like-linux-ptrace-syscall-in-windows
-//   http://stackoverflow.com/questions/864839/monitoring-certain-system-calls-done-by-a-process-in-windows
-//   http://msdn.microsoft.com/en-us/library/aa363691%28VS.85%29.aspx
+//     http://linux.die.net/man/2/ptrace
+//     http://mikecvet.wordpress.com/2010/08/14/ptrace-tutorial/
+//     http://stackoverflow.com/questions/865106/is-there-something-like-linux-ptrace-syscall-in-windows
+//     http://stackoverflow.com/questions/864839/monitoring-certain-system-calls-done-by-a-process-in-windows
+//     http://msdn.microsoft.com/en-us/library/aa363691%28VS.85%29.aspx
 // }
-// long __ptrace(int request, pid_t pid, void *addr, void *data);
 long __ptrace(int request, pid_t pid, void *addr, void *data) {
 	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_DbgPrint("__ptrace() is called, but it is not implemented!!!\n");
 
 	switch(request) {
 	case PTRACE_PEEKUSR:
@@ -41,7 +41,6 @@ long __ptrace(int request, pid_t pid, void *addr, void *data) {
 		break;
 	}
 
-	ntfp->FP_DbgPrint("__ptrace() is called, but it is not implemented!!!\n");
 	errno = 0;
 	return 0;
 }

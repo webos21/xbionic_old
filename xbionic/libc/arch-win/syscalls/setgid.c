@@ -18,8 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// sets the effective group ID
-// int setgid(gid_t gid);
+// Set the effective group ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/setgid
+// }
 int setgid(gid_t gid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setgid() is called, but it is not implemented!!!\n");

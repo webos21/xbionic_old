@@ -18,9 +18,12 @@
 #include <errno.h>
 #include <sys/types.h>
 
-//ssize_t readahead(int fd, off64_t offset, size_t count);
+// perform file readahead into page cache
+// (this function is not used in bionic)
+// ref {
+//     http://man7.org/linux/man-pages/man2/readahead.2.html
+// }
 ssize_t readahead(int fd, off64_t offset, size_t count) {
-	// This system call is not used!!!
 	errno = 0;
 	return 0;
 }

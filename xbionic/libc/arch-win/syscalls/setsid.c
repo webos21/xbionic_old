@@ -18,8 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// creates a new session
-// pid_t setsid(void);
+// creates a session and sets the process group ID
+// ref {
+//     http://man7.org/linux/man-pages/man2/setsid.2.html
+// }
 pid_t setsid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("setsid() is called, but it is not implemented!!!\n");

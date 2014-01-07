@@ -16,6 +16,20 @@
 
 #include "test.h"
 
+extern int printf(const char *, ...);
+
+void test_windows(void) {
+//#include <windows.h>
+//	CONTEXT x;
+}
+
+void tsleep(int msec) {
+	LARGE_INTEGER x;
+	ntsc_t *ntfp = ntdll_getFP();
+	x.QuadPart = msec * -10000;
+	ntfp->FP_NtDelayExecution(FALSE, &x);
+}
+
 int test_peb() {
 	ntsc_t *ntfp = ntdll_getFP();
 	PPEB_VISTA_7 x = ntfp->FP_RtlGetCurrentPeb();
@@ -27,11 +41,32 @@ int test_teb() {
 	return 0;
 }
 
-void tsleep(int msec) {
-	LARGE_INTEGER x;
+int test_ctx() {
+	CONTEXT ctx;
+	
 	ntsc_t *ntfp = ntdll_getFP();
-	x.QuadPart = msec * -10000;
-	ntfp->FP_NtDelayExecution(FALSE, &x);
+	ntfp->FP_RtlCaptureContext(&ctx);
+	return 0;
+}
+
+int test_raise_exception() {
+	EXCEPTION_RECORD er;
+	ntsc_t *ntfp = ntdll_getFP();
+
+	ntfp->FP_RtlZeroMemory(&er, sizeof(er));
+	er.ExceptionCode = -1;
+	er.ExceptionFlags = 0;
+	er.ExceptionRecord = NULL;
+	er.ExceptionAddress = NULL;
+	er.NumberParameters = 0;
+	ntfp->FP_RtlRaiseException(&er);
+	return 0;
+}
+
+int test_raise_status() {
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlRaiseStatus(STATUS_PROCESS_NOT_IN_JOB);
+	return 0;
 }
 
 int test_fork() {
@@ -103,17 +138,88 @@ int test_gettid() {
 }
 
 int test_getppid() {
-	int pid = getppid();
-	printf("parent pid = %d\n", pid);
+	pid_t pid = 0;
+	pid_t ppid = 0;
+	
+	pid = getpid();
+	ppid = getppid();
+	printf("pid = %d / parent pid = %d\n", pid, ppid);
 	return pid;
+}
+
+int test_set_thread_area() {
+	int x = 3;
+	__set_thread_area((void *)&x);
+	return 0;
+}
+
+int test_io() {
+	loff_t pos;
+	ssize_t ret;
+	int fd_f, fd_d, fd_e;
+	char buf[16];
+
+	fd_f = __open("D:/Temp/test.txt", O_CREAT|O_RDWR|O_TRUNC, 00777);
+	fd_d = __open("D:/Temp/xxx", O_CREAT|O_DIRECTORY|O_RDONLY, 00777);
+	fd_e = __openat(fd_d, "test.txt", O_RDWR, 00777);
+	
+	ret = __llseek(fd_e, 0, 0, &pos, SEEK_END);
+	ret = lseek(fd_e, 0, SEEK_END);
+	bzero(buf, sizeof(buf));
+	ret = read(fd_e, buf, 12);
+	bzero(buf, sizeof(buf));
+	ret = read(fd_e, buf, 12);
+	ret = lseek(fd_e, -12, SEEK_CUR);
+	bzero(buf, sizeof(buf));
+	ret = read(fd_e, buf, 12);
+	ret = lseek(fd_e, 0, SEEK_CUR);
+	bzero(buf, sizeof(buf));
+	ret = pread64(fd_e, buf, 12, 0);
+	bzero(buf, sizeof(buf));
+	ret = read(fd_e, buf, 12);
+	ret = write(fd_e, "CCC", 3);
+	ret = lseek(fd_e, 0, SEEK_SET);
+	ret = pwrite64(fd_f, "DDD", 3, 10);
+	ret = close(fd_e);
+	ret = close(fd_d);
+	ret = close(fd_f);
+	ret = close(10);
+	return 0;
+}
+
+int test_vmem() {
+	int fd = -1;
+	int ret = 0;
+
+	void *memAddr = NULL;
+	size_t memLen = 4 * 1024 * 1024;
+
+	void *newAddr = NULL;
+	size_t newLen = 8 * 1024 * 1024;
+
+	fd = __open("D:\\Temp\\test_mmap.dat", O_RDWR, 00777);
+	memLen = lseek(fd, 0, SEEK_END);
+	memAddr = __mmap2(memAddr, memLen, PROT_READ|PROT_WRITE, MAP_PRIVATE, fd, 0);
+	ret = madvise(memAddr, memLen, 0);
+	ret = mlock(memAddr, 4096);
+	ret = msync(memAddr, 4096, MS_SYNC|MS_INVALIDATE);
+	ret = munlock(memAddr, 4096);
+	//newAddr = mremap(memAddr, memLen, newLen, 0);
+	ret = munmap(memAddr, memLen);
+	ret = close(fd);
+
+	return ret;
 }
 
 int main(int argc, char *argv[]) {
 	int i = 0;
 	int x = 0;
 
-	test_peb();
-	test_teb();
+	//test_peb();
+	//test_teb();
+	//test_ctx();
+	//test_raise_exception();
+	//test_raise_status();
 	//test_fork();
 	//test__pthread_clone();
 	//test__bionic_clone();
@@ -121,6 +227,9 @@ int main(int argc, char *argv[]) {
 	//test_execve();
 	//test_gettid();
 	//test_getppid();
+	//test_set_thread_area();
+	//test_io();
+	test_vmem();
 
 	return 0;
 }

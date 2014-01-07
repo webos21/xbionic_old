@@ -17,10 +17,13 @@
 #include <ntdll.h>
 #include <errno.h>
 
-// pid_t waitpid(pid_t pid, int *status, int options)
+// create a child process
+// (same as bionic/clone.c, but it is not used!!!)
+// (see the bionic/clone.c : __pthread_clone / __bionic_clone)
+// ref {
+//     http://linux.die.net/man/2/clone
+// }
 int __sys_clone(void* (*fn)(void*), void* tls, int flags, void* arg) {
-	// This system call is not used!!!
-	// bionic/clone.S is used : __pthread_clone / __bionic_clone
 	errno = 0;
 	return 0;
 }

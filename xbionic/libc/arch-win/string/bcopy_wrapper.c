@@ -18,6 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// copy byte sequence 
+// ref {
+//     http://linux.die.net/man/3/bcopy
+// }
 void bcopy(const void *src, void *dest, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlCopyMemory(dest, (PVOID)src, n);

@@ -18,9 +18,13 @@
 #include <errno.h>
 #include <sys/types.h>
 
-//int getgroups(int size, gid_t list[]);
+// get the group IDs for the calling process
+// ref {
+//     http://linux.die.net/man/2/setgroups
+// }
 int getgroups(int size, gid_t list[]) {
-	// This system call is not used!!!
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_DbgPrint("getgroups() is called, but it is not implemented!!!\n");
 	errno = 0;
 	return 0;
 }

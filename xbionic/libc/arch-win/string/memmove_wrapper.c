@@ -18,6 +18,11 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// copy memory area (memory area may overlap)
+// ref {
+//     http://man7.org/linux/man-pages/man3/memmove.3.html
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff562030(v=vs.85).aspx
+// }
 void *memmove(void *dest, const void *src, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlMoveMemory(dest, (PVOID)src, n);

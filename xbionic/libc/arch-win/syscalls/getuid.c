@@ -20,8 +20,11 @@
 
 #define __UID    64
 
-// Get real UID
-// uid_t getuid(void);
+// Get the real user ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/getuid
+//     http://www.interopcommunity.com/dictionary/getuid-entry.php
+// }
 uid_t getuid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getuid() is called, but it is not implemented!!!\n");

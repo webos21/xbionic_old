@@ -28,8 +28,25 @@ typedef unsigned short __kernel_ipc_pid_t;
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 typedef unsigned short __kernel_uid_t;
 typedef unsigned short __kernel_gid_t;
+// modified by cmjo
+// - for 64bit Test
+#ifdef _MSC_VER // (VS2010)
+#ifdef _WIN64
+typedef unsigned long long __kernel_size_t;
+typedef long long __kernel_ssize_t;
+#else // !_WIN64 (32bit)
+typedef unsigned long __kernel_size_t;
+typedef long __kernel_ssize_t;
+#endif // _WIN64
+#else // !_MSC_VER (MINGW-builds)
+#ifdef _WIN64
+typedef unsigned long __kernel_size_t;
+typedef long __kernel_ssize_t;
+#else
 typedef unsigned int __kernel_size_t;
 typedef int __kernel_ssize_t;
+#endif
+#endif
 /* WARNING: DO NOT EDIT, AUTO-GENERATED CODE - SEE TOP FOR INSTRUCTIONS */
 typedef int __kernel_ptrdiff_t;
 typedef long __kernel_time_t;

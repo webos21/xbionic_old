@@ -18,10 +18,12 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// pid_t waitpid(pid_t pid, int *status, int options)
+// wait for process to change state
+// (wait4() is called by wait.cpp, and this function is not used!!)
+// ref {
+//     http://linux.die.net/man/2/waitpid
+// }
 pid_t _waitpid(pid_t pid, int *status, int options) {
-	// This system call is not used!!!
-	// wait4 is called by wait.cpp
 	errno = 0;
 	return 0;
 }

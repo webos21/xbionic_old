@@ -20,8 +20,11 @@
 
 #define __GID    64
 
-// Get real GID
-//gid_t getgid(void);
+// Get the real group ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/getgid
+//     http://www.interopcommunity.com/dictionary/getgid-entry.php
+// }
 gid_t getgid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getgid() is called, but it is not implemented!!!\n");

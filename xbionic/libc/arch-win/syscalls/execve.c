@@ -19,7 +19,11 @@
 
 #define MAX_ARG_SIZE   (32768)
 
-// int execve(const char *filename, char *const argv[], char *const envp[]);
+// execute program
+// ref {
+//     http://linux.die.net/man/2/execve
+//     http://nativeshell.googlecode.com/svn/trunk/native/process.c
+// }
 int execve(const char *filename, char *const argv[], char *const envp[]) {
 	int exeRet;
 	int idx;

@@ -16,8 +16,13 @@
 
 #include <ntdll.h>
 #include <errno.h>
+#include <sys/types.h>
 
-int vfork(void) {
+// create a child process and block parent
+// ref {
+//     http://linux.die.net/man/2/vfork
+// }
+pid_t vfork(void) {
 	NTSTATUS status;
 	SECURITY_ATTRIBUTES sa;
 	RTL_USER_PROCESS_INFORMATION *pi;

@@ -17,6 +17,12 @@
 #include <ntdll.h>
 #include <errno.h>
 
+#include <sys/syscall.h>
+
+// indirect system call
+// ref {
+//     http://man7.org/linux/man-pages/man2/syscall.2.html
+// }
 int syscall(int number, ...) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("syscall is called, but it is not implemented!!!\n");

@@ -18,7 +18,11 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// pid_t gettid(void);
+// get thread identification
+// ref {
+//     http://man7.org/linux/man-pages/man2/gettid.2.html
+//     http://msdn.microsoft.com/en-us/library/windows/desktop/ms684283(v=vs.85).aspx
+// }
 pid_t gettid(void) {
 	THREAD_BASIC_INFORMATION tinfo;
 	ntsc_t *ntfp = ntdll_getFP();

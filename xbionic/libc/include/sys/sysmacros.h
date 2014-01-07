@@ -34,9 +34,13 @@
 #endif
 
 // modified by cmjo for VS2010 {{{
-#if defined(_MSC_VER) && !defined(__inline__)
+#ifndef __inline__
+#if (_MSC_VER >= 1200)
 #define __inline__ __forceinline
+#else
+#define __inline__ __inline
 #endif
+#endif // __inline__
 // }}}
 
 static __inline__ int major(dev_t _dev)

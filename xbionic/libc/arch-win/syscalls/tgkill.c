@@ -18,8 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// sends the signal sig to the thread with the thread ID tid in the thread group tgid
-// int tgkill(int tgid, int tid, int sig);
+// sends the signal [sig] to the thread with the thread ID [tid] in the thread group [tgid].
+// ref {
+//     http://man7.org/linux/man-pages/man2/tgkill.2.html
+// }
 int tgkill(int tgid, int tid, int sig) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("tgkill() is called, but it is not implemented!!!\n");

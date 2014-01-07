@@ -20,8 +20,10 @@
 
 #define __GID    64
 
-// Get GID of Process(pid)
-//pid_t getpgid(pid_t pid);
+// Get the process group ID of Process(pid)
+// ref {
+//     http://linux.die.net/man/2/getpgid
+// }
 pid_t getpgid(pid_t pid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getpgid() is called, but it is not implemented!!!\n");

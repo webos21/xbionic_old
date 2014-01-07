@@ -18,10 +18,16 @@
 #include <errno.h>
 #include <sys/types.h>
 
+#include <linux/futex.h>
 #include <sys/time.h>
 
-#define FUTEX_WAIT 0
-#define FUTEX_WAKE 1
+// fast user-space locking
+// ref {
+//     http://man7.org/linux/man-pages/man2/futex.2.html
+//     http://locklessinc.com/articles/keyed_events/
+// }
+
+#ifdef _MSC_VER
 
 int __futex_wait(volatile void *ftx, int val, const struct timespec *timeout) {
 	errno = 0;
@@ -42,3 +48,27 @@ int __futex_syscall4(volatile void *ftx, int op, int val, const struct timespec 
 	errno = 0;
 	return 0;
 }
+
+#else  // !_MSC_VER
+
+int __futex_wait(volatile void *ftx, int val, const struct timespec *timeout) {
+	errno = 0;
+	return 0;
+}
+
+int __futex_wake(volatile void *ftx, int count) {
+	errno = 0;
+	return 0;
+}
+
+int __futex_syscall3(volatile void *ftx, int op, int count) {
+	errno = 0;
+	return 0;
+}
+
+int __futex_syscall4(volatile void *ftx, int op, int val, const struct timespec *timeout) {
+	errno = 0;
+	return 0;
+}
+
+#endif // _MSC_VER

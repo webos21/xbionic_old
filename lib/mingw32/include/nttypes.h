@@ -39,7 +39,18 @@ typedef int                NTSTATUS;
 typedef int                NTSTATUS;
 #endif // _WINDOWS_
 
-#define NT_SUCCESS(Status)     (((NTSTATUS)(Status)) >= 0)
+#ifndef NT_SUCCESS
+#define NT_SUCCESS(Status)      (((NTSTATUS)(Status)) >= 0)
+#endif
+#ifndef NT_INFORMATION
+#define NT_INFORMATION(Status)  ((((ULONG)(Status)) >> 30) == 1)
+#endif
+#ifndef NT_WARNING
+#define NT_WARNING(Status)      ((((ULONG)(Status)) >> 30) == 2)
+#endif
+#ifndef NT_ERROR
+#define NT_ERROR(Status)        ((((ULONG)(Status)) >> 30) == 3)
+#endif
 
 
 //////////////////////////////////////////
@@ -96,26 +107,106 @@ typedef int                NTSTATUS;
 #define CONST const
 #endif
 
+#ifndef FAR
+#define FAR
+#endif
+
+#ifndef NEAR
+#define NEAR
+#endif
+
+#ifndef PASCAL
+#ifdef _MSC_VER
+#define PASCAL    __stdcall
+#else // !_MSC_VER
+#define PASCAL    __attribute__((__stdcall__))
+#endif // _MSC_VER
+#endif
+
+#ifndef FORCEINLINE
+#ifdef _MSC_VER
+#if (_MSC_VER >= 1200)
+#define FORCEINLINE __forceinline
+#else
+#define FORCEINLINE __inline
+#endif
+#else  // !_MSC_VER
+#define FORCEINLINE inline __attribute__((always_inline))
+#endif // _MSC_VER
+#endif // FORCEINLINE
+
 // NTSYSAPI(dllimport) is not required!!
 //#define NTSYSAPI
 #define NTSYSAPI_N
 
 #ifndef NTAPI
-#ifdef _MSC_VER
-#define NTAPI           __stdcall
-#else
-#define NTAPI           __attribute__((__stdcall__))
+#define NTAPI     FAR PASCAL
 #endif
-#endif //NTAPI
 
+#ifndef WSAAPI
+#define WSAAPI    FAR PASCAL
+#endif
+
+#ifndef DECLSPEC_ALIGN
+#if (_MSC_VER >= 1300) && !defined(MIDL_PASS)
+#define DECLSPEC_ALIGN(x)   __declspec(align(x))
+#else
+#define DECLSPEC_ALIGN(x)
+#endif
+#endif
+
+
+//////////////////////////////////////////
+// Definition for Specific Values
+//////////////////////////////////////////
+
+#ifndef INVALID_HANDLE_VALUE
 #define INVALID_HANDLE_VALUE                     ((HANDLE)(LONG_PTR)-1)
+#endif
+
+#ifndef INVALID_FILE_SIZE
 #define INVALID_FILE_SIZE                        ((DWORD)0xFFFFFFFF)
+#endif
+
+#ifndef INVALID_SET_FILE_POINTER
 #define INVALID_SET_FILE_POINTER                 ((DWORD)-1)
+#endif
+
+#ifndef INVALID_FILE_ATTRIBUTES
 #define INVALID_FILE_ATTRIBUTES                  ((DWORD)-1)
+#endif
 
+#ifndef HANDLE_FLAG_INHERIT
 #define HANDLE_FLAG_INHERIT                      0x00000001
-#define HANDLE_FLAG_PROTECT_FROM_CLOSE           0x00000002
+#endif
 
+#ifndef HANDLE_FLAG_PROTECT_FROM_CLOSE
+#define HANDLE_FLAG_PROTECT_FROM_CLOSE           0x00000002
+#endif
+
+
+//////////////////////////////////////////
+// NT MACRO
+//////////////////////////////////////////
+
+#ifndef NOMINMAX
+#ifndef max
+#define max(a,b)            (((a) > (b)) ? (a) : (b))
+#endif
+
+#ifndef min
+#define min(a,b)            (((a) < (b)) ? (a) : (b))
+#endif
+#endif  // NOMINMAX
+
+#ifndef _WINDEF_
+#define MAKEWORD(a, b)      ((WORD)(((BYTE)(((DWORD_PTR)(a)) & 0xff)) | ((WORD)((BYTE)(((DWORD_PTR)(b)) & 0xff))) << 8))
+#define MAKELONG(a, b)      ((LONG)(((WORD)(((DWORD_PTR)(a)) & 0xffff)) | ((DWORD)((WORD)(((DWORD_PTR)(b)) & 0xffff))) << 16))
+#define LOWORD(l)           ((WORD)(((DWORD_PTR)(l)) & 0xffff))
+#define HIWORD(l)           ((WORD)((((DWORD_PTR)(l)) >> 16) & 0xffff))
+#define LOBYTE(w)           ((BYTE)(((DWORD_PTR)(w)) & 0xff))
+#define HIBYTE(w)           ((BYTE)((((DWORD_PTR)(w)) >> 8) & 0xff))
+#endif // _WINDEF_
 
 //////////////////////////////////////////
 // NT Types
@@ -240,9 +331,9 @@ typedef CONST WCHAR       *LPCWSTR, *PCWSTR;
 typedef CHAR              *PCHAR, *LPCH, *PCH;
 typedef CONST CHAR        *LPCSTR, *PCSTR;
 
-typedef LONG               KPRIORITY;
-
+#ifndef _WINDEF_
 typedef void              *HDC;
+#endif // _WINDEF_
 
 typedef unsigned long long ULONG64, *PULONG64;
 typedef unsigned long long DWORD64, *PDWORD64;

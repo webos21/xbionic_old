@@ -148,6 +148,7 @@ build_xb_libc_cmn_incs = \
 ####
 
 build_xb_libc_sc_src =  \
+	libc/arch-${build_xb_cfg_arch}/syscalls/___fd_win.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/_exit.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/_exit_thread.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__fork.c, \
@@ -180,41 +181,41 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/tgkill.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__ptrace.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__set_thread_area.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__getpriority.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setpriority.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setrlimit.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getrlimit.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getrusage.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setgroups.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setpgid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/setregid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/chroot.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/prctl.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/capget.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/capset.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/sigaltstack.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/acct.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/read.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/write.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/pread64.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/pwrite64.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__open.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__openat.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/close.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/lseek.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__llseek.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/getpid.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__mmap2.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/munmap.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/mremap.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/msync.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/mprotect.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/madvise.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/mlock.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/munlock.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/mlockall.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/munlockall.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/mincore.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__getpriority.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setpriority.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setrlimit.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getrlimit.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getrusage.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setgroups.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setpgid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/setregid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/chroot.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/prctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/capget.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/capset.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/sigaltstack.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/acct.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/read.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/write.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pread64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pwrite64.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__open.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__openat.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/close.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/lseek.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__llseek.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/getpid.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__mmap2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munmap.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mremap.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/msync.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mprotect.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/madvise.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mlock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munlock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mlockall.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/munlockall.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/mincore.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__ioctl.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/readv.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/writev.S, \
@@ -837,7 +838,7 @@ build_xb_libc_com_cflags  = ${build_xb_libc_cmn_cflags} ${build_xb_libc_cmn_incs
 	-I${basedir}/xbionic/libc/upstream-netbsd/libc/include \
 	-I${basedir}/xbionic/libm/include
 build_xb_libc_com_ldflags = ${build_xb_libc_cmn_ldflags}
-build_xb_libc_com_src_in  = libc/arch-${build_xb_cfg_arch}/_ntdll/ntdll.c, ${build_xb_libc_r_common_src}
+build_xb_libc_com_src_in  = libc/arch-${build_xb_cfg_arch}/_nt_imp/ntdll.c, libc/arch-${build_xb_cfg_arch}/_nt_imp/ntsock.c, ${build_xb_libc_r_common_src}
 build_xb_libc_com_src_ex  = 
 build_xb_libc_com_src_mk  = ${build_xb_libc_com_src_in}
 

@@ -71,9 +71,16 @@ struct _thread_area_head {
  */
 int __set_tls(void *ptr)
 {
-    int   rc, segment;
+    int rc;
+	// modified by cmjo
+	// - MinGW don't need this variable
+	// {{{
+#if !defined(__MINGW32__) && !defined(__MINGW64__) && !defined(_MSC_VER)
+	int segment;
+#endif
+	// }}}
 
-    pthread_mutex_lock(&_tls_desc_lock);
+	pthread_mutex_lock(&_tls_desc_lock);
     _tls_desc.base_addr = (unsigned long)ptr;
 
     /* We also need to write the location of the tls to ptr[0] */
@@ -87,13 +94,18 @@ int __set_tls(void *ptr)
         return -1;
     }
 
+    // modified by cmjo
+    // - MinGW don't need this code block
+    // {{{
+#if !defined(__MINGW32__) && !defined(__MINGW64__) && !defined(_MSC_VER)
     /* this weird computation comes from GLibc */
-	/* - FIXME : must change this code (by cmjo)
     segment = _tls_desc.entry_number*8 + 3;
     asm __volatile__ (
         "   movw %w0, %%gs" :: "q"(segment)
     );
-	*/
+#endif
+    // }}}
+
     pthread_mutex_unlock(&_tls_desc_lock);
 
     return 0;

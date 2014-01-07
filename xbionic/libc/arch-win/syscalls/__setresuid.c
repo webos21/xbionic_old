@@ -19,7 +19,9 @@
 #include <sys/types.h>
 
 // sets real and effective user IDs, set-user-id
-// int __setresuid(uid_t ruid, uid_t euid, uid_t suid);
+// ref {
+//     http://man7.org/linux/man-pages/man2/setresuid.2.html
+// }
 int __setresuid(uid_t ruid, uid_t euid, uid_t suid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("__setresuid() is called, but it is not implemented!!!\n");

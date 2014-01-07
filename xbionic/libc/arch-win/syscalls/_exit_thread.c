@@ -17,6 +17,12 @@
 #include <ntdll.h>
 #include <errno.h>
 
+// terminate the calling thread
+// (same syscall __NR_exit)
+// ref {
+//     http://linux.die.net/man/2/_exit
+//     http://msdn.microsoft.com/en-us/library/windows/desktop/ms682659(v=vs.85).aspx
+// }
 void _exit_thread(int status) {
 	ntsc_t *ntfp = ntdll_getFP();
 	errno = status;

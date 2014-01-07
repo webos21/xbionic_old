@@ -20,14 +20,24 @@
 
 #include <sys/wait.h>
 
-#define P_ALL  0
-#define P_PID  1
-#define P_PGID 2
-
-// int __waitid(idtype_t which, id_t id, siginfo_t* info, int options, struct rusage* ru);
+// wait for child process to change state
+// ref {
+//     http://www.lehman.cuny.edu/cgi-bin/man-cgi?waitid+2
+// }
 int __waitid(idtype_t which, id_t id, siginfo_t* info, int options, struct rusage* ru) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("syscall is called, but it is not implemented!!!\n");
+
+	switch (which) {
+	case P_PID:
+	case P_PGID:
+	case P_ALL:
+		break;
+	default:
+		errno = EINVAL;
+		return -1;
+	}
+	// [options] is a bitwise value!!
 	errno = 0;
 	return 0;
 }

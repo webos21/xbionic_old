@@ -18,6 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
+// write zero-valued bytes 
+// ref {
+//     http://linux.die.net/man/3/bzero
+// }
 void bzero(void *s, size_t n) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_RtlZeroMemory(s, n);

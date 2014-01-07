@@ -18,8 +18,10 @@
 #include <errno.h>
 #include <sys/types.h>
 
-// Get parent process ID
-// pid_t getppid(void);
+// Get the process ID of the parent of the calling process
+// ref {
+//     http://linux.die.net/man/2/getppid
+// }
 pid_t getppid(void) {
 	PROCESS_BASIC_INFORMATION pbi;
 
@@ -27,5 +29,5 @@ pid_t getppid(void) {
 
 	ntfp->FP_NtQueryInformationProcess(XbNtCurrentProcess(), ProcessBasicInformation, &pbi, sizeof(pbi), NULL);
 	errno = 0;
-	return (int) pbi.InheritedFromUniqueProcessId;
+	return (pid_t) pbi.InheritedFromUniqueProcessId;
 }

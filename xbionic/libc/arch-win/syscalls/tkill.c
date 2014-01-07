@@ -17,11 +17,12 @@
 #include <ntdll.h>
 #include <errno.h>
 
-// obsolete predecessor to tgkill(). It only allows the target thread ID
-// int tkill(int tid, int sig);
+// send a signal to a thread
+// (obsolete predecessor to tgkill(). bionic only uses tgkill())
+// ref {
+//     http://linux.die.net/man/2/tkill
+// }
 int tkill(int tid, int sig) {
-	// do not use this system-call
-	// use tgkill()
 	errno = 0;
 	return 0;
 }

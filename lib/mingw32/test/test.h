@@ -17,10 +17,14 @@
 #ifndef _TEST_H_
 #define _TEST_H_ 1
 
+//#include <windows.h>
+
 #include <ntdll.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
+#include <fcntl.h>
+#include <sys/mman.h>
 
 ////////////////////////
 // String Functions
@@ -78,8 +82,28 @@ int __setuid(uid_t uid);
 
 pid_t gettid(void);
 
+pid_t getpid(void);
 pid_t getppid(void);
 
 int kill(pid_t pid, int sig);
+
+int __set_thread_area(void *u_info);
+
+int __open(const char *pathname, int flags, int mode);
+int __openat(int dirfd, const char *pathname, int flags, int mode);
+int close(int fd);
+ssize_t read(int fd, void *buf, size_t count);
+ssize_t write(int fd, const void *buf, size_t count);
+ssize_t pread64(int fd, void *buf, size_t count, off64_t offset);
+ssize_t pwrite64(int fd, const void *buf, size_t count, off64_t offset);
+off_t lseek(int fd, off_t offset, int whence);
+int __llseek(int fd, unsigned long offset_hi, unsigned long offset_lo, loff_t *result, int whence);
+
+void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
+int munmap(void *addr, size_t length);
+int mlock(const void *addr, size_t len);
+int mlockall(int flags);
+int munlock(const void *addr, size_t len);
+int munlockall(void);
 
 #endif // _TEST_H_

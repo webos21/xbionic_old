@@ -20,8 +20,10 @@
 
 #define __EGID    64
 
-// Get effective GID
-//gid_t getegid(void);
+// Get the effective group ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/getegid
+// }
 gid_t getegid(void) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getegid() is called, but it is not implemented!!!\n");

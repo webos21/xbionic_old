@@ -16,8 +16,13 @@
 
 #include <ntdll.h>
 #include <errno.h>
+#include <sys/types.h>
 
-int __fork(void) {
+// create a new process
+// ref {
+//     http://www.lehman.cuny.edu/cgi-bin/man-cgi?fork+2
+// }
+pid_t __fork(void) {
 	NTSTATUS status;
 	SECURITY_ATTRIBUTES sa;
 	RTL_USER_PROCESS_INFORMATION *pi;

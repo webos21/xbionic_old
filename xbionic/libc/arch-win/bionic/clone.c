@@ -17,9 +17,11 @@
 #include <ntdll.h>
 #include <errno.h>
 
-// int  __pthread_clone(void* (*fn)(void*), void* tls, int flags, void* arg);
-int  __pthread_clone(void* (*fn)(void*), void* tls, int flags, void* arg)
-{
+// create a child process 
+// ref {
+//     http://linux.die.net/man/2/clone
+// }
+int  __pthread_clone(void* (*fn)(void*), void* tls, int flags, void* arg) {
 	HANDLE hThd;
 	CLIENT_ID cid;
 	NTSTATUS status;

@@ -20,14 +20,16 @@
 
 #define __UID    64
 
-// Get real GID
-//int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid);
+// Get the real UID, the effective UID, and the saved set-user-ID of the calling process
+// ref {
+//     http://linux.die.net/man/2/getresuid
+// }
 int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid) {
 	ntsc_t *ntfp = ntdll_getFP();
 	ntfp->FP_DbgPrint("getresuid() is called, but it is not implemented!!!\n");
-	errno = 0;
 	(*ruid) = __UID;
 	(*euid) = __UID;
 	(*suid) = __UID;
+	errno = 0;
 	return 0;
 }

@@ -27,21 +27,30 @@
  */
 #include <errno.h>
 
+// modified by cmjo for vs2010
+// {{{
+#ifdef _MSC_VER
+static int _g_errno;
+
+volatile int*  __errno( void ) {
+	return  &_g_errno;
+}
+#else  // !_MSC_VER
 #define TLS_SLOT_ERRNO 2
 
 extern void* __get_tls(void);
 
-volatile int*  __errno( void )
-{
+volatile int*  __errno( void ) {
   return  &((volatile int*)__get_tls())[TLS_SLOT_ERRNO];
 }
 
 // added by cmjo : avoid the name mangling error!!!!
 // {{{
 #if defined(__MINGW32__) || defined(__MINGW64__)
-volatile int*  _imp___errno( void )
-{
+volatile int*  _imp___errno( void ) {
 	return  &((volatile int*)__get_tls())[TLS_SLOT_ERRNO];
 }
 #endif
+// }}}
+#endif // _MSC_VER
 // }}}

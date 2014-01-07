@@ -17,6 +17,13 @@
 #include <ntdll.h>
 #include <errno.h>
 
+// exit with cleaning the virtual memory
+// ref {
+//     http://linux.die.net/man/2/munmap
+//     http://linux.die.net/man/2/_exit
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff556528(v=vs.85).aspx
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff566460(v=vs.85).aspx
+// }
 void _exit_with_stack_teardown(void *stackBase, int stackSize, int *retCode) {
 	int status = (*retCode);
 	ntsc_t *ntfp = ntdll_getFP();
