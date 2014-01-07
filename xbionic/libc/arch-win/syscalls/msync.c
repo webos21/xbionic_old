@@ -22,7 +22,7 @@
 // ref {
 //     http://linux.die.net/man/2/msync
 // }
-int msync(void *addr, size_t length, int flags) {
+int msync(const void *addr, size_t length, int flags) {
 	SIZE_T flushLen;
 	NTSTATUS st;
 	IO_STATUS_BLOCK iosb;

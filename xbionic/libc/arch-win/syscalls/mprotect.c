@@ -22,7 +22,7 @@
 // ref {
 //     http://linux.die.net/man/2/mprotect
 // }
-int mprotect(void *addr, size_t len, int prot) {
+int mprotect(const void *addr, size_t len, int prot) {
 	errno = 0;
 	return 0;
 }

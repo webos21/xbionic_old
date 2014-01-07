@@ -23,7 +23,7 @@
 // ref {
 //     http://linux.die.net/man/2/madvise
 // }
-int madvise(void *addr, size_t length, int advice) {
+int madvise(const void *addr, size_t length, int advice) {
 	if (addr == NULL || length == 0) {
 		errno = EINVAL;
 		return -1;
