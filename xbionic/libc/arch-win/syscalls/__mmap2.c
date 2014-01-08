@@ -46,6 +46,10 @@ void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offs
 	void *mapAddr = NULL;
 	void *memAddr = NULL;
 
+	// re-assign the argument to local
+	void *baseAddr = addr;
+	SIZE_T regionSize = length;
+
 	DWORD len_hi = 0;
 	DWORD len_lo = 0;
 
@@ -111,8 +115,8 @@ void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offs
 	}
 
 #ifdef _WIN64
-	len_hi = (DWORD)((length>>0x20)&0x7fffffff);
-	len_lo = (DWORD)(length&0xffffffff);
+	len_hi = (DWORD)((regionSize>>0x20)&0x7fffffff);
+	len_lo = (DWORD)(regionSize&0xffffffff);
 	pos_hi = (DWORD)((offset>>0x20)&0x7fffffff);
 	pos_lo = (DWORD)(offset&0xffffffff);
 #else // !_WIN64
@@ -128,19 +132,21 @@ void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offs
 			errno = EFAULT;
 			return MAP_FAILED;
 		}
-		mapAddr = XbMapViewOfFileEx(fhnd, mvaccess, pos_hi, pos_lo, length, addr);
+		mapAddr = XbMapViewOfFileEx(fhnd, mvaccess, pos_hi, pos_lo, regionSize, baseAddr);
 		if (mapAddr == NULL) {
 			ntfp->FP_NtClose(fhnd);
 			errno = EFAULT;
 			return MAP_FAILED;
 		} else {
 			memAddr = mapAddr;
-			st = ntfp->FP_NtAllocateVirtualMemory(XbNtCurrentProcess(), &memAddr, 0, (PSIZE_T)&length, MEM_COMMIT, fmaccess);
+			st = ntfp->FP_NtAllocateVirtualMemory(XbNtCurrentProcess(), &memAddr, 0, &regionSize, MEM_COMMIT, fmaccess);
 			ntfp->FP_NtClose(fhnd);
 			if (!NT_SUCCESS(st)) {
 				switch (st) {
 				case STATUS_INVALID_ADDRESS:
 				default:
+					// clear MapView
+					ntfp->FP_NtUnmapViewOfSection(XbNtCurrentProcess(), mapAddr);
 					errno = EFAULT;
 					return MAP_FAILED;
 				}
@@ -155,10 +161,10 @@ void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offs
 		}
 		fhnd = XbCreateFileMapping(fdesc->desc.f.fd, NULL, fmaccess, 0, 0, NULL);
 		if (fhnd == NULL) {
-			errno = EBADF;
+			// errno is already set!!!
 			return MAP_FAILED;
 		}
-		mapAddr = XbMapViewOfFileEx(fhnd, mvaccess, pos_hi, pos_lo, length, addr);
+		mapAddr = XbMapViewOfFileEx(fhnd, mvaccess, pos_hi, pos_lo, regionSize, baseAddr);
 		if (mapAddr == NULL) {
 			ntfp->FP_NtClose(fhnd);
 			errno = EFAULT;
@@ -250,15 +256,21 @@ static HANDLE NTAPI XbCreateFileMapping(HANDLE hFile,
 		Attributes,
 		hFile);
 	if (!NT_SUCCESS(Status)) {
-		// We failed
-		return NULL;
-	} else if (Status == STATUS_OBJECT_NAME_EXISTS) {
-		// already exists
-	} else {
-		// success
+		switch (Status) {
+		case STATUS_OBJECT_NAME_EXISTS:
+			// not error!!
+			break;
+		case STATUS_ACCESS_DENIED:
+			errno = EACCES;
+			return NULL;
+		default:
+			errno = EINVAL;
+			return NULL;
+		}
 	}
 
 	// Return the section
+	errno = 0;
 	return SectionHandle;
 }
 
