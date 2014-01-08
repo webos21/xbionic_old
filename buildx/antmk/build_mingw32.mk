@@ -216,25 +216,25 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/mlockall.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/munlockall.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/mincore.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__ioctl.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/readv.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/writev.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/flock.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/fchmod.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/dup.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/pipe.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/pipe2.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/dup2.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__ioctl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/readv.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/writev.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/flock.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/fchmod.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/dup.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pipe.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/pipe2.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/dup2.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/select.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate64.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate.c, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate64.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/getdents.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/fsync.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/fdatasync.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/fchown.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/sync.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl64.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/__fcntl64.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__fstatfs64.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/sendfile.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/fstatat.S, \
@@ -305,9 +305,9 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/__rt_sigtimedwait.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/sigpending.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/signalfd4.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/socket.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/socket.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/bind.S, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/connect.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/connect.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/listen.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/accept.S, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/getsockname.S, \
@@ -873,7 +873,7 @@ build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREA
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
 		${basedir}/lib/${build_cfg_target}/libgcc.a \
 		${basedir}/lib/${build_cfg_target}/libgcc_eh.a \
-		-lkernel32
+
 #		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \
 		libc/bionic/dlmalloc.c, \
