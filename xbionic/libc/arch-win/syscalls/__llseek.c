@@ -53,8 +53,8 @@ int __llseek(int fd, unsigned long offset_hi, unsigned long offset_lo, loff_t *r
 		switch (whence) {
 		case SEEK_SET:
 			{
-				posInfo.CurrentByteOffset.u.HighPart = offset_hi;
-				posInfo.CurrentByteOffset.u.LowPart = offset_lo;
+				posInfo.CurrentByteOffset.HighPart = offset_hi;
+				posInfo.CurrentByteOffset.LowPart = offset_lo;
 				ret = ntfp->FP_NtSetInformationFile(fdesc->desc.f.fd, &iosb, &posInfo, sizeof(posInfo), FilePositionInformation);
 				if (!NT_SUCCESS(ret)) {
 					switch (ret) {
@@ -91,8 +91,8 @@ int __llseek(int fd, unsigned long offset_hi, unsigned long offset_lo, loff_t *r
 					(*result) = posInfo.CurrentByteOffset.QuadPart;
 					return 0;
 				}
-				posInfo.CurrentByteOffset.u.HighPart += offset_hi;
-				posInfo.CurrentByteOffset.u.LowPart += offset_lo;
+				posInfo.CurrentByteOffset.HighPart += offset_hi;
+				posInfo.CurrentByteOffset.LowPart += offset_lo;
 				ret = ntfp->FP_NtSetInformationFile(fdesc->desc.f.fd, &iosb, &posInfo, sizeof(posInfo), FilePositionInformation);
 				if (!NT_SUCCESS(ret)) {
 					switch (ret) {
@@ -130,8 +130,8 @@ int __llseek(int fd, unsigned long offset_hi, unsigned long offset_lo, loff_t *r
 					(*result) = stdInfo.EndOfFile.QuadPart;
 					return 0;
 				}
-				posInfo.CurrentByteOffset.u.HighPart = stdInfo.EndOfFile.u.HighPart + offset_hi;
-				posInfo.CurrentByteOffset.u.LowPart = stdInfo.EndOfFile.u.LowPart + offset_lo;
+				posInfo.CurrentByteOffset.HighPart = stdInfo.EndOfFile.HighPart + offset_hi;
+				posInfo.CurrentByteOffset.LowPart = stdInfo.EndOfFile.LowPart + offset_lo;
 				ret = ntfp->FP_NtSetInformationFile(fdesc->desc.f.fd, &iosb, &posInfo, sizeof(posInfo), FilePositionInformation);
 				if (!NT_SUCCESS(ret)) {
 					switch (ret) {

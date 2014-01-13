@@ -18,11 +18,12 @@
 #define _TEST_H_ 1
 
 //#include <windows.h>
+//#include <ntdll.h>
 
-#include <ntdll.h>
 #include <sys/types.h>
 #include <sys/time.h>
 #include <sys/wait.h>
+#include <sys/socket.h>
 #include <fcntl.h>
 #include <sys/mman.h>
 
@@ -67,8 +68,11 @@ int vfork(void);
 // System-call Functions
 ////////////////////////
 
+///////////////
+// Process
+///////////////
+
 void W_exit(int status);
-void _exit_thread(int status);
 
 int __fork(void);
 
@@ -87,7 +91,18 @@ pid_t getppid(void);
 
 int kill(pid_t pid, int sig);
 
+
+///////////////
+// Thread
+///////////////
+
+void _exit_thread(int status);
 int __set_thread_area(void *u_info);
+
+
+///////////////
+// File I/O
+///////////////
 
 int __open(const char *pathname, int flags, int mode);
 int __openat(int dirfd, const char *pathname, int flags, int mode);
@@ -99,11 +114,45 @@ ssize_t pwrite64(int fd, const void *buf, size_t count, off64_t offset);
 off_t lseek(int fd, off_t offset, int whence);
 int __llseek(int fd, unsigned long offset_hi, unsigned long offset_lo, loff_t *result, int whence);
 
+ssize_t readv(int fd, const struct iovec *iov, int iovlen);
+ssize_t writev(int fd, const struct iovec *iov, int iovlen);
+
+int pipe(int pipefd[2]);
+int pipe2(int pipefd[2], int flags);
+
+
+///////////////
+// Socket
+///////////////
+
+int socket(int domain, int type, int protocol);
+int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen);
+
+
+///////////////
+// VMEM
+///////////////
+
 void *__mmap2(void *addr, size_t length, int prot, int flags, int fd, off_t offset);
 int munmap(void *addr, size_t length);
 int mlock(const void *addr, size_t len);
 int mlockall(int flags);
 int munlock(const void *addr, size_t len);
 int munlockall(void);
+int mprotect(const void *addr, size_t len, int prot);
+
+
+///////////////
+// File Control
+///////////////
+
+int __fcntl64(int fd, int cmd, void *args);
+int __ioctl(int fd, int req, void *args);
+int dup(int oldfd);
+int dup2(int oldfd, int newfd);
+int fchmod(int fd, mode_t mode);
+int flock(int fd, int op);
+int ftruncate64(int fd, off64_t length);
+
 
 #endif // _TEST_H_

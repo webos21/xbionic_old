@@ -233,8 +233,8 @@ static HANDLE NTAPI XbCreateFileMapping(HANDLE hFile,
 	if (dwMaximumSizeLow || dwMaximumSizeHigh) {
 		// Use a LARGE_INTEGER and convert
 		SectionSize = &LocalSize;
-		SectionSize->u.LowPart = dwMaximumSizeLow;
-		SectionSize->u.HighPart = dwMaximumSizeHigh;
+		SectionSize->LowPart = dwMaximumSizeLow;
+		SectionSize->HighPart = dwMaximumSizeHigh;
 	}
 
 	// Make sure the handle is valid
@@ -291,8 +291,8 @@ static LPVOID NTAPI XbMapViewOfFileEx(HANDLE hFileMappingObject,
 	ntsc_t *ntfp = ntdll_getFP();
 
 	/* Convert the offset */
-	SectionOffset.u.LowPart = dwFileOffsetLow;
-	SectionOffset.u.HighPart = dwFileOffsetHigh;
+	SectionOffset.LowPart = dwFileOffsetLow;
+	SectionOffset.HighPart = dwFileOffsetHigh;
 
 	/* Save the size and base */
 	ViewBase = lpBaseAddress;

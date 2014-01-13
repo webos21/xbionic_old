@@ -86,7 +86,11 @@ xb_fd_t *xb_fd_get(int idx) {
 	if (!_g_fd_init) {
 		xg_fd_init();
 	}
-	return &(_g_fds[idx]);
+	if (_g_fds[idx].fdtype == XB_FD_TYPE_NOTUSED) {
+		return NULL;
+	} else {
+		return &(_g_fds[idx]);
+	}
 }
 
 int xb_fd_open(xb_fd_t *fd) {
@@ -151,6 +155,45 @@ int xb_fd_open(xb_fd_t *fd) {
 	// log_error(XDLOG, "Cannot find free-fd!!!\n");
 	errno = EMFILE;
 	return -1;
+}
+
+
+int xb_fd_open_idx(xb_fd_t *fd, int idx) {
+	ntsc_t *ntfp = ntdll_getFP();
+
+	if (!_g_fd_init) {
+		xg_fd_init();
+	}
+	if (fd == NULL || (fd->fdtype < XB_FD_TYPE_FILE && fd->fdtype > XB_FD_TYPE_PIPE)) {
+		// log_error(XDLOG, "idx=%d\n", idx);
+		errno = EINVAL;
+		return -1;
+	}
+	if (idx < 0 || idx >= XCFG_FD_MAX) {
+		errno = EINVAL;
+		return -1;
+	}
+	if (_g_fds[idx].fdtype == XB_FD_TYPE_NOTUSED) {
+		xb_fd_t *dest = &(_g_fds[idx]);
+		ntfp->FP_RtlCopyMemory(dest, fd, sizeof(xb_fd_t));
+		if (fd->fdtype == XB_FD_TYPE_FILE && fd->desc.f.path != NULL) {
+			dest->desc.f.path = (char *)ntfp->FP_RtlAllocateHeap(XbRtlGetProcessHeap(ntfp), 0, strlen(fd->desc.f.path)+1);
+			strcpy(dest->desc.f.path, fd->desc.f.path);
+		}
+		if (fd->fdtype == XB_FD_TYPE_DIR && fd->desc.d.path != NULL) {
+			dest->desc.d.path = (char *)ntfp->FP_RtlAllocateHeap(XbRtlGetProcessHeap(ntfp), 0, strlen(fd->desc.d.path)+1);
+			strcpy(dest->desc.d.path, fd->desc.d.path);
+		}
+		_g_fd_last = (_g_fd_last <= idx) ? idx : _g_fd_last;
+		_g_fd_total++;
+		// if (_g_fd_total > (XCFG_FD_MAX - 10)) {
+		// 	log_warn(XDLOG, "FD-Total is very close to Limit(4096)\n");
+		// }
+		return idx;
+	} else {
+		errno = EINVAL;
+		return -1;
+	}
 }
 
 int xb_fd_close(int idx) {

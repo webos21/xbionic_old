@@ -18,6 +18,88 @@
 /* These are stubs for functions that are actually defined
  * in the dynamic linker (dlfcn.c), and hijacked at runtime.
  */
+
+// modified by cmjo for Windows
+// - The command "ld" of MinGW-Builds does not process the "-dynamic-linker" option.
+// - So, we have to implement the function directly here!!!
+#ifdef _WIN32
+
+#define __in
+#define __out_opt
+
+#define FAR
+
+#define WINBASEAPI
+#define WINAPI      __attribute__((__stdcall__))
+
+typedef struct _HINSTANCE {
+	int unused;
+} *HINSTANCE;
+typedef HINSTANCE   HMODULE;
+
+typedef int             BOOL;
+typedef int            *(FAR WINAPI *FARPROC)();
+typedef const char     *LPCSTR, *PCSTR;
+typedef unsigned long   DWORD;
+typedef void FAR       *LPVOID;
+
+WINBASEAPI
+	__out_opt
+	HMODULE
+	WINAPI
+	LoadLibraryA(
+	__in LPCSTR lpLibFileName
+	);
+
+WINBASEAPI
+	BOOL
+	WINAPI
+	FreeLibrary (
+	__in HMODULE hLibModule
+	);
+
+WINBASEAPI
+	FARPROC
+	WINAPI
+	GetProcAddress (
+	__in HMODULE hModule,
+	__in LPCSTR lpProcName
+	);
+
+void *dlopen(const char* filename, int flag) {
+	return LoadLibraryA(filename);
+}
+
+const char *dlerror(void) {
+	return "";
+}
+
+void *dlsym(void* handle, const char *symbol) {
+	return GetProcAddress((HMODULE)handle, symbol);
+}
+
+int dladdr(const void * addr, Dl_info *info) {
+	return 0;
+}
+
+int dlclose(void*  handle) {
+	return FreeLibrary((HMODULE)handle);
+}
+
+void android_update_LD_LIBRARY_PATH(const char* ld_library_path) {
+
+}
+
+// only for MINGW
+void __cxa_finalize(void *dso) {
+}
+
+int __cxa_atexit(void (*func)(void *), void *arg, void *dso) {
+	return 0;
+}
+
+#else // !_WIN32
+
 void *dlopen(const char *filename, int flag) { return 0; }
 const char *dlerror(void) { return 0; }
 void *dlsym(void *handle, const char *symbol) { return 0; }
@@ -25,6 +107,7 @@ int dladdr(const void *addr, Dl_info *info) { return 0; }
 int dlclose(void *handle) { return 0; }
 
 void android_update_LD_LIBRARY_PATH(const char* ld_library_path) { }
+#endif // _WIN32
 
 #if defined(__arm__)
 

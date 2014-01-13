@@ -31,6 +31,7 @@
 //////////////////////////////////////////
 
 typedef UINT_PTR        SOCKET;
+typedef unsigned int    GROUP;
 
 
 //////////////////////////////////////////
@@ -169,6 +170,34 @@ typedef UINT_PTR        SOCKET;
 #define WSASYS_STATUS_LEN       128
 
 
+//////////////
+// AF/TYPE/PROTOCOL
+//////////////
+
+#define XWSA_AF_UNSPEC          0
+#define XWSA_AF_INET            2
+#define XWSA_AF_IPX             6
+#define XWSA_AF_APPLETALK       16
+#define XWSA_AF_NETBIOS         17
+#define XWSA_AF_INET6           23
+#define XWSA_AF_IRDA            26
+#define XWSA_AF_BTH             32
+
+#define XWSA_SOCK_STREAM        1
+#define XWSA_SOCK_DGRAM         2
+#define XWSA_SOCK_RAW           3
+#define XWSA_SOCK_RDM           4
+#define XWSA_SOCK_SEQPACKET     5
+
+#define XWSA_IPPROTO_ICMP       1
+#define XWSA_IPPROTO_IGMP       2
+#define XWSA_BTHPROTO_RFCOMM    3
+#define XWSA_IPPROTO_TCP        6
+#define XWSA_IPPROTO_UDP        17
+#define XWSA_IPPROTO_ICMPV6     58
+#define XWSA_IPPROTO_RM         113
+
+
 //////////////////////////////////////////
 // NTSOCK Structures
 //////////////////////////////////////////
@@ -191,6 +220,44 @@ typedef struct WSAData {
 #endif
 } WSADATA, FAR * LPWSADATA;
 
+#define MAX_PROTOCOL_CHAIN 7
+
+#define BASE_PROTOCOL      1
+#define LAYERED_PROTOCOL   0
+
+typedef struct _WSAPROTOCOLCHAIN {
+	int    ChainLen;
+	DWORD  ChainEntries[MAX_PROTOCOL_CHAIN];
+} WSAPROTOCOLCHAIN, FAR * LPWSAPROTOCOLCHAIN;
+
+#define WSAPROTOCOL_LEN  255
+
+typedef struct _WSAPROTOCOL_INFOA {
+	DWORD            dwServiceFlags1;
+	DWORD            dwServiceFlags2;
+	DWORD            dwServiceFlags3;
+	DWORD            dwServiceFlags4;
+	DWORD            dwProviderFlags;
+	GUID             ProviderId;
+	DWORD            dwCatalogEntryId;
+	WSAPROTOCOLCHAIN ProtocolChain;
+	int              iVersion;
+	int              iAddressFamily;
+	int              iMaxSockAddr;
+	int              iMinSockAddr;
+	int              iSocketType;
+	int              iProtocol;
+	int              iProtocolMaxOffset;
+	int              iNetworkByteOrder;
+	int              iSecurityScheme;
+	DWORD            dwMessageSize;
+	DWORD            dwProviderReserved;
+	CHAR             szProtocol[WSAPROTOCOL_LEN+1];
+} WSAPROTOCOL_INFOA, FAR * LPWSAPROTOCOL_INFOA;
+
+typedef WSAPROTOCOL_INFOA WSAPROTOCOL_INFO;
+typedef LPWSAPROTOCOL_INFOA LPWSAPROTOCOL_INFO;
+
 #endif // !_WINSOCK2API_ && !_WINSOCKAPI_
 
 
@@ -208,6 +275,23 @@ typedef struct _st_ntsock {
 
 	int (WSAAPI *FP_WSAGetLastError) (void);
 
+	int (WSAAPI *FP_WSADuplicateSocketA) (
+		__in   SOCKET             s,
+		__in   DWORD              dwProcessId,
+		__out  LPWSAPROTOCOL_INFO lpProtocolInfo
+		);
+
+	SOCKET (WSAAPI *FP_WSASocketA) (
+		__in  int                af,
+		__in  int                type,
+		__in  int                protocol,
+		__in  LPWSAPROTOCOL_INFO lpProtocolInfo,
+		__in  GROUP              g,
+		__in  DWORD              dwFlags
+		);
+
+
+
 	SOCKET (WSAAPI *FP_socket) (
 		__in  int af,
 		__in  int type,
@@ -216,6 +300,12 @@ typedef struct _st_ntsock {
 
 	int (WSAAPI *FP_closesocket) (
 		__in  SOCKET s
+		);
+
+	int (WSAAPI *FP_connect) (
+		__in  SOCKET                 s,
+		__in  const struct sockaddr *name,
+		__in  int                    namelen
 		);
 
 	int (WSAAPI *FP_recv) (

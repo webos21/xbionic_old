@@ -113,7 +113,7 @@ build_xb_opt_cxx    =  -m32 -g -O2 -Wall -Wextra -Wstrict-aliasing=2 -fno-except
 		-isystem ${basedir}/xbionic/libc/include \
 		-isystem ${basedir}/xbionic/libc/kernel/common \
 		-isystem ${basedir}/xbionic/libc/kernel/arch-${build_xb_cfg_arch}
-build_xb_opt_ld     = -m32 -nostdlib
+build_xb_opt_ld     = -m32 -g -nostdlib
 
 #####
 # xb_libc
@@ -773,7 +773,7 @@ build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
 ####
 build_xb_libdl_bin        = dl.dll
 build_xb_libdl_cflags     = ${build_xb_libc_cmn_cflags}
-build_xb_libdl_ldflags    = -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a
+build_xb_libdl_ldflags    = -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a -lkernel32
 build_xb_libdl_src_in     = libdl/libdl.c
 build_xb_libdl_src_ex     = 
 build_xb_libdl_src_mk     = ${build_xb_libdl_src_in}

@@ -224,10 +224,10 @@
 			<arg line="${build_opt_ld_so}${build_xb_libdl_bin}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objso}/${build_xb_libdl_bin}" />
-			<!-- <arg line="${module_dir_so_crt}/crtbegin_so.o" /> -->
+			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
 			<srcfile />
 			<arg line="${build_xb_libdl_ldflags}" />
-			<!-- <arg line="${module_dir_so_crt}/crtend_so.o" /> -->
+			<arg line="${module_dir_so_crt}/crtend_so.o" />
 			<fileset dir="${module_dir_so_libdl}" includes="*.lo" />
 		</apply>
 	</target>

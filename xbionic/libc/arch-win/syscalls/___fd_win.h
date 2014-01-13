@@ -56,6 +56,7 @@ int      xb_fd_count();
 xb_fd_t *xb_fd_get(int idx);
 
 int      xb_fd_open(xb_fd_t *fd);
+int      xb_fd_open_idx(xb_fd_t *fd, int idx);
 int      xb_fd_close(int idx);
 
 #endif //____FD_WIN_H_

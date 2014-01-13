@@ -47,6 +47,14 @@ ntsc_t *ntdll_getFP() {
 
 		// mapping the [ntdll.dll] APIs
 
+
+		/////////////////////
+		// System
+		/////////////////////
+
+		_g_ntfp.FP_NtQuerySystemInformation = dlsym(_g_ntdll, "NtQuerySystemInformation");
+
+
 		/////////////////////
 		// Process ENV Block
 		/////////////////////
@@ -59,6 +67,8 @@ ntsc_t *ntdll_getFP() {
 		/////////////////////
 
 		_g_ntfp.FP_RtlCaptureContext = dlsym(_g_ntdll, "RtlCaptureContext");
+		_g_ntfp.FP_RtlActivateActivationContextUnsafeFast = dlsym(_g_ntdll, "RtlActivateActivationContextUnsafeFast");
+		_g_ntfp.FP_RtlDeactivateActivationContextUnsafeFast = dlsym(_g_ntdll, "RtlDeactivateActivationContextUnsafeFast");
 
 
 		/////////////////////
@@ -262,11 +272,294 @@ ntsc_t *ntdll_getFP() {
 		_g_ntfp.FP_NtSetInformationFile = dlsym(_g_ntdll, "NtSetInformationFile");
 
 		_g_ntfp.FP_NtCreateFile = dlsym(_g_ntdll, "NtCreateFile");
-		// _g_ntfp.FP_NtOpenFile = dlsym(_g_ntdll, "NtOpenFile");
+		_g_ntfp.FP_NtOpenFile = dlsym(_g_ntdll, "NtOpenFile");
 		_g_ntfp.FP_NtReadFile = dlsym(_g_ntdll, "NtReadFile");
 		_g_ntfp.FP_NtWriteFile = dlsym(_g_ntdll, "NtWriteFile");
+		_g_ntfp.FP_NtCreateNamedPipeFile = dlsym(_g_ntdll, "NtCreateNamedPipeFile");
 
+
+		/////////////////////
+		// File Control Functions
+		/////////////////////
+
+		_g_ntfp.FP_NtDuplicateObject = dlsym(_g_ntdll, "NtDuplicateObject");
+		_g_ntfp.FP_NtLockFile = dlsym(_g_ntdll, "NtLockFile");
+		_g_ntfp.FP_NtUnlockFile = dlsym(_g_ntdll, "NtUnlockFile");
+
+
+		/////////////////////
+		// FileSystem Functions
+		/////////////////////
+
+		_g_ntfp.FP_NtQueryVolumeInformationFile = dlsym(_g_ntdll, "NtQueryVolumeInformationFile");
+		_g_ntfp.FP_NtSetVolumeInformationFile = dlsym(_g_ntdll, "NtSetVolumeInformationFile");
+
+
+		/////////////////////
+		// Time Functions
+		/////////////////////
+
+		_g_ntfp.FP_NtGetTickCount = dlsym(_g_ntdll, "NtGetTickCount");
 
 	}
 	return &_g_ntfp;
 }
+
+#ifndef _MSC_VER
+
+/************************************************************************/
+/* provide the APIs for "libc/upstream-dlmalloc/malloc.c"               */
+/* without "kernel32.dll" on MINGW-Builds                               */
+/************************************************************************/
+
+void
+WINAPI
+_imp__InitializeCriticalSection (
+	__out  LPCRITICAL_SECTION lpCriticalSection
+) {
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlInitializeCriticalSection(lpCriticalSection);
+}
+BOOL
+WINAPI
+_imp__InitializeCriticalSectionAndSpinCount (
+	__out  LPCRITICAL_SECTION lpCriticalSection,
+	__in   DWORD dwSpinCount
+) {
+	ntsc_t *ntfp = ntdll_getFP();
+	return ntfp->FP_RtlInitializeCriticalSectionAndSpinCount(lpCriticalSection, dwSpinCount);
+}
+
+void
+WINAPI
+_imp__EnterCriticalSection (
+	__inout  LPCRITICAL_SECTION lpCriticalSection
+) {
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlEnterCriticalSection(lpCriticalSection);
+}
+
+void
+WINAPI
+_imp__LeaveCriticalSection (
+	__inout  LPCRITICAL_SECTION lpCriticalSection
+) {
+	ntsc_t *ntfp = ntdll_getFP();
+	ntfp->FP_RtlLeaveCriticalSection(lpCriticalSection);
+}
+
+LPVOID
+WINAPI
+_imp__VirtualAlloc (
+	__in_opt  LPVOID lpAddress,
+	__in      SIZE_T dwSize,
+	__in      DWORD flAllocationType,
+	__in      DWORD flProtect
+) {
+	NTSTATUS ret;
+	PVOID vmem = lpAddress;
+	SIZE_T vmemLen = dwSize;
+	
+	ntsc_t *ntfp = ntdll_getFP();
+	ret = ntfp->FP_NtAllocateVirtualMemory(XbNtCurrentProcess(), &vmem, 0, &vmemLen, flAllocationType, flProtect);
+	if (NT_SUCCESS(ret)) {
+		return vmem;
+	} else {
+		return NULL;
+	}
+}
+
+BOOL
+WINAPI
+_imp__VirtualFree (
+	__in  LPVOID lpAddress,
+	__in  SIZE_T dwSize,
+	__in  DWORD dwFreeType
+) {
+	NTSTATUS ret;
+	PVOID vmem = lpAddress;
+	SIZE_T vmemLen = dwSize;
+
+	ntsc_t *ntfp = ntdll_getFP();
+	ret = ntfp->FP_NtFreeVirtualMemory(XbNtCurrentProcess(), &vmem, &vmemLen, dwFreeType);
+	if (NT_SUCCESS(ret)) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+BOOL
+WINAPI
+_imp__VirtualProtect (
+	__in   LPVOID lpAddress,
+	__in   SIZE_T dwSize,
+	__in   DWORD flNewProtect,
+	__out  PDWORD lpflOldProtect
+) {
+	NTSTATUS ret;
+	PVOID vmem = lpAddress;
+	SIZE_T vmemLen = dwSize;
+
+	ntsc_t *ntfp = ntdll_getFP();
+	ret = ntfp->FP_NtProtectVirtualMemory(XbNtCurrentProcess(), &vmem, &vmemLen, flNewProtect, lpflOldProtect);
+	if (NT_SUCCESS(ret)) {
+		return TRUE;
+	} else {
+		return FALSE;
+	}
+}
+
+SIZE_T
+WINAPI
+_imp__VirtualQuery (
+	__in_opt  LPCVOID lpAddress,
+	__out     PMEMORY_BASIC_INFORMATION lpBuffer,
+	__in      SIZE_T dwLength
+) {
+	NTSTATUS ret;
+	ULONG retSize;
+	PVOID vmem = (PVOID)lpAddress;
+
+	ntsc_t *ntfp = ntdll_getFP();
+	ret = ntfp->FP_NtQueryVirtualMemory(XbNtCurrentProcess(), &vmem, MemoryBasicInformation, lpBuffer, dwLength, &retSize);
+	if (NT_SUCCESS(ret)) {
+		return retSize;
+	} else {
+		return 0;
+	}
+}
+
+#define PV_NT351 0x00030033
+
+static
+VOID
+WINAPI
+xb_GetSystemInfoInternal (
+	__in  PSYSTEM_BASIC_INFORMATION BasicInfo,
+	__in  PSYSTEM_PROCESSOR_INFORMATION ProcInfo,
+	__out LPSYSTEM_INFO SystemInfo
+) {
+	SystemInfo->wProcessorArchitecture = ProcInfo->ProcessorArchitecture;
+	SystemInfo->wReserved = 0;
+	SystemInfo->dwPageSize = BasicInfo->PageSize;
+	SystemInfo->lpMinimumApplicationAddress = (PVOID)BasicInfo->MinimumUserModeAddress;
+	SystemInfo->lpMaximumApplicationAddress = (PVOID)BasicInfo->MaximumUserModeAddress;
+	SystemInfo->dwActiveProcessorMask = BasicInfo->ActiveProcessorsAffinityMask;
+	SystemInfo->dwNumberOfProcessors = BasicInfo->NumberOfProcessors;
+	SystemInfo->wProcessorLevel = ProcInfo->ProcessorLevel;
+	SystemInfo->wProcessorRevision = ProcInfo->ProcessorRevision;
+	SystemInfo->dwAllocationGranularity = BasicInfo->AllocationGranularity;
+
+	switch (ProcInfo->ProcessorArchitecture) {
+	case PROCESSOR_ARCHITECTURE_INTEL:
+		switch (ProcInfo->ProcessorLevel) {
+		case 3:
+			SystemInfo->dwProcessorType = PROCESSOR_INTEL_386;
+			break;
+		case 4:
+			SystemInfo->dwProcessorType = PROCESSOR_INTEL_486;
+			break;
+		default:
+			SystemInfo->dwProcessorType = PROCESSOR_INTEL_PENTIUM;
+		}
+		break;
+	case PROCESSOR_ARCHITECTURE_AMD64:
+		SystemInfo->dwProcessorType = PROCESSOR_AMD_X8664;
+		break;
+	case PROCESSOR_ARCHITECTURE_IA64:
+		SystemInfo->dwProcessorType = PROCESSOR_INTEL_IA64;
+		break;
+	default:
+		SystemInfo->dwProcessorType = 0;
+		break;
+	}
+
+	//if (PV_NT351 > GetProcessVersion(0)) {
+	SystemInfo->wProcessorLevel = 0;
+	SystemInfo->wProcessorRevision = 0;
+	//}
+}
+
+void 
+WINAPI
+_imp__GetSystemInfo (
+	__out  LPSYSTEM_INFO lpSystemInfo
+) {
+	SYSTEM_BASIC_INFORMATION BasicInfo;
+	SYSTEM_PROCESSOR_INFORMATION ProcInfo;
+	NTSTATUS Status;
+
+	ntsc_t *ntfp = ntdll_getFP();
+
+	Status = ntfp->FP_NtQuerySystemInformation(SystemBasicInformation,
+		&BasicInfo,
+		sizeof(BasicInfo),
+		0);
+	if (!NT_SUCCESS(Status)) return;
+
+	Status = ntfp->FP_NtQuerySystemInformation(SystemProcessorInformation,
+		&ProcInfo,
+		sizeof(ProcInfo),
+		0);
+	if (!NT_SUCCESS(Status)) return;
+
+	ntfp->FP_RtlZeroMemory(lpSystemInfo, sizeof (SYSTEM_INFO));
+	xb_GetSystemInfoInternal(&BasicInfo, &ProcInfo, lpSystemInfo);
+}
+
+DWORD
+WINAPI
+_imp__GetTickCount(void) {
+	ntsc_t *ntfp = ntdll_getFP();
+	return ntfp->FP_NtGetTickCount();
+}
+
+DWORD
+WINAPI
+_imp__SleepEx(
+	__in  DWORD dwMilliseconds,
+	__in  BOOL bAlertable
+) {
+	LARGE_INTEGER Time;
+	PLARGE_INTEGER TimePtr;
+	NTSTATUS errCode;
+	RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME ActCtx;
+
+	ntsc_t *ntfp = ntdll_getFP();
+
+	/* APCs must execute with the default activation context */
+	if (bAlertable)	{
+		/* Setup the frame */
+		ntfp->FP_RtlZeroMemory(&ActCtx, sizeof(ActCtx));
+		ActCtx.Size = sizeof(ActCtx);
+		ActCtx.Format = RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_FORMAT_WHISTLER;
+		ntfp->FP_RtlActivateActivationContextUnsafeFast(&ActCtx, NULL);
+	}
+
+	/* Convert the timeout */
+	if (dwMilliseconds == INFINITE) {
+		Time.LowPart = 0;
+		Time.HighPart = 0x80000000;
+		TimePtr = &Time;
+	} else {
+		Time.QuadPart = dwMilliseconds * -10000;
+		TimePtr = &Time;
+	}
+
+	/* Loop the delay while APCs are alerting us */
+	do {
+		/* Do the delay */
+		errCode = ntfp->FP_NtDelayExecution((BOOLEAN)bAlertable, TimePtr);
+	}
+	while ((bAlertable) && (errCode == STATUS_ALERTED));
+
+	/* Cleanup the activation context */
+	if (bAlertable) ntfp->FP_RtlDeactivateActivationContextUnsafeFast(&ActCtx);
+
+	/* Return the correct code */
+	return (errCode == STATUS_USER_APC) ? STATUS_USER_APC : 0;  // STATUS_USER_APC == WAIT_IO_COMPLETION
+}
+
+#endif // !_MSC_VER
+

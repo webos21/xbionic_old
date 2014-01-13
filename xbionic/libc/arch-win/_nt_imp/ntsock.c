@@ -52,9 +52,12 @@ ntsock_t *ntsock_getFP() {
 		_g_sockfp.FP_WSAStartup = dlsym(_g_ws2_32, "WSAStartup");
 		_g_sockfp.FP_WSACleanup = dlsym(_g_ws2_32, "WSACleanup");
 		_g_sockfp.FP_WSAGetLastError = dlsym(_g_ws2_32, "WSAGetLastError");
+		_g_sockfp.FP_WSADuplicateSocketA = dlsym(_g_ws2_32, "WSADuplicateSocketA");
+		_g_sockfp.FP_WSASocketA = dlsym(_g_ws2_32, "WSASocketA");
 
 		_g_sockfp.FP_socket = dlsym(_g_ws2_32, "socket");
 		_g_sockfp.FP_closesocket = dlsym(_g_ws2_32, "closesocket");
+		_g_sockfp.FP_connect = dlsym(_g_ws2_32, "connect");
 		_g_sockfp.FP_recv = dlsym(_g_ws2_32, "recv");
 		_g_sockfp.FP_send = dlsym(_g_ws2_32, "send");
 

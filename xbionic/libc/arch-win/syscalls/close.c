@@ -15,7 +15,7 @@
  */
 
 #include <ntdll.h>
-#include <ntsock.h>
+//#include <ntsock.h>
 
 #include <errno.h>
 #include <sys/types.h>
@@ -23,6 +23,7 @@
 #include "___fd_win.h"
 
 // close a file descriptor
+// - NtClose can close a socket!!!
 // ref {
 //     http://linux.die.net/man/2/close
 //     http://msdn.microsoft.com/en-us/library/ms648410(v=vs.85).aspx
@@ -35,8 +36,21 @@ int close(int fd) {
 	if (fdesc == NULL) {
 		errno = EBADF;
 		return -1;
+	} else {
+		NTSTATUS ret;
+		ntsc_t *ntfp = ntdll_getFP();
+		ret = ntfp->FP_NtClose(fdesc->desc.f.fd);
+		if (!NT_SUCCESS(ret)) {
+			switch (ret) {
+			case STATUS_INVALID_HANDLE:
+			default:
+				errno = EBADF;
+				return -1;
+			}
+		}
 	}
 
+/*
 	if (fdesc->fdtype == XB_FD_TYPE_SOCK) {
 		int ret;
 		ntsock_t *wsfp = ntsock_getFP();
@@ -58,18 +72,9 @@ int close(int fd) {
 			}
 		}
 	} else {
-		NTSTATUS ret;
-		ntsc_t *ntfp = ntdll_getFP();
-		ret = ntfp->FP_NtClose(fdesc->desc.f.fd);
-		if (!NT_SUCCESS(ret)) {
-			switch (ret) {
-			case STATUS_INVALID_HANDLE:
-			default:
-				errno = EBADF;
-				return -1;
-			}
-		}
+
 	}
+*/
 
 	// Success!!
 	errno = 0;

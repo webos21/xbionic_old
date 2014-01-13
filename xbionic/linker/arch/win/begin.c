@@ -54,3 +54,20 @@ __LIBC_HIDDEN__ void _start() {
 /* stack protector feature */
 
 #include "arch-win/bionic/__stack_chk_fail_local.h"
+
+
+// added by cmjo : dummy function
+// {{{
+#if defined(__MINGW32__) || defined(__MINGW64__)
+
+// EntryPoint of DllMain, so we must provide it on creating DLL without STDLIB and STARTFILES
+int __attribute__((__stdcall__)) DllMainCRTStartup(void *hinstDLL, unsigned long fdwReason, void *lpvReserved) {
+	(void)(hinstDLL);
+	(void)(fdwReason);
+	(void)(lpvReserved);
+	return 1;
+}
+
+#endif
+// }}}
+

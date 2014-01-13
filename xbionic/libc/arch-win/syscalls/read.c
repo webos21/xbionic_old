@@ -15,15 +15,17 @@
  */
 
 #include <ntdll.h>
-#include <ntsock.h>
+//#include <ntsock.h>
 
 #include <unistd.h>
 
 #include "___fd_win.h"
 
 // read from a file descriptor
+// - NtReadFile can read from a socket!!
 // ref {
 //     http://linux.die.net/man/2/read
+//     http://msdn.microsoft.com/en-us/library/windows/hardware/ff567072(v=vs.85).aspx
 // }
 ssize_t read(int fd, void *buf, size_t count) {
 	NTSTATUS ret = 0;
@@ -43,9 +45,7 @@ ssize_t read(int fd, void *buf, size_t count) {
 	if (fdesc->fdtype == XB_FD_TYPE_DIR) {
 		errno = EISDIR;
 		return -1;
-	}
-
-	if (fdesc->fdtype == XB_FD_TYPE_FILE || fdesc->fdtype == XB_FD_TYPE_PIPE) {
+	} else {
 		IO_STATUS_BLOCK iosb;
 
 		ntsc_t *ntfp = ntdll_getFP();
@@ -67,6 +67,11 @@ ssize_t read(int fd, void *buf, size_t count) {
 		} else {
 			rbytes = iosb.Information;
 		}
+	}
+
+/*
+	if (fdesc->fdtype == XB_FD_TYPE_FILE || fdesc->fdtype == XB_FD_TYPE_PIPE) {
+
 	} else if (fdesc->fdtype == XB_FD_TYPE_SOCK) {
 		ntsock_t *wsfp = ntsock_getFP();
 		rbytes = wsfp->FP_recv(fdesc->desc.s.fd, (char*)buf, (int) count, 0);
@@ -100,6 +105,7 @@ ssize_t read(int fd, void *buf, size_t count) {
 			}
 		}
 	}
+*/
 
 	return rbytes;
 }

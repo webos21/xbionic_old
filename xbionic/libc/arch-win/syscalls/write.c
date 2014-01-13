@@ -15,13 +15,14 @@
  */
 
 #include <ntdll.h>
-#include <ntsock.h>
+//#include <ntsock.h>
 
 #include <unistd.h>
 
 #include "___fd_win.h"
 
 // write to a file descriptor
+// - NtWriteFile can write to a socket!!
 // ref {
 //     http://linux.die.net/man/2/write
 // }
@@ -43,9 +44,7 @@ ssize_t write(int fd, const void *buf, size_t count) {
 	if (fdesc->fdtype == XB_FD_TYPE_DIR) {
 		errno = EISDIR;
 		return -1;
-	}
-
-	if (fdesc->fdtype == XB_FD_TYPE_FILE || fdesc->fdtype == XB_FD_TYPE_PIPE) {
+	} else {
 		IO_STATUS_BLOCK iosb;
 
 		ntsc_t *ntfp = ntdll_getFP();
@@ -64,6 +63,11 @@ ssize_t write(int fd, const void *buf, size_t count) {
 		} else {
 			wbytes = iosb.Information;
 		}
+	}
+
+/*
+	if (fdesc->fdtype == XB_FD_TYPE_FILE || fdesc->fdtype == XB_FD_TYPE_PIPE) {
+
 	} else if (fdesc->fdtype == XB_FD_TYPE_SOCK) {
 		ntsock_t *wsfp = ntsock_getFP();
 		wbytes = wsfp->FP_send(fdesc->desc.s.fd, (char*)buf, (int) count, 0);
@@ -97,6 +101,7 @@ ssize_t write(int fd, const void *buf, size_t count) {
 			}
 		}
 	}
+*/
 
 	return wbytes;
 }

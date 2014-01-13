@@ -18,14 +18,24 @@
 #define __NTDLL_H__
 
 #include "nttypes.h"
+#include "ntimage.h"
 
 //////////////////////////////////////////
 // NTDLL MACRO
 //////////////////////////////////////////
 
+//////////////
+// RtlClone
+//////////////
 #define RTL_CLONE_PROCESS_FLAGS_CREATE_SUSPENDED 0x00000001
 #define RTL_CLONE_PROCESS_FLAGS_INHERIT_HANDLES  0x00000002
 #define RTL_CLONE_PROCESS_FLAGS_NO_SYNCHRONIZE   0x00000004 // don't update synchronization objects
+
+
+//////////////
+// Device Type
+//////////////
+#define DEVICE_TYPE ULONG
 
 
 //////////////
@@ -333,22 +343,89 @@
 #define VM_LOCK_2		0x0002	// This require SE_LOCK_MEMORY_NAME privilege
 
 
+//////////////
+// File Control
+//////////////
+
+#ifndef _WINNT_
+#define DUPLICATE_CLOSE_SOURCE      0x00000001
+#define DUPLICATE_SAME_ACCESS       0x00000002
+#define DUPLICATE_SAME_ATTRIBUTES   0x00000004
+#endif // _WINNT_
+
+
+//////////////
+// Processor Info
+//////////////
+
+#ifndef _WINNT_
+#define PROCESSOR_INTEL_386     386
+#define PROCESSOR_INTEL_486     486
+#define PROCESSOR_INTEL_PENTIUM 586
+#define PROCESSOR_INTEL_IA64    2200
+#define PROCESSOR_AMD_X8664     8664
+#define PROCESSOR_MIPS_R4000    4000    // incl R4101 & R3910 for Windows CE
+#define PROCESSOR_ALPHA_21064   21064
+#define PROCESSOR_PPC_601       601
+#define PROCESSOR_PPC_603       603
+#define PROCESSOR_PPC_604       604
+#define PROCESSOR_PPC_620       620
+#define PROCESSOR_HITACHI_SH3   10003   // Windows CE
+#define PROCESSOR_HITACHI_SH3E  10004   // Windows CE
+#define PROCESSOR_HITACHI_SH4   10005   // Windows CE
+#define PROCESSOR_MOTOROLA_821  821     // Windows CE
+#define PROCESSOR_SHx_SH3       103     // Windows CE
+#define PROCESSOR_SHx_SH4       104     // Windows CE
+#define PROCESSOR_STRONGARM     2577    // Windows CE - 0xA11
+#define PROCESSOR_ARM720        1824    // Windows CE - 0x720
+#define PROCESSOR_ARM820        2080    // Windows CE - 0x820
+#define PROCESSOR_ARM920        2336    // Windows CE - 0x920
+#define PROCESSOR_ARM_7TDMI     70001   // Windows CE
+#define PROCESSOR_OPTIL         0x494f  // MSIL
+
+#define PROCESSOR_ARCHITECTURE_INTEL            0
+#define PROCESSOR_ARCHITECTURE_MIPS             1
+#define PROCESSOR_ARCHITECTURE_ALPHA            2
+#define PROCESSOR_ARCHITECTURE_PPC              3
+#define PROCESSOR_ARCHITECTURE_SHX              4
+#define PROCESSOR_ARCHITECTURE_ARM              5
+#define PROCESSOR_ARCHITECTURE_IA64             6
+#define PROCESSOR_ARCHITECTURE_ALPHA64          7
+#define PROCESSOR_ARCHITECTURE_MSIL             8
+#define PROCESSOR_ARCHITECTURE_AMD64            9
+#define PROCESSOR_ARCHITECTURE_IA32_ON_WIN64    10
+
+#define PROCESSOR_ARCHITECTURE_UNKNOWN          0xFFFF
+#endif // _WINNT_
+
+//////////////
+// I/O Completion Access Rights
+//////////////
+#define IO_COMPLETION_QUERY_STATE               0x0001
+#define IO_COMPLETION_MODIFY_STATE              0x0002
+#define IO_COMPLETION_ALL_ACCESS                \
+			(STANDARD_RIGHTS_REQUIRED | SYNCHRONIZE | 0x3)
+
+
+//////////////
+// Pipe Flags
+//////////////
+#define FILE_PIPE_BYTE_STREAM_TYPE              0x00000000
+#define FILE_PIPE_MESSAGE_TYPE                  0x00000001
+#define FILE_PIPE_BYTE_STREAM_MODE              0x00000000
+#define FILE_PIPE_MESSAGE_MODE                  0x00000001
+#define FILE_PIPE_QUEUE_OPERATION               0x00000000
+#define FILE_PIPE_COMPLETE_OPERATION            0x00000001
+#define FILE_PIPE_INBOUND                       0x00000000
+#define FILE_PIPE_OUTBOUND                      0x00000001
+#define FILE_PIPE_FULL_DUPLEX                   0x00000002
+#define FILE_PIPE_CLIENT_END                    0x00000000
+#define FILE_PIPE_SERVER_END                    0x00000001
 
 
 //////////////////////////////////////////
 // NTDLL Structures
 //////////////////////////////////////////
-
-// Pointer to a SECURITY_DESCRIPTOR  opaque data type.
-typedef PVOID                 PSECURITY_DESCRIPTOR;
-
-typedef RTL_CRITICAL_SECTION  CRITICAL_SECTION;  // winbase.h
-typedef PRTL_CRITICAL_SECTION PCRITICAL_SECTION; // winbase.h
-
-typedef ULONG_PTR             KAFFINITY;         // basetsd.h
-typedef KAFFINITY            *PKAFFINITY;        // basetsd.h
-
-typedef ULONG_PTR             KPRIORITY;
 
 typedef struct _CLIENT_ID {
 	/* These are numeric ids */
@@ -356,6 +433,13 @@ typedef struct _CLIENT_ID {
 	HANDLE UniqueThread;
 } CLIENT_ID;
 typedef CLIENT_ID *PCLIENT_ID;
+
+typedef struct _GENERIC_MAPPING {
+	ACCESS_MASK   GenericRead;
+	ACCESS_MASK   GenericWrite;
+	ACCESS_MASK   GenericExecute;
+	ACCESS_MASK   GenericAll;
+} GENERIC_MAPPING, *PGENERIC_MAPPING;
 
 typedef struct _SECTION_BASIC_INFORMATION {
   ULONG                     BaseAddress;
@@ -566,6 +650,27 @@ typedef struct _RTL_USER_PROCESS_INFORMATION {
   SECTION_IMAGE_INFORMATION ImageInformation;
 } RTL_USER_PROCESS_INFORMATION, *PRTL_USER_PROCESS_INFORMATION;
 
+typedef enum _PNP_VETO_TYPE {
+	PNP_VetoTypeUnknown = 0,
+	PNP_VetoLegacyDevice = 1,
+	PNP_VetoPendingClose = 2,
+	PNP_VetoWindowsApp = 3,
+	PNP_VetoWindowsService = 4,
+	PNP_VetoOutstandingOpen = 5,
+	PNP_VetoDevice = 6,
+	PNP_VetoDriver = 7,
+	PNP_VetoIllegalDeviceRequest = 8,
+	PNP_VetoInsufficientPower = 9,
+	PNP_VetoNonDisableable = 10,
+	PNP_VetoLegacyDriver = 11,
+	PNP_VetoInsufficientRights = 12,
+} PNP_VETO_TYPE, *PPNP_VETO_TYPE;
+
+
+typedef enum _MEMORY_INFORMATION_CLASS {
+	MemoryBasicInformation
+} MEMORY_INFORMATION_CLASS, *PMEMORY_INFORMATION_CLASS;
+
 #ifndef _WINNT_
 typedef struct _MEMORY_BASIC_INFORMATION {
 	PVOID                   BaseAddress;
@@ -578,9 +683,6 @@ typedef struct _MEMORY_BASIC_INFORMATION {
 } MEMORY_BASIC_INFORMATION, *PMEMORY_BASIC_INFORMATION;
 #endif // _WINNT_
 
-typedef enum _MEMORY_INFORMATION_CLASS {
-	MemoryBasicInformation
-} MEMORY_INFORMATION_CLASS, *PMEMORY_INFORMATION_CLASS;
 
 typedef enum _SYSTEM_INFORMATION_CLASS {
 	SystemBasicInformation,
@@ -631,19 +733,523 @@ typedef enum _SYSTEM_INFORMATION_CLASS {
 	SystemLookasideInformation
 } SYSTEM_INFORMATION_CLASS, *PSYSTEM_INFORMATION_CLASS;
 
-typedef struct _SYSTEM_HANDLE {
-  ULONG                     ProcessId;
-  BYTE                      ObjectTypeNumber;
-  BYTE                      Flags;
-  USHORT                    Handle;
-  PVOID                     Object;
-  ACCESS_MASK               GrantedAccess;
-} SYSTEM_HANDLE, *PSYSTEM_HANDLE;
+typedef struct _SYSTEM_BASIC_INFORMATION {
+	ULONG      Reserved;
+	ULONG      TimerResolution;
+	ULONG      PageSize;
+	ULONG      NumberOfPhysicalPages;
+	ULONG      LowestPhysicalPageNumber;
+	ULONG      HighestPhysicalPageNumber;
+	ULONG      AllocationGranularity;
+	ULONG_PTR  MinimumUserModeAddress;
+	ULONG_PTR  MaximumUserModeAddress;
+	ULONG_PTR  ActiveProcessorsAffinityMask;
+	CCHAR      NumberOfProcessors;
+} SYSTEM_BASIC_INFORMATION, *PSYSTEM_BASIC_INFORMATION;
+
+typedef struct _SYSTEM_PROCESSOR_INFORMATION {
+	USHORT ProcessorArchitecture;
+	USHORT ProcessorLevel;
+	USHORT ProcessorRevision;
+	USHORT Reserved;
+	ULONG  ProcessorFeatureBits;
+} SYSTEM_PROCESSOR_INFORMATION, *PSYSTEM_PROCESSOR_INFORMATION;
+
+typedef struct _SYSTEM_PERFORMANCE_INFORMATION {
+	LARGE_INTEGER IdleProcessTime;
+	LARGE_INTEGER IoReadTransferCount;
+	LARGE_INTEGER IoWriteTransferCount;
+	LARGE_INTEGER IoOtherTransferCount;
+	ULONG IoReadOperationCount;
+	ULONG IoWriteOperationCount;
+	ULONG IoOtherOperationCount;
+	ULONG AvailablePages;
+	ULONG CommittedPages;
+	ULONG CommitLimit;
+	ULONG PeakCommitment;
+	ULONG PageFaultCount;
+	ULONG CopyOnWriteCount;
+	ULONG TransitionCount;
+	ULONG CacheTransitionCount;
+	ULONG DemandZeroCount;
+	ULONG PageReadCount;
+	ULONG PageReadIoCount;
+	ULONG CacheReadCount;
+	ULONG CacheIoCount;
+	ULONG DirtyPagesWriteCount;
+	ULONG DirtyWriteIoCount;
+	ULONG MappedPagesWriteCount;
+	ULONG MappedWriteIoCount;
+	ULONG PagedPoolPages;
+	ULONG NonPagedPoolPages;
+	ULONG PagedPoolAllocs;
+	ULONG PagedPoolFrees;
+	ULONG NonPagedPoolAllocs;
+	ULONG NonPagedPoolFrees;
+	ULONG FreeSystemPtes;
+	ULONG ResidentSystemCodePage;
+	ULONG TotalSystemDriverPages;
+	ULONG TotalSystemCodePages;
+	ULONG NonPagedPoolLookasideHits;
+	ULONG PagedPoolLookasideHits;
+	ULONG Spare3Count;
+	ULONG ResidentSystemCachePage;
+	ULONG ResidentPagedPoolPage;
+	ULONG ResidentSystemDriverPage;
+	ULONG CcFastReadNoWait;
+	ULONG CcFastReadWait;
+	ULONG CcFastReadResourceMiss;
+	ULONG CcFastReadNotPossible;
+	ULONG CcFastMdlReadNoWait;
+	ULONG CcFastMdlReadWait;
+	ULONG CcFastMdlReadResourceMiss;
+	ULONG CcFastMdlReadNotPossible;
+	ULONG CcMapDataNoWait;
+	ULONG CcMapDataWait;
+	ULONG CcMapDataNoWaitMiss;
+	ULONG CcMapDataWaitMiss;
+	ULONG CcPinMappedDataCount;
+	ULONG CcPinReadNoWait;
+	ULONG CcPinReadWait;
+	ULONG CcPinReadNoWaitMiss;
+	ULONG CcPinReadWaitMiss;
+	ULONG CcCopyReadNoWait;
+	ULONG CcCopyReadWait;
+	ULONG CcCopyReadNoWaitMiss;
+	ULONG CcCopyReadWaitMiss;
+	ULONG CcMdlReadNoWait;
+	ULONG CcMdlReadWait;
+	ULONG CcMdlReadNoWaitMiss;
+	ULONG CcMdlReadWaitMiss;
+	ULONG CcReadAheadIos;
+	ULONG CcLazyWriteIos;
+	ULONG CcLazyWritePages;
+	ULONG CcDataFlushes;
+	ULONG CcDataPages;
+	ULONG ContextSwitches;
+	ULONG FirstLevelTbFills;
+	ULONG SecondLevelTbFills;
+	ULONG SystemCalls;
+} SYSTEM_PERFORMANCE_INFORMATION, *PSYSTEM_PERFORMANCE_INFORMATION;
+
+typedef struct _SYSTEM_TIMEOFDAY_INFORMATION {
+	LARGE_INTEGER BootTime;
+	LARGE_INTEGER CurrentTime;
+	LARGE_INTEGER TimeZoneBias;
+	ULONG TimeZoneId;
+	ULONG Reserved;
+	ULONGLONG BootTimeBias;
+	ULONGLONG SleepTimeBias;
+} SYSTEM_TIMEOFDAY_INFORMATION, *PSYSTEM_TIMEOFDAY_INFORMATION;
+
+typedef struct _SYSTEM_THREAD_INFORMATION {
+	LARGE_INTEGER  KernelTime;
+	LARGE_INTEGER  UserTime;
+	LARGE_INTEGER  CreateTime;
+	ULONG          WaitTime;
+	PVOID          StartAddress;
+	CLIENT_ID      ClientId;
+	KPRIORITY      Priority;
+	LONG           BasePriority;
+	ULONG          ContextSwitches;
+	ULONG          ThreadState;
+	ULONG          WaitReason;
+	ULONG          PadPadAlignment;
+} SYSTEM_THREAD_INFORMATION, *PSYSTEM_THREAD_INFORMATION;
+//#ifndef _WIN64
+//C_ASSERT(sizeof(SYSTEM_THREAD_INFORMATION) == 0x40); // Must be 8-byte aligned
+//#endif
+
+typedef struct _SYSTEM_PROCESS_INFORMATION {
+	ULONG           NextEntryOffset;
+	ULONG           NumberOfThreads;
+	LARGE_INTEGER   WorkingSetPrivateSize; //VISTA
+	ULONG           HardFaultCount; //WIN7
+	ULONG           NumberOfThreadsHighWatermark; //WIN7
+	ULONGLONG       CycleTime; //WIN7
+	LARGE_INTEGER   CreateTime;
+	LARGE_INTEGER   UserTime;
+	LARGE_INTEGER   KernelTime;
+	UNICODE_STRING  ImageName;
+	KPRIORITY       BasePriority;
+	HANDLE          UniqueProcessId;
+	HANDLE          InheritedFromUniqueProcessId;
+	ULONG           HandleCount;
+	ULONG           SessionId;
+	ULONG_PTR       PageDirectoryBase;
+
+	//
+	// This part corresponds to VM_COUNTERS_EX.
+	// NOTE: *NOT* THE SAME AS VM_COUNTERS!
+	//
+	SIZE_T          PeakVirtualSize;
+	SIZE_T          VirtualSize;
+	ULONG           PageFaultCount;
+	SIZE_T          PeakWorkingSetSize;
+	SIZE_T          WorkingSetSize;
+	SIZE_T          QuotaPeakPagedPoolUsage;
+	SIZE_T          QuotaPagedPoolUsage;
+	SIZE_T          QuotaPeakNonPagedPoolUsage;
+	SIZE_T          QuotaNonPagedPoolUsage;
+	SIZE_T          PagefileUsage;
+	SIZE_T          PeakPagefileUsage;
+	SIZE_T          PrivatePageCount;
+
+	//
+	// This part corresponds to IO_COUNTERS
+	//
+	LARGE_INTEGER   ReadOperationCount;
+	LARGE_INTEGER   WriteOperationCount;
+	LARGE_INTEGER   OtherOperationCount;
+	LARGE_INTEGER   ReadTransferCount;
+	LARGE_INTEGER   WriteTransferCount;
+	LARGE_INTEGER   OtherTransferCount;
+	//    SYSTEM_THREAD_INFORMATION TH[1];
+} SYSTEM_PROCESS_INFORMATION, *PSYSTEM_PROCESS_INFORMATION;
+//#ifndef _WIN64
+//C_ASSERT(sizeof(SYSTEM_PROCESS_INFORMATION) == 0xB8); // Must be 8-byte aligned
+//#endif
+
+typedef struct _SYSTEM_CALL_COUNT_INFORMATION {
+	ULONG   Length;
+	ULONG   NumberOfTables;
+} SYSTEM_CALL_COUNT_INFORMATION, *PSYSTEM_CALL_COUNT_INFORMATION;
+
+typedef struct _SYSTEM_DEVICE_INFORMATION {
+	ULONG   NumberOfDisks;
+	ULONG   NumberOfFloppies;
+	ULONG   NumberOfCdRoms;
+	ULONG   NumberOfTapes;
+	ULONG   NumberOfSerialPorts;
+	ULONG   NumberOfParallelPorts;
+} SYSTEM_DEVICE_INFORMATION, *PSYSTEM_DEVICE_INFORMATION;
+
+typedef struct _SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION {
+	LARGE_INTEGER   IdleTime;
+	LARGE_INTEGER   KernelTime;
+	LARGE_INTEGER   UserTime;
+	LARGE_INTEGER   DpcTime;
+	LARGE_INTEGER   InterruptTime;
+	ULONG           InterruptCount;
+} SYSTEM_PROCESSOR_PERFORMANCE_INFORMATION, *PSYSTEM_PROCESSOR_PERFORMANCE_INFORMATION;
+
+typedef struct _SYSTEM_FLAGS_INFORMATION {
+	ULONG   Flags;
+} SYSTEM_FLAGS_INFORMATION, *PSYSTEM_FLAGS_INFORMATION;
+
+typedef struct _SYSTEM_CALL_TIME_INFORMATION {
+	ULONG          Length;
+	ULONG          TotalCalls;
+	LARGE_INTEGER  TimeOfCalls[1];
+} SYSTEM_CALL_TIME_INFORMATION, *PSYSTEM_CALL_TIME_INFORMATION;
+
+typedef struct _SYSTEM_POOL_ENTRY {
+	BOOLEAN            Allocated;
+	BOOLEAN            Spare0;
+	USHORT             AllocatorBackTraceIndex;
+	ULONG              Size;
+	union {
+		UCHAR          Tag[4];
+		ULONG          TagUlong;
+		PVOID          ProcessChargedQuota;
+	};
+} SYSTEM_POOL_ENTRY, *PSYSTEM_POOL_ENTRY;
+
+typedef struct _SYSTEM_POOL_INFORMATION {
+	SIZE_T             TotalSize;
+	PVOID              FirstEntry;
+	USHORT             EntryOverhead;
+	BOOLEAN            PoolTagPresent;
+	BOOLEAN            Spare0;
+	ULONG              NumberOfEntries;
+	SYSTEM_POOL_ENTRY  Entries[1];
+} SYSTEM_POOL_INFORMATION, *PSYSTEM_POOL_INFORMATION;
+
+typedef struct _SYSTEM_HANDLE_TABLE_ENTRY_INFO {
+	USHORT      UniqueProcessId;
+	USHORT      CreatorBackTraceIndex;
+	UCHAR       ObjectTypeIndex;
+	UCHAR       HandleAttributes;
+	USHORT      HandleValue;
+	PVOID       Object;
+	ULONG       GrantedAccess;
+} SYSTEM_HANDLE_TABLE_ENTRY_INFO, *PSYSTEM_HANDLE_TABLE_ENTRY_INFO;
 
 typedef struct _SYSTEM_HANDLE_INFORMATION {
-  ULONG                     HandleCount; /* Or NumberOfHandles if you prefer. */
-  SYSTEM_HANDLE             Handles[1];
+	ULONG                           NumberOfHandles;
+	SYSTEM_HANDLE_TABLE_ENTRY_INFO  Handles[1];
 } SYSTEM_HANDLE_INFORMATION, *PSYSTEM_HANDLE_INFORMATION;
+
+typedef struct _SYSTEM_OBJECTTYPE_INFORMATION {
+	ULONG            NextEntryOffset;
+	ULONG            NumberOfObjects;
+	ULONG            NumberOfHandles;
+	ULONG            TypeIndex;
+	ULONG            InvalidAttributes;
+	GENERIC_MAPPING  GenericMapping;
+	ULONG            ValidAccessMask;
+	ULONG            PoolType;
+	BOOLEAN          SecurityRequired;
+	BOOLEAN          WaitableObject;
+	UNICODE_STRING   TypeName;
+} SYSTEM_OBJECTTYPE_INFORMATION, *PSYSTEM_OBJECTTYPE_INFORMATION;
+
+typedef struct _OBJECT_NAME_INFORMATION {
+	UNICODE_STRING   Name;
+} OBJECT_NAME_INFORMATION, *POBJECT_NAME_INFORMATION;
+
+typedef struct _SYSTEM_OBJECT_INFORMATION {
+	ULONG                    NextEntryOffset;
+	PVOID                    Object;
+	HANDLE                   CreatorUniqueProcess;
+	USHORT                   CreatorBackTraceIndex;
+	USHORT                   Flags;
+	LONG                     PointerCount;
+	LONG                     HandleCount;
+	ULONG                    PagedPoolCharge;
+	ULONG                    NonPagedPoolCharge;
+	HANDLE                   ExclusiveProcessId;
+	PVOID                    SecurityDescriptor;
+	OBJECT_NAME_INFORMATION  NameInfo;
+} SYSTEM_OBJECT_INFORMATION, *PSYSTEM_OBJECT_INFORMATION;
+
+typedef struct _SYSTEM_PAGEFILE_INFORMATION {
+	ULONG           NextEntryOffset;
+	ULONG           TotalSize;
+	ULONG           TotalInUse;
+	ULONG           PeakUsage;
+	UNICODE_STRING  PageFileName;
+} SYSTEM_PAGEFILE_INFORMATION, *PSYSTEM_PAGEFILE_INFORMATION;
+
+typedef struct _SYSTEM_FILECACHE_INFORMATION {
+	SIZE_T  CurrentSize;
+	SIZE_T  PeakSize;
+	ULONG   PageFaultCount;
+	SIZE_T  MinimumWorkingSet;
+	SIZE_T  MaximumWorkingSet;
+	SIZE_T  CurrentSizeIncludingTransitionInPages;
+	SIZE_T  PeakSizeIncludingTransitionInPages;
+	ULONG   TransitionRePurposeCount;
+	ULONG   Flags;
+} SYSTEM_FILECACHE_INFORMATION, *PSYSTEM_FILECACHE_INFORMATION;
+
+typedef struct _SYSTEM_POOLTAG {
+	union {
+		UCHAR   Tag[4];
+		ULONG   TagUlong;
+	};
+	ULONG       PagedAllocs;
+	ULONG       PagedFrees;
+	SIZE_T      PagedUsed;
+	ULONG       NonPagedAllocs;
+	ULONG       NonPagedFrees;
+	SIZE_T      NonPagedUsed;
+} SYSTEM_POOLTAG, *PSYSTEM_POOLTAG;
+
+typedef struct _SYSTEM_POOLTAG_INFORMATION {
+	ULONG           Count;
+	SYSTEM_POOLTAG  TagInfo[1];
+} SYSTEM_POOLTAG_INFORMATION, *PSYSTEM_POOLTAG_INFORMATION;
+
+typedef struct _SYSTEM_INTERRUPT_INFORMATION {
+	ULONG   ContextSwitches;
+	ULONG   DpcCount;
+	ULONG   DpcRate;
+	ULONG   TimeIncrement;
+	ULONG   DpcBypassCount;
+	ULONG   ApcBypassCount;
+} SYSTEM_INTERRUPT_INFORMATION, *PSYSTEM_INTERRUPT_INFORMATION;
+
+typedef struct _SYSTEM_DPC_BEHAVIOR_INFORMATION {
+	ULONG   Spare;
+	ULONG   DpcQueueDepth;
+	ULONG   MinimumDpcRate;
+	ULONG   AdjustDpcThreshold;
+	ULONG   IdealDpcRate;
+} SYSTEM_DPC_BEHAVIOR_INFORMATION, *PSYSTEM_DPC_BEHAVIOR_INFORMATION;
+
+typedef struct _SYSTEM_MEMORY_INFO {
+	PUCHAR   StringOffset;
+	USHORT   ValidCount;
+	USHORT   TransitionCount;
+	USHORT   ModifiedCount;
+	USHORT   PageTableCount;
+} SYSTEM_MEMORY_INFO, *PSYSTEM_MEMORY_INFO;
+
+typedef struct _SYSTEM_MEMORY_INFORMATION {
+	ULONG               InfoSize;
+	ULONG               StringStart;
+	SYSTEM_MEMORY_INFO  Memory[1];
+} SYSTEM_MEMORY_INFORMATION, *PSYSTEM_MEMORY_INFORMATION;
+
+typedef struct _SYSTEM_GDI_DRIVER_INFORMATION {
+	UNICODE_STRING           DriverName;
+	PVOID                    ImageAddress;
+	PVOID                    SectionPointer;
+	PVOID                    EntryPoint;
+	PIMAGE_EXPORT_DIRECTORY  ExportSectionPointer;
+	ULONG                    ImageLength;
+} SYSTEM_GDI_DRIVER_INFORMATION, *PSYSTEM_GDI_DRIVER_INFORMATION;
+
+typedef struct _SYSTEM_QUERY_TIME_ADJUST_INFORMATION {
+	ULONG     TimeAdjustment;
+	ULONG     TimeIncrement;
+	BOOLEAN   Enable;
+} SYSTEM_QUERY_TIME_ADJUST_INFORMATION, *PSYSTEM_QUERY_TIME_ADJUST_INFORMATION;
+
+typedef struct _SYSTEM_SET_TIME_ADJUST_INFORMATION {
+	ULONG     TimeAdjustment;
+	BOOLEAN   Enable;
+} SYSTEM_SET_TIME_ADJUST_INFORMATION, *PSYSTEM_SET_TIME_ADJUST_INFORMATION;
+
+typedef struct _SYSTEM_REF_TRACE_INFORMATION {
+	UCHAR            TraceEnable;
+	UCHAR            TracePermanent;
+	UNICODE_STRING   TraceProcessName;
+	UNICODE_STRING   TracePoolTags;
+} SYSTEM_REF_TRACE_INFORMATION, *PSYSTEM_REF_TRACE_INFORMATION;
+
+typedef struct _SYSTEM_EXCEPTION_INFORMATION {
+	ULONG   AlignmentFixupCount;
+	ULONG   ExceptionDispatchCount;
+	ULONG   FloatingEmulationCount;
+	ULONG   ByteWordEmulationCount;
+} SYSTEM_EXCEPTION_INFORMATION, *PSYSTEM_EXCEPTION_INFORMATION;
+
+typedef struct _SYSTEM_CRASH_STATE_INFORMATION {
+	ULONG   ValidCrashDump;
+} SYSTEM_CRASH_STATE_INFORMATION, *PSYSTEM_CRASH_STATE_INFORMATION;
+
+typedef struct _SYSTEM_KERNEL_DEBUGGER_INFORMATION {
+	BOOLEAN   KernelDebuggerEnabled;
+	BOOLEAN   KernelDebuggerNotPresent;
+} SYSTEM_KERNEL_DEBUGGER_INFORMATION, *PSYSTEM_KERNEL_DEBUGGER_INFORMATION;
+
+typedef struct _SYSTEM_CONTEXT_SWITCH_INFORMATION {
+	ULONG   ContextSwitches;
+	ULONG   FindAny;
+	ULONG   FindLast;
+	ULONG   FindIdeal;
+	ULONG   IdleAny;
+	ULONG   IdleCurrent;
+	ULONG   IdleLast;
+	ULONG   IdleIdeal;
+	ULONG   PreemptAny;
+	ULONG   PreemptCurrent;
+	ULONG   PreemptLast;
+	ULONG   SwitchToIdle;
+} SYSTEM_CONTEXT_SWITCH_INFORMATION, *PSYSTEM_CONTEXT_SWITCH_INFORMATION;
+
+typedef struct _SYSTEM_REGISTRY_QUOTA_INFORMATION {
+	ULONG    RegistryQuotaAllowed;
+	ULONG    RegistryQuotaUsed;
+	SIZE_T   PagedPoolSize;
+} SYSTEM_REGISTRY_QUOTA_INFORMATION, *PSYSTEM_REGISTRY_QUOTA_INFORMATION;
+
+
+typedef enum _INTERFACE_TYPE {
+	InterfaceTypeUndefined = -1,
+	Internal,
+	Isa,
+	Eisa,
+	MicroChannel,
+	TurboChannel,
+	PCIBus,
+	VMEBus,
+	NuBus,
+	PCMCIABus,
+	CBus,
+	MPIBus,
+	MPSABus,
+	ProcessorInternal,
+	InternalPowerBus,
+	PNPISABus,
+	PNPBus,
+	Vmcs,
+	MaximumInterfaceType
+} INTERFACE_TYPE, *PINTERFACE_TYPE;
+
+typedef enum _PLUGPLAY_BUS_CLASS {
+	SystemBus,
+	PlugPlayVirtualBus,
+	MaxPlugPlayBusClass
+} PLUGPLAY_BUS_CLASS, *PPLUGPLAY_BUS_CLASS;
+
+typedef enum _PLUGPLAY_VIRTUAL_BUS_TYPE {
+	Root,
+	MaxPlugPlayVirtualBusType
+} PLUGPLAY_VIRTUAL_BUS_TYPE, *PPLUGPLAY_VIRTUAL_BUS_TYPE;
+
+typedef struct _PLUGPLAY_BUS_TYPE {
+	PLUGPLAY_BUS_CLASS             BusClass;
+	union {
+		INTERFACE_TYPE             SystemBusType;
+		PLUGPLAY_VIRTUAL_BUS_TYPE  PlugPlayVirtualBusType;
+	};
+} PLUGPLAY_BUS_TYPE, *PPLUGPLAY_BUS_TYPE;
+
+#define MAX_BUS_NAME 24
+
+typedef struct _PLUGPLAY_BUS_INSTANCE {
+	PLUGPLAY_BUS_TYPE  BusType;
+	ULONG              BusNumber;
+	WCHAR              BusName[MAX_BUS_NAME];
+} PLUGPLAY_BUS_INSTANCE, *PPLUGPLAY_BUS_INSTANCE;
+
+typedef struct _SYSTEM_PLUGPLAY_BUS_INFORMATION {
+	ULONG                  BusCount;
+	PLUGPLAY_BUS_INSTANCE  BusInstance[1];
+} SYSTEM_PLUGPLAY_BUS_INFORMATION, *PSYSTEM_PLUGPLAY_BUS_INFORMATION;
+
+typedef struct _SYSTEM_POWER_INFORMATION_NATIVE {
+	BOOLEAN         SystemSuspendSupported;
+	BOOLEAN         SystemHibernateSupported;
+	BOOLEAN         ResumeTimerSupportsSuspend;
+	BOOLEAN         ResumeTimerSupportsHibernate;
+	BOOLEAN         LidSupported;
+	BOOLEAN         TurboSettingSupported;
+	BOOLEAN         TurboMode;
+	BOOLEAN         SystemAcOrDc;
+	BOOLEAN         PowerDownDisabled;
+	LARGE_INTEGER   SpindownDrives;
+} SYSTEM_POWER_INFORMATION_NATIVE, *PSYSTEM_POWER_INFORMATION_NATIVE;
+
+typedef struct _SYSTEM_LEGACY_DRIVER_INFORMATION {
+	PNP_VETO_TYPE    VetoType;
+	UNICODE_STRING   VetoDriver;
+} SYSTEM_LEGACY_DRIVER_INFORMATION, *PSYSTEM_LEGACY_DRIVER_INFORMATION;
+
+typedef struct _SYSTEM_LOOKASIDE_INFORMATION {
+	USHORT  CurrentDepth;
+	USHORT  MaximumDepth;
+	ULONG   TotalAllocates;
+	ULONG   AllocateMisses;
+	ULONG   TotalFrees;
+	ULONG   FreeMisses;
+	ULONG   Type;
+	ULONG   Tag;
+	ULONG   Size;
+} SYSTEM_LOOKASIDE_INFORMATION, *PSYSTEM_LOOKASIDE_INFORMATION;
+
+typedef struct _SYSTEM_INFO {
+	union {
+		DWORD  dwOemId;
+		struct {
+			WORD wProcessorArchitecture;
+			WORD wReserved;
+		};
+	};
+	DWORD     dwPageSize;
+	LPVOID    lpMinimumApplicationAddress;
+	LPVOID    lpMaximumApplicationAddress;
+	DWORD_PTR dwActiveProcessorMask;
+	DWORD     dwNumberOfProcessors;
+	DWORD     dwProcessorType;
+	DWORD     dwAllocationGranularity;
+	WORD      wProcessorLevel;
+	WORD      wProcessorRevision;
+} SYSTEM_INFO, *PSYSTEM_INFO, *LPSYSTEM_INFO;
+
 
 typedef struct _PEB_LDR_DATA_VISTA_7 {
 	ULONG                   Length;
@@ -1173,6 +1779,50 @@ typedef enum _SECTION_INHERIT {
 } SECTION_INHERIT, *PSECTION_INHERIT;
 
 
+typedef enum _FILE_INFORMATION_CLASS {
+	FileDirectoryInformation = 1,
+	FileFullDirectoryInformation,
+	FileBothDirectoryInformation,
+	FileBasicInformation,
+	FileStandardInformation,
+	FileInternalInformation,
+	FileEaInformation,
+	FileAccessInformation,
+	FileNameInformation,
+	FileRenameInformation,
+	FileLinkInformation,
+	FileNamesInformation,
+	FileDispositionInformation,
+	FilePositionInformation,
+	FileFullEaInformation,
+	FileModeInformation,
+	FileAlignmentInformation,
+	FileAllInformation,
+    FileAllocationInformation,
+	FileEndOfFileInformation,
+	FileAlternateNameInformation,
+	FileStreamInformation,
+	FilePipeInformation,
+	FilePipeLocalInformation,
+	FilePipeRemoteInformation,
+	FileMailslotQueryInformation,
+	FileMailslotSetInformation,
+	FileCompressionInformation,
+	FileObjectIdInformation,
+	FileCompletionInformation,
+	FileMoveClusterInformation,
+	FileQuotaInformation,
+	FileReparsePointInformation,
+	FileNetworkOpenInformation,
+	FileAttributeTagInformation,
+	FileTrackingInformation,
+	FileIdBothDirectoryInformation,
+	FileIdFullDirectoryInformation,
+	FileValidDataLengthInformation,
+	FileShortNameInformation,
+	FileMaximumInformation
+} FILE_INFORMATION_CLASS, *PFILE_INFORMATION_CLASS;
+
 typedef struct _FILE_FULL_EA_INFORMATION {
 	ULONG                   NextEntryOffset;
 	BYTE                    Flags;
@@ -1180,50 +1830,6 @@ typedef struct _FILE_FULL_EA_INFORMATION {
 	USHORT                  EaValueLength;
 	CHAR                    EaName[1];
 } FILE_FULL_EA_INFORMATION, *PFILE_FULL_EA_INFORMATION;
-
-typedef enum _FILE_INFORMATION_CLASS {
-    FileDirectoryInformation=1,
-    FileFullDirectoryInformation,
-    FileBothDirectoryInformation,
-    FileBasicInformation,
-    FileStandardInformation,
-    FileInternalInformation,
-    FileEaInformation,
-    FileAccessInformation,
-    FileNameInformation,
-    FileRenameInformation,
-    FileLinkInformation,
-    FileNamesInformation,
-    FileDispositionInformation,
-    FilePositionInformation,
-    FileFullEaInformation,
-    FileModeInformation,
-    FileAlignmentInformation,
-    FileAllInformation,
-	FileAllocationInformation,
-    FileEndOfFileInformation,
-    FileAlternateNameInformation,
-    FileStreamInformation,
-    FilePipeInformation,
-    FilePipeLocalInformation,
-    FilePipeRemoteInformation,
-    FileMailslotQueryInformation,
-    FileMailslotSetInformation,
-    FileCompressionInformation,
-    FileCopyOnWriteInformation,
-    FileCompletionInformation,
-    FileMoveClusterInformation,
-    FileQuotaInformation,
-    FileReparsePointInformation,
-    FileNetworkOpenInformation,
-    FileObjectIdInformation,
-    FileTrackingInformation,
-    FileOleDirectoryInformation,
-    FileContentIndexInformation,
-    FileInheritContentIndexInformation,
-    FileOleInformation,
-    FileMaximumInformation
-} FILE_INFORMATION_CLASS, *PFILE_INFORMATION_CLASS;
 
 typedef struct _FILE_BASIC_INFORMATION {
 	LARGE_INTEGER           CreationTime;
@@ -1282,12 +1888,159 @@ typedef struct _FILE_ALL_INFORMATION {
 	FILE_NAME_INFORMATION      NameInformation;
 } FILE_ALL_INFORMATION, *PFILE_ALL_INFORMATION;
 
+typedef struct _FILE_ALLOCATION_INFORMATION {
+    LARGE_INTEGER  AllocationSize;
+} FILE_ALLOCATION_INFORMATION, *PFILE_ALLOCATION_INFORMATION;
+
+typedef struct _FILE_END_OF_FILE_INFORMATION {
+    LARGE_INTEGER  EndOfFile;
+} FILE_END_OF_FILE_INFORMATION, *PFILE_END_OF_FILE_INFORMATION;
+
+typedef struct _FILE_VALID_DATA_LENGTH_INFORMATION {
+    LARGE_INTEGER  ValidDataLength;
+} FILE_VALID_DATA_LENGTH_INFORMATION, *PFILE_VALID_DATA_LENGTH_INFORMATION;
+
+typedef struct _FILE_DIRECTORY_INFORMATION {
+    ULONG          NextEntryOffset;
+    ULONG          FileIndex;
+    LARGE_INTEGER  CreationTime;
+    LARGE_INTEGER  LastAccessTime;
+    LARGE_INTEGER  LastWriteTime;
+    LARGE_INTEGER  ChangeTime;
+    LARGE_INTEGER  EndOfFile;
+    LARGE_INTEGER  AllocationSize;
+    ULONG          FileAttributes;
+    ULONG          FileNameLength;
+    WCHAR          FileName[1];
+} FILE_DIRECTORY_INFORMATION, *PFILE_DIRECTORY_INFORMATION;
+
+typedef struct _FILE_IO_COMPLETION_INFORMATION {
+    PVOID            KeyContext;
+    PVOID            ApcContext;
+    IO_STATUS_BLOCK  IoStatusBlock;
+} FILE_IO_COMPLETION_INFORMATION, *PFILE_IO_COMPLETION_INFORMATION;
+
+typedef struct _FILE_ATTRIBUTE_TAG_INFORMATION {
+    ULONG  FileAttributes;
+    ULONG  ReparseTag;
+} FILE_ATTRIBUTE_TAG_INFORMATION, *PFILE_ATTRIBUTE_TAG_INFORMATION;
+
+typedef struct _FILE_PIPE_WAIT_FOR_BUFFER {
+    LARGE_INTEGER  Timeout;
+    ULONG          NameLength;
+    BOOLEAN        TimeoutSpecified;
+    WCHAR          Name[1];
+} FILE_PIPE_WAIT_FOR_BUFFER, *PFILE_PIPE_WAIT_FOR_BUFFER;
+
+typedef struct _FILE_PIPE_PEEK_BUFFER {
+    ULONG          NamedPipeState;
+    ULONG          ReadDataAvailable;
+    ULONG          NumberOfMessages;
+    ULONG          MessageLength;
+    CHAR           Data[1];
+} FILE_PIPE_PEEK_BUFFER, *PFILE_PIPE_PEEK_BUFFER;
+
+typedef enum _FSINFOCLASS {
+    FileFsVolumeInformation = 1,
+    FileFsLabelInformation,
+    FileFsSizeInformation,
+    FileFsDeviceInformation,
+    FileFsAttributeInformation,
+    FileFsControlInformation,
+    FileFsFullSizeInformation,
+    FileFsObjectIdInformation,
+    FileFsDriverPathInformation,
+    FileFsMaximumInformation
+} FS_INFORMATION_CLASS, *PFS_INFORMATION_CLASS;
+
+typedef struct _FILE_FS_DEVICE_INFORMATION {
+    DEVICE_TYPE   DeviceType;
+    ULONG         Characteristics;
+} FILE_FS_DEVICE_INFORMATION, *PFILE_FS_DEVICE_INFORMATION;
+
+typedef struct _FILE_FS_ATTRIBUTE_INFORMATION {
+    ULONG  FileSystemAttributes;
+    ULONG  MaximumComponentNameLength;
+    ULONG  FileSystemNameLength;
+    WCHAR  FileSystemName[1];
+} FILE_FS_ATTRIBUTE_INFORMATION, *PFILE_FS_ATTRIBUTE_INFORMATION;
+
+typedef struct _FILE_FS_SIZE_INFORMATION {
+    LARGE_INTEGER   TotalAllocationUnits;
+    LARGE_INTEGER   AvailableAllocationUnits;
+    ULONG           SectorsPerAllocationUnit;
+    ULONG           BytesPerSector;
+} FILE_FS_SIZE_INFORMATION, *PFILE_FS_SIZE_INFORMATION;
+
+typedef struct _FILE_FS_FULL_SIZE_INFORMATION {
+    LARGE_INTEGER   TotalAllocationUnits;
+    LARGE_INTEGER   CallerAvailableAllocationUnits;
+    LARGE_INTEGER   ActualAvailableAllocationUnits;
+    ULONG           SectorsPerAllocationUnit;
+    ULONG           BytesPerSector;
+} FILE_FS_FULL_SIZE_INFORMATION, *PFILE_FS_FULL_SIZE_INFORMATION;
+
+typedef struct _FILE_FS_LABEL_INFORMATION {
+    ULONG  VolumeLabelLength;
+    WCHAR  VolumeLabel[1];
+} FILE_FS_LABEL_INFORMATION, *PFILE_FS_LABEL_INFORMATION;
+
+typedef struct _FILE_FS_VOLUME_INFORMATION {
+    LARGE_INTEGER  VolumeCreationTime;
+    ULONG          VolumeSerialNumber;
+    ULONG          VolumeLabelLength;
+    BOOLEAN        SupportsObjects;
+    WCHAR          VolumeLabel[1];
+} FILE_FS_VOLUME_INFORMATION, *PFILE_FS_VOLUME_INFORMATION;
+
+
+
+#define RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_FORMAT_WHISTLER   0x1
+
+typedef PVOID PACTIVATION_CONTEXT;
+
+typedef struct _RTL_ACTIVATION_CONTEXT_STACK_FRAME {
+	struct _RTL_ACTIVATION_CONTEXT_STACK_FRAME *Previous;
+	PACTIVATION_CONTEXT                         ActivationContext;
+	ULONG                                       Flags;
+} RTL_ACTIVATION_CONTEXT_STACK_FRAME, *PRTL_ACTIVATION_CONTEXT_STACK_FRAME;
+
+typedef struct _RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_BASIC {
+	SIZE_T                              Size;
+	ULONG                               Format;
+	RTL_ACTIVATION_CONTEXT_STACK_FRAME  Frame;
+} RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_BASIC, *PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_BASIC;
+
+typedef struct _RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED {
+	SIZE_T                              Size;
+	ULONG                               Format;
+	RTL_ACTIVATION_CONTEXT_STACK_FRAME  Frame;
+	PVOID                               Extra1;
+	PVOID                               Extra2;
+	PVOID                               Extra3;
+	PVOID                               Extra4;
+} RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED, *PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED;
+
+typedef RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED RTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME;
+typedef PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME_EXTENDED PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME;
+
 
 //////////////////////////////////////////
 // Structure for NTDLL APIs
 //////////////////////////////////////////
 
 typedef struct _st_ntsc {
+
+	/////////////////////
+	// System
+	/////////////////////
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtQuerySystemInformation) (
+		__in      SYSTEM_INFORMATION_CLASS SystemInformationClass,
+		__inout   PVOID                    SystemInformation,
+		__in      ULONG                    SystemInformationLength,
+		__out_opt PULONG                   ReturnLength
+		);
 
 	/////////////////////
 	// Process ENV Block
@@ -1302,7 +2055,16 @@ typedef struct _st_ntsc {
 
 	NTSYSAPI_N VOID (NTAPI *FP_RtlCaptureContext) (
 		__out PCONTEXT  ContextRecord
-	);
+		);
+
+	PRTL_ACTIVATION_CONTEXT_STACK_FRAME (FASTCALL *FP_RtlActivateActivationContextUnsafeFast) (
+		__in PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME  Frame,  
+		__in PVOID                                                 Context  
+		);
+
+	PRTL_ACTIVATION_CONTEXT_STACK_FRAME (FASTCALL *FP_RtlDeactivateActivationContextUnsafeFast) (
+		__in PRTL_CALLER_ALLOCATED_ACTIVATION_CONTEXT_STACK_FRAME  Frame
+		);
 
 
 	/////////////////////
@@ -1980,15 +2742,14 @@ typedef struct _st_ntsc {
 		__in      ULONG              EaLength
 		);
 
-	//-- Not Used (use NtCreateFile)
-	// NTSYSAPI_N NTSTATUS (NTAPI *FP_NtOpenFile) (
-	// 	__out  PHANDLE            FileHandle,
-	// 	__in   ACCESS_MASK        DesiredAccess,
-	// 	__in   POBJECT_ATTRIBUTES ObjectAttributes,
-	// 	__out  PIO_STATUS_BLOCK   IoStatusBlock,
-	// 	__in   ULONG              ShareAccess,
-	// 	__in   ULONG              OpenOptions
-	// 	);
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtOpenFile) (
+		__out  PHANDLE            FileHandle,
+		__in   ACCESS_MASK        DesiredAccess,
+		__in   POBJECT_ATTRIBUTES ObjectAttributes,
+		__out  PIO_STATUS_BLOCK   IoStatusBlock,
+		__in   ULONG              ShareAccess,
+		__in   ULONG              OpenOptions
+		);
 
 	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtReadFile) (
 		__in      HANDLE            FileHandle,
@@ -2015,7 +2776,90 @@ typedef struct _st_ntsc {
 		);
 
 
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtCreateNamedPipeFile) (
+		__out PHANDLE              NamedPipeFileHandle,
+		__in  ACCESS_MASK          DesiredAccess,
+		__in  POBJECT_ATTRIBUTES   ObjectAttributes,
+		__out PIO_STATUS_BLOCK     IoStatusBlock,
+		__in  ULONG                ShareAccess,
+		__in  ULONG                CreateDisposition,
+		__in  ULONG                CreateOptions,
+		__in  BOOLEAN              WriteModeMessage,
+		__in  BOOLEAN              ReadModeMessage,
+		__in  BOOLEAN              NonBlocking,
+		__in  ULONG                MaxInstances,
+		__in  ULONG                InBufferSize,
+		__in  ULONG                OutBufferSize,
+		__in  PLARGE_INTEGER       DefaultTimeOut
+		);
 
+
+
+
+
+	/////////////////////
+	// File Control Functions
+	/////////////////////
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtDuplicateObject) (
+		__in       HANDLE       SourceProcessHandle,
+		__in       HANDLE       SourceHandle,
+		__in_opt   HANDLE       TargetProcessHandle,
+		__out_opt  PHANDLE      TargetHandle,
+		__in       ACCESS_MASK  DesiredAccess,
+		__in       ULONG        HandleAttributes,
+		__in       ULONG        Options
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtLockFile) (
+		__in      HANDLE FileHandle,
+		__in_opt  HANDLE Event,
+		__in_opt  PVOID ApcRoutine, // PIO_APC_ROUTINE
+		__in_opt  PVOID ApcContext,
+		__out     PIO_STATUS_BLOCK IoStatusBlock,
+		__in      PLARGE_INTEGER ByteOffset,
+		__in      PLARGE_INTEGER Length,
+		__in      ULONG Key,
+		__in      BOOLEAN FailImmediately,
+		__in      BOOLEAN ExclusiveLock
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtUnlockFile) (
+		__in   HANDLE FileHandle,
+		__out  PIO_STATUS_BLOCK IoStatusBlock,
+		__in   PLARGE_INTEGER ByteOffset,
+		__in   PLARGE_INTEGER Length,
+		__in   ULONG Key
+		);
+
+
+
+		/////////////////////
+		// FileSystem Functions
+		/////////////////////
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtQueryVolumeInformationFile) (
+		__in   HANDLE                 FileHandle,
+		__out  PIO_STATUS_BLOCK       IoStatusBlock,
+		__out  PVOID                  FsInformation,
+		__in   ULONG                  Length,
+		__in   FS_INFORMATION_CLASS   FsInformationClass
+		);
+
+	NTSYSAPI_N NTSTATUS (NTAPI *FP_NtSetVolumeInformationFile) (
+		__in   HANDLE                 FileHandle,
+		__out  PIO_STATUS_BLOCK       IoStatusBlock,
+		__out  PVOID                  FsInformation,
+		__in   ULONG                  Length,
+		__in   FS_INFORMATION_CLASS   FsInformationClass
+		);
+
+
+	/////////////////////
+	// Time Functions
+	/////////////////////
+
+	NTSYSAPI_N ULONG (NTAPI *FP_NtGetTickCount) (void);
 
 
 } ntsc_t;

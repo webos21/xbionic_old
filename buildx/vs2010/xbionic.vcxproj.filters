@@ -81,6 +81,12 @@
     <Filter Include="헤더 파일\arpa">
       <UniqueIdentifier>{661cec07-1926-4436-beb2-1543a74cfb05}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\net">
+      <UniqueIdentifier>{9c241cf4-3d6e-4cd0-8499-38b79fd4c41b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\linux\hdlc">
+      <UniqueIdentifier>{5601d190-4528-4054-9bd0-6217630307f3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\mingw32\include\ntdll.h">
@@ -472,6 +478,18 @@
     </ClInclude>
     <ClInclude Include="..\..\xbionic\libc\include\arpa\inet.h">
       <Filter>헤더 파일\arpa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\lib\mingw32\include\ntimage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\include\net\if.h">
+      <Filter>헤더 파일\net</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\if.h">
+      <Filter>헤더 파일\linux</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\hdlc\ioctl.h">
+      <Filter>헤더 파일\linux\hdlc</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

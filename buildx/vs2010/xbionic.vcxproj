@@ -157,6 +157,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\mingw32\include\ntdll.h" />
+    <ClInclude Include="..\..\lib\mingw32\include\ntimage.h" />
     <ClInclude Include="..\..\lib\mingw32\include\ntsock.h" />
     <ClInclude Include="..\..\lib\mingw32\include\ntstatus.h" />
     <ClInclude Include="..\..\lib\mingw32\include\nttypes.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="..\..\xbionic\libc\include\netinet\ip.h" />
     <ClInclude Include="..\..\xbionic\libc\include\netinet\ip6.h" />
     <ClInclude Include="..\..\xbionic\libc\include\netinet\ip_icmp.h" />
+    <ClInclude Include="..\..\xbionic\libc\include\net\if.h" />
     <ClInclude Include="..\..\xbionic\libc\include\pathconf.h" />
     <ClInclude Include="..\..\xbionic\libc\include\pthread.h" />
     <ClInclude Include="..\..\xbionic\libc\include\sched.h" />
@@ -266,6 +268,8 @@
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\errno.h" />
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\fcntl.h" />
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\futex.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\hdlc\ioctl.h" />
+    <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\if.h" />
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\in.h" />
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\in6.h" />
     <ClInclude Include="..\..\xbionic\libc\kernel\common\linux\ioctl.h" />

@@ -107,12 +107,20 @@ typedef int                NTSTATUS;
 #define CONST const
 #endif
 
+#ifndef far
+#define far
+#endif
+
+#ifndef near
+#define near
+#endif
+
 #ifndef FAR
-#define FAR
+#define FAR      far
 #endif
 
 #ifndef NEAR
-#define NEAR
+#define NEAR     near
 #endif
 
 #ifndef PASCAL
@@ -120,6 +128,14 @@ typedef int                NTSTATUS;
 #define PASCAL    __stdcall
 #else // !_MSC_VER
 #define PASCAL    __attribute__((__stdcall__))
+#endif // _MSC_VER
+#endif
+
+#ifndef FASTCALL
+#ifdef _MSC_VER
+#define FASTCALL    __fastcall
+#else // !_MSC_VER
+#define FASTCALL    __attribute__((__fastcall__))
 #endif // _MSC_VER
 #endif
 
@@ -145,6 +161,10 @@ typedef int                NTSTATUS;
 
 #ifndef WSAAPI
 #define WSAAPI    FAR PASCAL
+#endif
+
+#ifndef WINAPI
+#define WINAPI    FAR PASCAL
 #endif
 
 #ifndef DECLSPEC_ALIGN
@@ -183,6 +203,54 @@ typedef int                NTSTATUS;
 #ifndef HANDLE_FLAG_PROTECT_FROM_CLOSE
 #define HANDLE_FLAG_PROTECT_FROM_CLOSE           0x00000002
 #endif
+
+#ifndef INFINITE
+#define INFINITE                                 0xFFFFFFFF
+#endif
+
+#ifndef ANYSIZE_ARRAY
+#define ANYSIZE_ARRAY                            1
+#endif
+
+#ifndef DUMMYUNIONNAME
+#if defined(NONAMELESSUNION) || !defined(_MSC_EXTENSIONS)
+#define DUMMYUNIONNAME   u
+#define DUMMYUNIONNAME2  u2
+#define DUMMYUNIONNAME3  u3
+#define DUMMYUNIONNAME4  u4
+#define DUMMYUNIONNAME5  u5
+#define DUMMYUNIONNAME6  u6
+#define DUMMYUNIONNAME7  u7
+#define DUMMYUNIONNAME8  u8
+#define DUMMYUNIONNAME9  u9
+#else
+#define DUMMYUNIONNAME
+#define DUMMYUNIONNAME2
+#define DUMMYUNIONNAME3
+#define DUMMYUNIONNAME4
+#define DUMMYUNIONNAME5
+#define DUMMYUNIONNAME6
+#define DUMMYUNIONNAME7
+#define DUMMYUNIONNAME8
+#define DUMMYUNIONNAME9
+#endif
+#endif // DUMMYUNIONNAME
+
+#ifndef DUMMYSTRUCTNAME
+#if defined(NONAMELESSUNION) || !defined(_MSC_EXTENSIONS)
+#define DUMMYSTRUCTNAME  s
+#define DUMMYSTRUCTNAME2 s2
+#define DUMMYSTRUCTNAME3 s3
+#define DUMMYSTRUCTNAME4 s4
+#define DUMMYSTRUCTNAME5 s5
+#else
+#define DUMMYSTRUCTNAME
+#define DUMMYSTRUCTNAME2
+#define DUMMYSTRUCTNAME3
+#define DUMMYSTRUCTNAME4
+#define DUMMYSTRUCTNAME5
+#endif
+#endif // DUMMYSTRUCTNAME
 
 
 //////////////////////////////////////////
@@ -287,56 +355,95 @@ typedef _W64 unsigned long  ULONG_PTR, *PULONG_PTR;
 // ETC : extensions
 //////////////
 
-typedef int                BOOL;
-
-typedef long long          LONGLONG;
-typedef unsigned long long ULONGLONG;
-
-typedef VOID              *PVOID;
-typedef VOID              *LPVOID;
-
-typedef unsigned short     WCHAR;
-typedef WCHAR             *PWCHAR,*LPWCH,*PWCH;
-
-typedef WCHAR             *NWPSTR, *LPWSTR, *PWSTR;
-
-typedef UCHAR              BOOLEAN;    // winnt
-typedef BOOLEAN           *PBOOLEAN;   // winnt
-
-typedef ULONG              LOGICAL;
-typedef ULONG             *PLOGICAL;
-
-typedef unsigned char      BYTE;
-
-typedef unsigned short     WORD;
-typedef unsigned long      DWORD;
-
-typedef WORD              *LPWORD;
-typedef DWORD             *LPDWORD;
-
-typedef void              *HANDLE;
-typedef HANDLE            *PHANDLE;
-
-typedef DWORD              ACCESS_MASK;
-typedef ACCESS_MASK       *PACCESS_MASK;
-
-typedef ULONG_PTR          DWORD_PTR, *PDWORD_PTR;
-typedef ULONG_PTR          SIZE_T, *PSIZE_T;
-
-typedef LONG_PTR           SSIZE_T, *PSSIZE_T;
-
-typedef CHAR              *NPSTR, *LPSTR, *PSTR;
-typedef CONST char        *PCSZ;
-typedef CONST WCHAR       *LPCWSTR, *PCWSTR;
-typedef CHAR              *PCHAR, *LPCH, *PCH;
-typedef CONST CHAR        *LPCSTR, *PCSTR;
-
 #ifndef _WINDEF_
-typedef void              *HDC;
-#endif // _WINDEF_
+typedef unsigned long       DWORD;
+typedef int                 BOOL;
+typedef unsigned char       BYTE;
+typedef unsigned short      WORD;
+typedef float               FLOAT;
+typedef FLOAT              *PFLOAT;
+typedef BOOL near          *PBOOL;
+typedef BOOL far           *LPBOOL;
+typedef BYTE near          *PBYTE;
+typedef BYTE far           *LPBYTE;
+typedef int near           *PINT;
+typedef int far            *LPINT;
+typedef WORD near          *PWORD;
+typedef WORD far           *LPWORD;
+typedef long far           *LPLONG;
+typedef DWORD near         *PDWORD;
+typedef DWORD far          *LPDWORD;
+typedef void far           *LPVOID;
+typedef CONST void far     *LPCVOID;
 
-typedef unsigned long long ULONG64, *PULONG64;
-typedef unsigned long long DWORD64, *PDWORD64;
+typedef int                 INT;
+typedef unsigned int        UINT;
+typedef unsigned int       *PUINT;
+
+typedef void               *HDC;
+#endif
+
+#ifndef _WINNT_
+typedef VOID               *PVOID;
+
+typedef long long           LONGLONG;
+typedef unsigned long long  ULONGLONG;
+
+typedef BYTE                BOOLEAN;    // winnt
+typedef BOOLEAN            *PBOOLEAN;   // winnt
+
+typedef void               *HANDLE;
+typedef HANDLE             *PHANDLE;
+
+typedef DWORD               ACCESS_MASK;
+typedef ACCESS_MASK        *PACCESS_MASK;
+
+typedef char                CCHAR;
+typedef unsigned short      WCHAR;
+
+// ANSI (Multi-byte Character) types
+
+typedef CHAR               *PCHAR, *LPCH, *PCH;
+typedef CHAR               *NPSTR, *LPSTR, *PSTR;
+typedef CONST CHAR         *PCSZ;
+typedef CONST CHAR         *LPCSTR, *PCSTR;
+
+typedef WCHAR              *PWCHAR,*LPWCH,*PWCH;
+typedef WCHAR              *NWPSTR, *LPWSTR, *PWSTR;
+typedef CONST WCHAR        *LPCWSTR, *PCWSTR;
+
+typedef PVOID               PACCESS_TOKEN;            
+typedef PVOID               PSECURITY_DESCRIPTOR;     
+typedef PVOID               PSID;
+
+#endif // _WINNT_
+
+
+#ifndef _BASETSD_H_
+typedef ULONG_PTR           DWORD_PTR, *PDWORD_PTR;
+
+typedef ULONG_PTR           SIZE_T, *PSIZE_T;
+typedef LONG_PTR            SSIZE_T, *PSSIZE_T;
+
+typedef unsigned long long  ULONG64, *PULONG64;
+typedef unsigned long long  DWORD64, *PDWORD64;
+
+typedef ULONG_PTR           KAFFINITY;
+typedef KAFFINITY          *PKAFFINITY;
+
+#endif // _BASETSD_H_
+
+
+#ifndef _NTDEF_
+typedef ULONG               LOGICAL;
+typedef ULONG              *PLOGICAL;
+#endif // _NTDEF_
+
+#ifndef _WDMDDK_
+typedef ULONG_PTR           KPRIORITY;
+#endif
+
+
 
 
 
@@ -447,6 +554,12 @@ typedef struct _RTL_CRITICAL_SECTION {
 	ULONG_PTR                 SpinCount;        // force size on 64-bit systems when packed
 } RTL_CRITICAL_SECTION, *PRTL_CRITICAL_SECTION;
 #pragma pack(pop)
+
+#ifndef _WINBASE_
+typedef RTL_CRITICAL_SECTION  CRITICAL_SECTION;
+typedef PRTL_CRITICAL_SECTION PCRITICAL_SECTION;
+typedef PRTL_CRITICAL_SECTION LPCRITICAL_SECTION;
+#endif // _WINBASE_
 
 typedef struct _RTL_SRWLOCK {
 	PVOID                     Ptr;
