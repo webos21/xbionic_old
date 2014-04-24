@@ -226,7 +226,7 @@ build_xb_libc_sc_src =  \
 	libc/arch-${build_xb_cfg_arch}/syscalls/pipe.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/pipe2.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/dup2.c, \
-	libc/arch-${build_xb_cfg_arch}/syscalls/select.S, \
+	libc/arch-${build_xb_cfg_arch}/syscalls/select.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/ftruncate64.c, \
 	libc/arch-${build_xb_cfg_arch}/syscalls/getdents.S, \

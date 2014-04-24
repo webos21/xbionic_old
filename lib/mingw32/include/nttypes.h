@@ -572,6 +572,13 @@ typedef struct _RTL_CONDITION_VARIABLE {
 #define RTL_CONDITION_VARIABLE_INIT {0}
 #define RTL_CONDITION_VARIABLE_LOCKMODE_SHARED  0x1
 
+// Do not use the unnamed union
+// for compatibility with MINGW
+//
+// ex)
+//   BAD  ==> LARGE_INTEGER a; a.LowPart = 0;
+//   GOOD ==> LARGE_INTEGER a; a.u.LowPart = 0;
+
 #if defined(MIDL_PASS)
 typedef struct _LARGE_INTEGER {
 #else // MIDL_PASS
@@ -588,6 +595,13 @@ typedef union _LARGE_INTEGER {
 	LONGLONG QuadPart;
 } LARGE_INTEGER;
 typedef LARGE_INTEGER *PLARGE_INTEGER;
+
+// Do not use the unnamed union
+// for compatibility with MINGW
+// 
+// ex)
+//   BAD  ==> ULARGE_INTEGER a; a.LowPart = 0;
+//   GOOD ==> ULARGE_INTEGER a; a.u.LowPart = 0;
 
 #if defined(MIDL_PASS)
 typedef struct _ULARGE_INTEGER {

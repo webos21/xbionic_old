@@ -28,8 +28,13 @@
 
 extern void *__dso_handle;
 
+// added by cmjo for removing a warnig {{{
+extern int __cxa_atexit(void (*func)(void *), void *arg, void *dso);
+// }}}
+
 // modified by cmjo for VS2010 {{{
-#ifndef _MSC_VER
+#if !defined(__MINGW32__) && !defined(__MINGW64__) && !defined(_MSC_VER)
+#error What the fuck!!
 __attribute__ ((visibility ("hidden")))
 #endif
 // }}}

@@ -357,6 +357,7 @@
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\read.c" />
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\readahead.c" />
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\readv.c" />
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\select.c" />
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setgid.c" />
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setgroups.c" />
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\setpgid.c" />

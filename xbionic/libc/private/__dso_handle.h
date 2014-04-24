@@ -27,7 +27,10 @@
  */
 
 
-#ifndef CRT_LEGACY_WORKAROUND
+// modified by cmjo for VS2010 {{{
+#if !defined(__MINGW32__) && !defined(__MINGW64__) && !defined(_MSC_VER)
+//#ifndef CRT_LEGACY_WORKAROUND
+// }}}
 __attribute__ ((visibility ("hidden")))
 #endif
 __attribute__ ((section (".bss")))

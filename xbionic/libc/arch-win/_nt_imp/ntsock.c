@@ -60,6 +60,7 @@ ntsock_t *ntsock_getFP() {
 		_g_sockfp.FP_connect = dlsym(_g_ws2_32, "connect");
 		_g_sockfp.FP_recv = dlsym(_g_ws2_32, "recv");
 		_g_sockfp.FP_send = dlsym(_g_ws2_32, "send");
+		_g_sockfp.FP_select = dlsym(_g_ws2_32, "select");
 
 		// Startup Windows Socket API
 		_g_sockfp.FP_WSAStartup(reqVer, &_g_wsaData);

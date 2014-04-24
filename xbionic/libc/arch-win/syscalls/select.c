@@ -17,27 +17,27 @@
 #include <ntsock.h>
 
 #include <errno.h>
-#include <sys/socket.h>
+#include <sys/select.h>
 
 #include "___fd_win.h"
 
 // initiate a connection on a socket  
 // ref {
-//     http://linux.die.net/man/2/connect
+//     http://linux.die.net/man/2/select
 // }
-int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
+int select(int n, fd_set *readfds, fd_set *writefds, fd_set *errfds, struct timeval *timeout) {
 	int ret;
 	xb_fd_t *fdesc = NULL;
 
 	ntsock_t *wsfp = ntsock_getFP();
 
-	fdesc = xb_fd_get(sockfd);
-	if (fdesc == NULL || fdesc->fdtype != XB_FD_TYPE_SOCK) {
-		errno = ENOTSOCK;
-		return -1;
-	}
+	// FIXME!!!
+	// type converting needed!!
+	WSA_fd_set rfds;
+	WSA_fd_set wfds;
+	WSA_fd_set efds;
 
-	ret = wsfp->FP_connect(fdesc->desc.s.fd, (struct const _WSA_sockaddr *)addr, addrlen);
+	ret = wsfp->FP_select(n, &rfds, &wfds, &efds, timeout);
 	if (ret == SOCKET_ERROR) {
 		int err = wsfp->FP_WSAGetLastError();
 		switch (err) {

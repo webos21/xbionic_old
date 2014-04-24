@@ -258,6 +258,22 @@ typedef struct _WSAPROTOCOL_INFOA {
 typedef WSAPROTOCOL_INFOA WSAPROTOCOL_INFO;
 typedef LPWSAPROTOCOL_INFOA LPWSAPROTOCOL_INFO;
 
+// for compatibility with LINUX definition {{{
+#define WSA_FD_SETSIZE 1024
+
+typedef struct _WSA_fd_set {
+	unsigned int  fd_count;
+	SOCKET        fd_array[WSA_FD_SETSIZE];
+} WSA_fd_set;
+
+typedef unsigned short _WSA_sa_family;
+
+struct _WSA_sockaddr {
+	_WSA_sa_family sa_family;
+	char sa_data[14];
+};
+// }}}
+
 #endif // !_WINSOCK2API_ && !_WINSOCKAPI_
 
 
@@ -303,9 +319,9 @@ typedef struct _st_ntsock {
 		);
 
 	int (WSAAPI *FP_connect) (
-		__in  SOCKET                 s,
-		__in  const struct sockaddr *name,
-		__in  int                    namelen
+		__in  SOCKET                      s,
+		__in  const struct _WSA_sockaddr *name,
+		__in  int                         namelen
 		);
 
 	int (WSAAPI *FP_recv) (
@@ -321,6 +337,15 @@ typedef struct _st_ntsock {
 		__in   int     len,
 		__in   int     flags
 		);
+
+	int (WSAAPI *FP_select) (
+		__in     int nfds,
+		__inout  WSA_fd_set *readfds,
+		__inout  WSA_fd_set *writefds,
+		__inout  WSA_fd_set *exceptfds,
+		__in     const struct timeval *timeout
+		);
+
 
 
 } ntsock_t;

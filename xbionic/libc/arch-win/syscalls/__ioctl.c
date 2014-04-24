@@ -31,7 +31,8 @@
 // }
 int __ioctl(int fd, int req, void *args) {
 	xb_fd_t *fdesc = NULL;
-	int intArg;
+	// FIXME
+	//int intArg;
 
 	fdesc = xb_fd_get(fd);
 	if (fdesc == NULL) {

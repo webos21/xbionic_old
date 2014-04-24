@@ -539,8 +539,8 @@ _imp__SleepEx(
 
 	/* Convert the timeout */
 	if (dwMilliseconds == INFINITE) {
-		Time.LowPart = 0;
-		Time.HighPart = 0x80000000;
+		Time.u.LowPart = 0;
+		Time.u.HighPart = 0x80000000;
 		TimePtr = &Time;
 	} else {
 		Time.QuadPart = dwMilliseconds * -10000;

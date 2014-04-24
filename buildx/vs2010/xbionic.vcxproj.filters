@@ -802,6 +802,9 @@
     <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\connect.c">
       <Filter>소스 파일\syscalls\socket</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\xbionic\libc\arch-win\syscalls\select.c">
+      <Filter>소스 파일\syscalls\socket</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <MASM Include="..\..\lib\mingw64\test\__readgsqword.asm">

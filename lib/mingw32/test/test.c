@@ -278,7 +278,8 @@ int test_file_ctl() {
 	int dfd8 = 8;
 
 	off64_t longLen = 0;
-	struct sockaddr_in stSockAddr;
+	// FIXME
+	//struct sockaddr_in stSockAddr;
 
 	ntsc_t *ntfp = ntdll_getFP();
 
