@@ -113,7 +113,7 @@ void android_update_LD_LIBRARY_PATH(const char* ld_library_path) { }
 
 void *dl_unwind_find_exidx(void *pc, int *pcount) { return 0; }
 
-#elif defined(__i386__) || defined(__mips__)
+#elif defined(__i386__) || defined(_WIN64) || defined(__mips__)
 
 /* we munge the cb definition so we don't have to include any headers here.
  * It won't affect anything since these are just symbols anyway */

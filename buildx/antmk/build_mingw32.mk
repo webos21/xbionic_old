@@ -69,10 +69,10 @@ build_opt_so_pre   =
 build_opt_so_ext   = dll
 build_opt_exe_ext  = .exe
 
-build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -Wdeclaration-after-statement -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-build_opt_cxx      = -m32 -march=i686 -g -Wall -Wextra -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -Wdeclaration-after-statement -nostdinc -nostdlib -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_cxx      = -m32 -march=i686 -g -Wall -Wextra -nostdinc -nostdlib -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 build_opt_fPIC     =
-build_opt_ld       = -m32 -march=i686 -g -Wl,--no-undefined
+build_opt_ld       = -m32 -march=i686 -g -Wl,--no-undefined -nostdlib
 build_opt_ld_so    = -shared -Wl,-soname,
 build_opt_ld_rpath = -Wl,-rpath-link,
 build_opt_ld_noud  = -Wl,--no-undefined
@@ -133,7 +133,7 @@ build_xb_libc_cmn_cflags = \
 	-DANDROID_SMP=1 \
 	-I${basedir}/xbionic/libc/private
 
-build_xb_libc_cmn_ldflags = -Wl,--no-undefined
+build_xb_libc_cmn_ldflags = -Wl,--no-undefined -nostdlib
 
 build_xb_libc_cmn_incs = \
 	-I${basedir}/xbionic/libc \
@@ -773,7 +773,7 @@ build_xb_libc_crt_src_mk  = ${build_xb_libc_crt_src_in}
 ####
 build_xb_libdl_bin        = dl.dll
 build_xb_libdl_cflags     = ${build_xb_libc_cmn_cflags}
-build_xb_libdl_ldflags    = -Wl,--exclude-libs=libgcc.a -Wl,--exclude-libs=libgcc_eh.a -lkernel32
+build_xb_libdl_ldflags    = -lkernel32
 build_xb_libdl_src_in     = libdl/libdl.c
 build_xb_libdl_src_ex     = 
 build_xb_libdl_src_mk     = ${build_xb_libdl_src_in}
@@ -1101,7 +1101,7 @@ build_xb_libm_a_src_mk    = ${build_xb_libm_a_src_in}
 ####
 build_xb_libm_so_bin       = m.dll
 build_xb_libm_so_cflags    =
-build_xb_libm_so_ldflags   = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
+build_xb_libm_so_ldflags   = -Wl,--no-undefined -nostdlib
 build_xb_libm_so_src_in    = 
 build_xb_libm_so_src_ex    = 
 build_xb_libm_so_src_mk    =
@@ -1126,7 +1126,7 @@ build_xb_libscx_a_src_mk   = ${build_xb_libscx_a_src_in}
 ####
 build_xb_libscx_so_bin     = stdc++.dll
 build_xb_libscx_so_cflags  =
-build_xb_libscx_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a -Wl,--no-undefined
+build_xb_libscx_so_ldflags = -Wl,--no-undefined -nostdlib
 build_xb_libscx_so_src_in  = 
 build_xb_libscx_so_src_ex  = 
 build_xb_libscx_so_src_mk  =
@@ -1146,7 +1146,7 @@ build_xb_libtdb_a_src_mk   = ${build_xb_libtdb_a_src_in}
 ####
 build_xb_libtdb_so_bin     = thread_db.dll
 build_xb_libtdb_so_cflags  =
-build_xb_libtdb_so_ldflags = ${basedir}/lib/${build_cfg_target}/libgcc.a
+build_xb_libtdb_so_ldflags = -Wl,--no-undefined -nostdlib
 build_xb_libtdb_so_src_in  = 
 build_xb_libtdb_so_src_ex  = 
 build_xb_libtdb_so_src_mk  =
@@ -1181,7 +1181,7 @@ build_xb_linker_ldflags    = \
 		-nostdlib \
 		-Bstatic \
 		-shared -Wl,--exclude-libs,ALL -Wl,--no-undefined \
-		${basedir}/lib/${build_cfg_target}/libgcc.a \
+		-lgcc \
 		-lkernel32
 build_xb_linker_src_in     = \
     linker/arch/${build_xb_cfg_arch}/begin.c, \

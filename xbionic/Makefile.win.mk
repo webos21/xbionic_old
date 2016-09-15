@@ -25,7 +25,7 @@
 ######################################################
 
 # PREPARE : set base
-basedir = ../..
+basedir = ..
 
 # PREPARE : Check Environment
 ifeq ($(TARGET),)

@@ -37,7 +37,7 @@ int connect(int sockfd, const struct sockaddr *addr, socklen_t addrlen) {
 		return -1;
 	}
 
-	ret = wsfp->FP_connect(fdesc->desc.s.fd, (struct const _WSA_sockaddr *)addr, addrlen);
+	ret = wsfp->FP_connect(fdesc->desc.s.fd, (const struct _WSA_sockaddr *)addr, addrlen);
 	if (ret == SOCKET_ERROR) {
 		int err = wsfp->FP_WSAGetLastError();
 		switch (err) {
