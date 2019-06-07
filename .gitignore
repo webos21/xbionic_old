@@ -1,8 +1,10 @@
 /Debug
 /amk
 /ant
+/.classpath
 /.cproject
 /.project
 /.settings
 /avs
 /build.conf.bat
+/bin/
