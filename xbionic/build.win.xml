@@ -160,6 +160,7 @@
 
 	<!-- BUILD : bionic-libc-crt  -->
 	<target name="_build.xbionic.libc.crt" depends="_prepare">
+		<!-- /* No Need the CRT */
 		<echo>Build : xbionic-libc-crt</echo>
 		<apply verbose="true" executable="${build_tool_cc}" dest="${module_dir_so_crt}" failonerror="true">
 			<arg line="${build_xb_opt_c}" />
@@ -201,6 +202,7 @@
 		<delete file="${module_dir_so_crt}/crtbrand.o"/>
 		<delete file="${module_dir_so_crt}/crtbegin_dynamic1.o"/>
 		<delete file="${module_dir_so_crt}/crtbegin_static1.o"/>
+		/* No Need the CRT */ -->
 	</target>
 
 	<!-- BUILD : bionic-dl  -->
@@ -224,10 +226,10 @@
 			<arg line="${build_opt_ld_so}${build_xb_libdl_bin}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objso}/${build_xb_libdl_bin}" />
-			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<!-- <arg line="${module_dir_so_crt}/crtbegin_so.o" /> -->
 			<srcfile />
 			<arg line="${build_xb_libdl_ldflags}" />
-			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<!-- <arg line="${module_dir_so_crt}/crtend_so.o" /> -->
 			<fileset dir="${module_dir_so_libdl}" includes="*.lo" />
 		</apply>
 	</target>
@@ -515,13 +517,13 @@
 			<arg line="${build_opt_ld_so}${build_xb_libc_lcs_bin}" />
 			<arg line="-o" />
 			<arg file="${module_dir_objso}/${build_xb_libc_lcs_bin}" />
-			<arg line="${module_dir_so_crt}/crtbegin_so.o" />
+			<!-- <arg line="${module_dir_so_crt}/crtbegin_so.o" /> -->
 			<srcfile />
 			<arg line="-Wl,--whole-archive ${module_dir_obja}/${build_xb_libc_com_bin}" />
 			<arg line="${build_xb_libc_lcs_ldflags}" />
 			<arg line="-L${module_dir_objso}" />
 			<arg line="-ldl" />
-			<arg line="${module_dir_so_crt}/crtend_so.o" />
+			<!-- <arg line="${module_dir_so_crt}/crtend_so.o" /> -->
 			<fileset dir="${module_dir_so_libc}" includes="*.o" />
 		</apply>
 

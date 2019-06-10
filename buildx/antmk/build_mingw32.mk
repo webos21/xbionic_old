@@ -69,8 +69,8 @@ build_opt_so_pre   =
 build_opt_so_ext   = dll
 build_opt_exe_ext  = .exe
 
-build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -Wdeclaration-after-statement -nostdinc -nostdlib -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-build_opt_cxx      = -m32 -march=i686 -g -Wall -Wextra -nostdinc -nostdlib -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_c        = -m32 -march=i686 -g -Wall -Wextra -Wdeclaration-after-statement -nostdinc -ffreestanding -fno-stack-check -fno-stack-protector -mno-stack-arg-probe -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_cxx      = -m32 -march=i686 -g -Wall -Wextra -nostdinc -ffreestanding -fno-stack-check -fno-stack-protector -mno-stack-arg-probe -fno-exceptions -fno-rtti -O3 -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 build_opt_fPIC     =
 build_opt_ld       = -m32 -march=i686 -g -Wl,--no-undefined -nostdlib
 build_opt_ld_so    = -shared -Wl,-soname,
@@ -872,7 +872,7 @@ build_xb_libc_lcs_bin     = c.dll
 build_xb_libc_lcs_cflags  = ${build_xb_libc_cmn_cflags} -DPTHREAD_DEBUG -DPTHREAD_DEBUG_ENABLED=0 ${build_xb_libc_cmn_incs}
 build_xb_libc_lcs_ldflags = ${build_xb_libc_cmn_ldflags} \
 		${basedir}/lib/${build_cfg_target}/libgcc.a \
-		${basedir}/lib/${build_cfg_target}/libgcc_eh.a \
+		${basedir}/lib/${build_cfg_target}/libgcc_eh.a
 
 #		/home/appos/gitrepo/android-x86/prebuilts/gcc/linux-x86/x86/i686-linux-android-4.7/lib/gcc/i686-linux-android/4.7/libgcc.a
 build_xb_libc_lcs_src_in  = ${build_xb_libc_arch_dynamic_src}, ${build_xb_libc_s_common_src}, \

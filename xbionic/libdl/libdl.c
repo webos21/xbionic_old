@@ -34,40 +34,33 @@
 
 typedef struct _HINSTANCE {
 	int unused;
-} *HINSTANCE;
-typedef HINSTANCE   HMODULE;
+}*HINSTANCE;
+typedef HINSTANCE HMODULE;
 
-typedef int             BOOL;
-typedef int            *(FAR WINAPI *FARPROC)();
-typedef const char     *LPCSTR, *PCSTR;
-typedef unsigned long   DWORD;
-typedef void FAR       *LPVOID;
-
-WINBASEAPI
-	__out_opt
-	HMODULE
-	WINAPI
-	LoadLibraryA(
-	__in LPCSTR lpLibFileName
-	);
+typedef int BOOL;
+typedef int *(FAR WINAPI *FARPROC)();
+typedef const char *LPCSTR, *PCSTR;
+typedef unsigned long DWORD;
+typedef void FAR *LPVOID;
 
 WINBASEAPI
-	BOOL
-	WINAPI
-	FreeLibrary (
-	__in HMODULE hLibModule
-	);
+__out_opt
+HMODULE
+WINAPI
+LoadLibraryExA(LPCSTR lpLibFileName, void *hFile, DWORD dwFlags);
 
 WINBASEAPI
-	FARPROC
-	WINAPI
-	GetProcAddress (
-	__in HMODULE hModule,
-	__in LPCSTR lpProcName
-	);
+BOOL
+WINAPI
+FreeLibrary( __in HMODULE hLibModule);
+
+WINBASEAPI
+FARPROC
+WINAPI
+GetProcAddress( __in HMODULE hModule, __in LPCSTR lpProcName);
 
 void *dlopen(const char* filename, int flag) {
-	return LoadLibraryA(filename);
+	return LoadLibraryExA(filename, (void *)(0), flag);
 }
 
 const char *dlerror(void) {
@@ -75,15 +68,15 @@ const char *dlerror(void) {
 }
 
 void *dlsym(void* handle, const char *symbol) {
-	return GetProcAddress((HMODULE)handle, symbol);
+	return GetProcAddress((HMODULE) handle, symbol);
 }
 
 int dladdr(const void * addr, Dl_info *info) {
 	return 0;
 }
 
-int dlclose(void*  handle) {
-	return FreeLibrary((HMODULE)handle);
+int dlclose(void* handle) {
+	return FreeLibrary((HMODULE) handle);
 }
 
 void android_update_LD_LIBRARY_PATH(const char* ld_library_path) {
@@ -117,7 +110,9 @@ void *dl_unwind_find_exidx(void *pc, int *pcount) { return 0; }
 
 /* we munge the cb definition so we don't have to include any headers here.
  * It won't affect anything since these are just symbols anyway */
-int dl_iterate_phdr(int (*cb)(void *info, void *size, void *data), void *data) { return 0; }
+int dl_iterate_phdr(int (*cb)(void *info, void *size, void *data), void *data) {
+	return 0;
+}
 
 #else
 #error Unsupported architecture. Only mips, arm and x86 are supported.

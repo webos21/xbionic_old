@@ -68,8 +68,8 @@ build_opt_so_pre   =
 build_opt_so_ext   = dll
 build_opt_exe_ext  = .exe
 
-build_opt_c        = -g -Wall -Wextra -Wdeclaration-after-statement -O3 -nostdinc -nostdlib -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
-build_opt_cxx      = -g -Wall -Wextra -O3 -nostdinc -nostdlib -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_c        = -g -Wall -Wextra -Wdeclaration-after-statement -O3 -nostdinc -nostdlib -ffreestanding -fno-stack-check -fno-stack-protector -mno-stack-arg-probe -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+build_opt_cxx      = -g -Wall -Wextra -O3 -nostdinc -nostdlib -ffreestanding -fno-stack-check -fno-stack-protector -mno-stack-arg-probe -DXI_BUILD_${build_cfg_target} -D_REENTRANT -D_THREAD_SAFE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 build_opt_fPIC     =
 build_opt_ld       = -g -Wl,--no-undefined -nostdlib
 build_opt_ld_so    = -shared -Wl,-soname,
