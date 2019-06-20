@@ -16,9 +16,13 @@
 #define __weak_alias(alias,sym)				\
 	__asm__(".weak " __STRING(alias) " ; "		\
 	    __STRING(alias) " = " __STRING(sym));
+#ifndef __APPLE__
 #define __warn_references(sym,msg)			\
 	__asm__(".section .gnu.warning." __STRING(sym)	\
 	    " ; .ascii \"" msg "\" ; .text");
+#else
+#define __warn_references(sym,msg)
+#endif
 #endif
 
 #endif /* !_MACHINE_CDEFS_H_ */

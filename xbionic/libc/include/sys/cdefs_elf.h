@@ -61,8 +61,12 @@
 	    _C_LABEL_STRING(#alias) " = " _C_LABEL_STRING(#sym));
 #define	__weak_extern(sym)						\
     __asm__(".weak " _C_LABEL_STRING(#sym));
+#ifndef __APPLE__
 #define	__warn_references(sym,msg)					\
     __asm__(".section .gnu.warning." #sym "\n\t.ascii \"" msg "\"\n\t.text");
+#else
+#define	__warn_references(sym,msg)
+#endif
 
 #else /* !__STDC__ */
 
@@ -88,8 +92,12 @@
 #endif /* !__STDC__ */
 
 #if __STDC__
+#ifndef __APPLE__
 #define	__SECTIONSTRING(_sec, _str)					\
 	__asm__(".section " #_sec "\n\t.asciz \"" _str "\"\n\t.previous")
+#else
+#define	__SECTIONSTRING(_sec, _str)
+#endif
 #else
 #define	__SECTIONSTRING(_sec, _str)					\
 	__asm__(".section _sec\n\t.asciz _str\n\t.previous")
@@ -101,8 +109,12 @@
 // modified by cmjo {{{
 // - MINGW and VS2010 does not have __attribute__
 #ifndef _WIN32
+#ifndef __APPLE__
 #define __LIBC_HIDDEN__							\
 	__attribute__ ((visibility ("hidden")))
+#else
+#define __LIBC_HIDDEN__
+#endif
 #else
 #define __LIBC_HIDDEN__
 #endif

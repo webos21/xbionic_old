@@ -71,7 +71,7 @@
 	</target>
 	<target name="_xi.xbionic.mac" depends="_prepare" if="build_cfg_mac">
 		<echo>xbionic - libc</echo>
-		<subant antfile="${xi_xbionic_rel}/build.mac..xml" buildpath="${basedir}" />
+		<subant antfile="${xi_xbionic_rel}/build.mac.xml" inheritall="true" buildpath="${basedir}" />
 	</target>
 	<target name="_xi.xbionic" depends="_prepare, _xi.xbionic.xnix, _xi.xbionic.win, _xi.xbionic.mac" />
 

@@ -93,8 +93,13 @@
 # endif
 #endif
 
+#ifndef __APPLE__
 #define _ENTRY(x) \
 	.text; _ALIGN_TEXT; .globl x; .type x,@function; x:
+#else
+#define _ENTRY(x) \
+	.text; _ALIGN_TEXT; .globl x; x:
+#endif
 #define _LABEL(x) \
 	.globl x; x:
 
@@ -175,7 +180,11 @@
 #define	NENTRY(y)	_ENTRY(_C_LABEL(y))
 #define	ASENTRY(y)	_ENTRY(_ASM_LABEL(y)); _PROF_PROLOGUE
 #define	LABEL(y)	_LABEL(_C_LABEL(y))
+#ifndef __APPLE__
 #define	END(y)		.size y, . - y
+#else
+#define	END(y)
+#endif
 
 #define	ASMSTR		.asciz
 

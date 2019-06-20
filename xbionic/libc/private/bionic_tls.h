@@ -113,7 +113,11 @@ extern void* __get_stack_base(int* p_stack_size);
 __END_DECLS
 
 #if defined(__cplusplus)
+#ifndef __APPLE__
 struct KernelArgumentBlock;
+#else
+class KernelArgumentBlock;
+#endif
 extern __LIBC_HIDDEN__ void __libc_init_tls(KernelArgumentBlock& args);
 #endif
 
