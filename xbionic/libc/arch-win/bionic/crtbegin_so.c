@@ -62,11 +62,6 @@ void __on_dlclose() {
 // {{{
 #if defined(__MINGW32__) || defined(__MINGW64__)
 
-// EntryPoint of DllMain, so we must provide it on creating DLL without STDLIB and STARTFILES
-int __attribute__((__stdcall__)) DllMainCRTStartup(void *hinstDLL, unsigned long fdwReason, void *lpvReserved) {
-	return 1;
-}
-
 // MINGW-Builds : libgcc.a
 void _pei386_runtime_relocator(void) {
 }
