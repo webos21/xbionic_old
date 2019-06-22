@@ -780,6 +780,10 @@
 		<copy todir="${module_dir_output_inc}">
 			<fileset dir="${current_dir_abs}/libthread_db/include" includes="**/**.h" />
 		</copy>
+		<echo>stdarg.h</echo>
+		<copy todir="${module_dir_output_inc}">
+			<fileset dir="${basedir}/lib/${build_cfg_target}/include" includes="stdarg.h" />
+		</copy>
 		<echo>libc-crt</echo>
 		<copy todir="${module_dir_output_lib}">
 			<fileset dir="${module_dir_so_crt}" includes="*.o" />
