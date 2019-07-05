@@ -51,6 +51,10 @@
 #include "local.h"
 #include "fvwrite.h"
 
+#ifndef va_copy
+#define va_copy(orgap, ap) __builtin_va_copy(orgap, ap)
+#endif
+
 static void __find_arguments(const char *fmt0, va_list ap, va_list **argtable,
     size_t *argtablesiz);
 static int __grow_type_table(unsigned char **typetable, int *tablesize);
