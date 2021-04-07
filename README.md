@@ -1,5 +1,8 @@
-xbionic
+xbionic_old
 =======
+
+This project is archived!!!
+
 
 A native(Linux/Windows/Mac) port of android bionic c library
 (currently based on android-4.3_r3.1 tag)
